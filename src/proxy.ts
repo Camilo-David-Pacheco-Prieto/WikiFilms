@@ -3,7 +3,13 @@ import type { NextRequest } from "next/server";
 import * as jose from "jose";
 
 const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
-const COOKIE_NAME = "next-auth.session-token";
+
+function getToken(request: NextRequest): string | undefined {
+  return (
+    request.cookies.get("__Secure-next-auth.session-token")?.value ??
+    request.cookies.get("next-auth.session-token")?.value
+  );
+}
 
 async function verifyToken(token: string) {
   try {
@@ -16,7 +22,7 @@ async function verifyToken(token: string) {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get(COOKIE_NAME)?.value;
+  const token = getToken(request);
 
   if (pathname.startsWith("/admin")) {
     const payload = token ? await verifyToken(token) : null;
