@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { auth } from "@/lib/auth";
+import { NavbarClient } from "./navbar-client";
 
 export default async function Navbar() {
   const session = await auth();
@@ -43,7 +44,7 @@ export default async function Navbar() {
           </Link>
 
           {user ? (
-            <div className="flex items-center gap-2">
+            <div className="hidden items-center gap-2 md:flex">
               {user.role === "ADMIN" && (
                 <Link
                   href="/admin/users"
@@ -67,6 +68,8 @@ export default async function Navbar() {
               Ingresar
             </Link>
           )}
+
+          <NavbarClient user={user ? { name: user.name, role: user.role } : null} />
         </div>
       </div>
     </header>

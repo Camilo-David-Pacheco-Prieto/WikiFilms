@@ -35,8 +35,8 @@ export function ContentCard({ content }: ContentCardProps) {
             Sin imagen
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full transition-transform duration-300 group-hover:translate-y-0">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 transition-opacity duration-300 md:group-hover:opacity-100" />
+        <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-0 md:translate-y-full transition-transform duration-300 md:group-hover:translate-y-0">
           <p className="font-display text-lg font-bold uppercase leading-tight text-white">
             {content.title}
           </p>

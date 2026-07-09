@@ -11,7 +11,7 @@ export default async function HomePage() {
     <main className="mx-auto max-w-7xl space-y-12 px-4 py-8">
       <section className="relative overflow-hidden rounded-xl">
         <div className="absolute inset-0 bg-gradient-to-br from-accent-brand/20 to-transparent" />
-        <div className="relative z-10 px-8 py-16 md:py-24">
+        <div className="relative z-10 px-6 py-16 md:px-8 md:py-24">
           <h1 className="font-display text-5xl font-black uppercase tracking-tight text-white md:text-7xl">
             WikiFilms
           </h1>

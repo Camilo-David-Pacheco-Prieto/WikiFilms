@@ -1,4 +1,4 @@
-import { searchContent, getPopular } from "@/lib/tmdb";
+import { searchContent } from "@/lib/tmdb";
 import { ContentGrid } from "@/components/content/content-grid";
 import { SearchForm } from "./search-form";
 import type { MediaType } from "@/types/tmdb";

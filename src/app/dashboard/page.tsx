@@ -17,7 +17,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-16">
-      <div className="rounded-lg border border-border-subtle bg-surface p-8">
+      <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
         <h1 className="font-display text-3xl font-bold uppercase text-white">
           Mi perfil
         </h1>

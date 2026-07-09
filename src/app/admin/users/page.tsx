@@ -25,22 +25,22 @@ export default async function AdminUsersPage() {
         {users.map((user) => (
           <div
             key={user.id}
-            className="flex items-center justify-between rounded-lg border border-border-subtle bg-surface px-6 py-4"
+            className="flex flex-col gap-2 rounded-lg border border-border-subtle bg-surface px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
           >
-            <div>
-              <p className="font-medium text-white">{user.name}</p>
-              <p className="text-sm text-text-secondary">
+            <div className="min-w-0">
+              <p className="font-medium text-white truncate">{user.name}</p>
+              <p className="text-sm text-text-secondary truncate">
                 {user.username} · {user.email}
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 shrink-0">
               <span
                 data-admin={user.role === "ADMIN"}
                 className="rounded-md bg-accent-brand/10 px-2.5 py-0.5 text-xs font-medium text-accent-brand data-[admin=true]:bg-accent-brand data-[admin=true]:text-white"
               >
                 {user.role}
               </span>
-              <p className="text-xs text-text-secondary">
+              <p className="text-xs text-text-secondary whitespace-nowrap">
                 {new Date(user.createdAt).toLocaleDateString("es-ES")}
               </p>
             </div>
