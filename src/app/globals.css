@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-base: #09090b;
+  --color-surface: #18181b;
+  --color-surface-glass: color-mix(in srgb, #18181b 60%, transparent);
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-border-subtle: #27272a;
+  --color-accent-brand: #e11d48;
+  --color-accent-hover: #be123c;
+  --color-accent-soft: #881337;
+
+  --font-display: "Oswald", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  --shadow-poster: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+
+  --color-background: #09090b;
+  --color-foreground: #ffffff;
+  --color-card: #18181b;
+  --color-card-foreground: #ffffff;
+  --color-popover: #18181b;
+  --color-popover-foreground: #ffffff;
+  --color-primary: #e11d48;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #27272a;
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #18181b;
+  --color-muted-foreground: #a1a1aa;
+  --color-accent: #e11d48;
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #7f1d1d;
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-ring: #e11d48;
+
+  --radius: 0.5rem;
+}
+
+:root {
+  --background: #09090b;
+  --foreground: #ffffff;
+  --card: #18181b;
+  --card-foreground: #ffffff;
+  --popover: #18181b;
+  --popover-foreground: #ffffff;
+  --primary: #e11d48;
+  --primary-foreground: #ffffff;
+  --secondary: #27272a;
+  --secondary-foreground: #ffffff;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --accent: #e11d48;
+  --accent-foreground: #ffffff;
+  --destructive: #7f1d1d;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #e11d48;
+  --radius: 0.5rem;
+  --chart-1: #e11d48;
+  --chart-2: #be123c;
+  --chart-3: #881337;
+  --chart-4: #a1a1aa;
+  --chart-5: #ffffff;
+  --sidebar: #09090b;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #e11d48;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #18181b;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #27272a;
+  --sidebar-ring: #e11d48;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+}
+
+* {
+  border-color: var(--border);
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
