@@ -6,6 +6,7 @@ import type {
   ContentResult,
   ContentDetail,
   SearchResult,
+  TMDBWatchProvidersResponse,
 } from "@/types/tmdb";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -13,6 +14,7 @@ const BASE_URL = "https://api.themoviedb.org/3";
 const IMG_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const IMG_BASE_URL_LARGE = "https://image.tmdb.org/t/p/w780";
 const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280";
+const LOGO_BASE_URL = "https://image.tmdb.org/t/p/w92";
 
 async function fetchFromTMDB<T>(
   endpoint: string,
@@ -186,6 +188,15 @@ export async function getByGenre(
   );
 
   return data.results.map(type === "movie" ? mapMovieToResult : (item: any) => mapSeriesToResult(item as TMDBSeries));
+}
+
+export async function getWatchProviders(
+  type: MediaType,
+  id: number,
+): Promise<TMDBWatchProvidersResponse> {
+  return fetchFromTMDB<TMDBWatchProvidersResponse>(
+    `/${type}/${id}/watch/providers`,
+  );
 }
 
 export const GENRE_MAP: Record<string, number> = {

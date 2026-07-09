@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { getMovieDetail, getPopular } from "@/lib/tmdb";
+import { headers } from "next/headers";
+import { getMovieDetail, getPopular, getWatchProviders } from "@/lib/tmdb";
 import { DetailHero } from "@/components/content/detail-hero";
 import { ContentGrid } from "@/components/content/content-grid";
 import { FavoriteButton } from "@/components/content/favorite-button";
+import { WatchProviders } from "@/components/content/watch-providers";
 import { notFound } from "next/navigation";
+import type { TMDBWatchProvidersResponse } from "@/types/tmdb";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -27,14 +30,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+function extractRegion(al: string): string {
+  const match = al.match(/-([A-Z]{2})/);
+  return match?.[1] ?? "US";
+}
+
 export default async function MoviePage({ params }: Props) {
   const { id } = await params;
+  const h = await headers();
+  const region = extractRegion(h.get("accept-language") ?? "");
+
   let movie;
   let popular;
+  let watchProviders: TMDBWatchProvidersResponse | null = null;
 
   try {
-    movie = await getMovieDetail(Number(id));
-    popular = await getPopular("movie");
+    [movie, popular, watchProviders] = await Promise.all([
+      getMovieDetail(Number(id)),
+      getPopular("movie"),
+      getWatchProviders("movie", Number(id)).catch(() => null),
+    ]);
   } catch {
     notFound();
   }
@@ -42,6 +57,10 @@ export default async function MoviePage({ params }: Props) {
   return (
     <main>
       <DetailHero content={movie} />
+
+      {watchProviders && (
+        <WatchProviders providers={watchProviders} detectedRegion={region} />
+      )}
 
       <section className="mx-auto max-w-7xl px-4 py-8">
         <FavoriteButton
