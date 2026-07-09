@@ -22,17 +22,11 @@ async function verifyToken(token: string) {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = getToken(request);
 
   if (pathname.startsWith("/admin")) {
+    const token = getToken(request);
     const payload = token ? await verifyToken(token) : null;
     if (!payload || payload.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-  }
-
-  if (pathname.startsWith("/dashboard")) {
-    if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
@@ -41,5 +35,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*"],
+  matcher: ["/admin/:path*"],
 };
