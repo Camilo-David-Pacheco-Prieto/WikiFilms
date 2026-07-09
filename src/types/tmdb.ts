@@ -49,6 +49,11 @@ export interface ContentResult {
   genres: string[];
 }
 
+export interface SearchResult {
+  results: ContentResult[];
+  totalPages: number;
+}
+
 export interface ContentDetail extends ContentResult {
   overview: string;
   director: string;

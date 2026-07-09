@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getSeriesDetail, getPopular } from "@/lib/tmdb";
 import { DetailHero } from "@/components/content/detail-hero";
 import { ContentGrid } from "@/components/content/content-grid";
+import { FavoriteButton } from "@/components/content/favorite-button";
 import { notFound } from "next/navigation";
 
 interface Props {
@@ -41,6 +42,15 @@ export default async function SeriesPage({ params }: Props) {
   return (
     <main>
       <DetailHero content={series} />
+
+      <section className="mx-auto max-w-7xl px-4 py-8">
+        <FavoriteButton
+          contentId={series.id}
+          title={series.title}
+          posterUrl={series.posterUrl}
+          type="tv"
+        />
+      </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16">
         <ContentGrid title="Más series populares" items={popular} />

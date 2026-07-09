@@ -5,6 +5,7 @@ import type {
   MediaType,
   ContentResult,
   ContentDetail,
+  SearchResult,
 } from "@/types/tmdb";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -88,13 +89,15 @@ export async function getPopular(
 export async function searchContent(
   query: string,
   type?: MediaType,
-): Promise<ContentResult[]> {
+  page = 1,
+): Promise<SearchResult> {
   const searchType = type ?? "multi";
   const data = await fetchFromTMDB<TMDBPaginatedResponse<any>>(`/search/${searchType}`, {
     query,
+    page: String(page),
   });
 
-  return data.results
+  const results = data.results
     .filter((item: any) => item.media_type !== "person")
     .map((item: any) => {
       if (item.media_type === "tv" || type === "tv") {
@@ -102,6 +105,8 @@ export async function searchContent(
       }
       return mapMovieToResult(item as TMDBMovie);
     });
+
+  return { results, totalPages: data.total_pages };
 }
 
 export async function getMovieDetail(id: number): Promise<ContentDetail> {

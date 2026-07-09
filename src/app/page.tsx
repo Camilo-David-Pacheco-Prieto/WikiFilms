@@ -1,11 +1,26 @@
-import { getPopular } from "@/lib/tmdb";
+import { Suspense } from "react";
+import { getPopular, getByGenre, GENRE_MAP } from "@/lib/tmdb";
 import { ContentGrid } from "@/components/content/content-grid";
+import { SkeletonGrid } from "@/components/content/skeleton-grid";
+import { GenreFilter } from "@/components/content/genre-filter";
 
-export default async function HomePage() {
-  const [popularMovies, popularSeries] = await Promise.all([
-    getPopular("movie"),
-    getPopular("tv"),
-  ]);
+interface Props {
+  searchParams: Promise<{ genre?: string }>;
+}
+
+async function PopularMovies({ genreId }: { genreId?: number }) {
+  const movies = genreId ? await getByGenre("movie", genreId) : await getPopular("movie");
+  return <ContentGrid title="Películas Populares" items={movies} />;
+}
+
+async function PopularSeries({ genreId }: { genreId?: number }) {
+  const series = genreId ? await getByGenre("tv", genreId) : await getPopular("tv");
+  return <ContentGrid title="Series Populares" items={series} />;
+}
+
+export default async function HomePage({ searchParams }: Props) {
+  const { genre } = await searchParams;
+  const genreId = genre ? GENRE_MAP[genre] : undefined;
 
   return (
     <main className="mx-auto max-w-7xl space-y-12 px-4 py-8">
@@ -23,8 +38,26 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <ContentGrid title="Películas Populares" items={popularMovies} />
-      <ContentGrid title="Series Populares" items={popularSeries} />
+      <section className="space-y-4">
+        <h2 className="font-display text-2xl font-bold uppercase text-white">
+          Filtrar por género
+        </h2>
+        <GenreFilter />
+      </section>
+
+      <Suspense
+        key={`movies-${genreId ?? "all"}`}
+        fallback={<SkeletonGrid title="Películas Populares" />}
+      >
+        <PopularMovies genreId={genreId} />
+      </Suspense>
+
+      <Suspense
+        key={`series-${genreId ?? "all"}`}
+        fallback={<SkeletonGrid title="Series Populares" />}
+      >
+        <PopularSeries genreId={genreId} />
+      </Suspense>
     </main>
   );
 }

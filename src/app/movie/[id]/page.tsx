@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getMovieDetail, getPopular } from "@/lib/tmdb";
 import { DetailHero } from "@/components/content/detail-hero";
 import { ContentGrid } from "@/components/content/content-grid";
+import { FavoriteButton } from "@/components/content/favorite-button";
 import { notFound } from "next/navigation";
 
 interface Props {
@@ -41,6 +42,15 @@ export default async function MoviePage({ params }: Props) {
   return (
     <main>
       <DetailHero content={movie} />
+
+      <section className="mx-auto max-w-7xl px-4 py-8">
+        <FavoriteButton
+          contentId={movie.id}
+          title={movie.title}
+          posterUrl={movie.posterUrl}
+          type="movie"
+        />
+      </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16">
         <ContentGrid title="Más películas populares" items={popular} />

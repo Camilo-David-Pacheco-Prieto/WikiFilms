@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import Navbar from "@/components/content/navbar";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,8 +32,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full bg-base font-body">
-        <Navbar />
-        {children}
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
