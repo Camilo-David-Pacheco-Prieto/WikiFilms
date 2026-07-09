@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WikiFilms 🎬
 
-## Getting Started
+**Tu enciclopedia cinematográfica personal.** Explora películas y series con información detallada, puntuaciones, elenco y más. Consume la API de TMDB con un diseño oscuro cinematográfico inspirado en Marvel Comics.
 
-First, run the development server:
+## Stack
+
+- **Framework:** Next.js 16 (App Router) + TypeScript
+- **Estilos:** Tailwind CSS v4 + shadcn/ui
+- **Base de datos:** Vercel Postgres + Prisma 7
+- **Autenticación:** NextAuth v5 (Credentials + bcrypt)
+- **Despliegue:** Vercel
+
+## Empezar
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables de Entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Crear `.env.local`:
 
-## Learn More
+```env
+TMDB_API_KEY=tu_api_key
+DATABASE_URL=postgresql://...
+AUTH_SECRET=tu_secreto
+NEXTAUTH_URL=http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Comandos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Comando | Descripción |
+|---------|-----------|
+| `pnpm dev` | Servidor desarrollo |
+| `pnpm build` | Compilar producción |
+| `pnpm prisma migrate deploy` | Migrar DB |
+| `pnpm lint` | ESLint |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Rutas
 
-## Deploy on Vercel
+| Ruta | Descripción | Auth |
+|------|-------------|------|
+| `/` | Home con populares | Pública |
+| `/movie/[id]` | Detalle película | Pública |
+| `/tv/[id]` | Detalle serie | Pública |
+| `/search` | Búsqueda | Pública |
+| `/login` | Iniciar sesión | Pública |
+| `/register` | Registrarse | Pública |
+| `/dashboard` | Mi perfil | Requiere sesión |
+| `/admin/users` | CRUD usuarios | Requiere ADMIN |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Licencia
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
