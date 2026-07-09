@@ -54,6 +54,15 @@ export function NavbarClient({ user }: NavbarClientProps) {
             Explorar
           </Link>
           {user && (
+            <Link
+              href="/dashboard"
+              onClick={() => setOpen(false)}
+              className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white md:hover:bg-transparent"
+            >
+              Favoritos
+            </Link>
+          )}
+          {user && (
             <>
               <hr className="border-border-subtle md:hidden" />
               <Link
