@@ -14,24 +14,24 @@ async function verifyToken(token: string) {
   }
 }
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  const token = req.cookies.get(COOKIE_NAME)?.value;
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const token = request.cookies.get(COOKIE_NAME)?.value;
 
   if (pathname.startsWith("/admin")) {
     const payload = token ? await verifyToken(token) : null;
     if (!payload || payload.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
   if (pathname.startsWith("/dashboard")) {
     if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/login", request.url));
     }
     const payload = await verifyToken(token);
     if (!payload) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
