@@ -1,4 +1,8 @@
-export default {
-  earlyAccess: true,
-  schema: "./prisma/schema.prisma",
-};
+import { defineConfig, env } from "@prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  datasource: {
+    url: env("DATABASE_URL"),
+  },
+});
