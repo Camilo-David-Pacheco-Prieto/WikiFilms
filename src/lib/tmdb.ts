@@ -24,7 +24,9 @@ async function fetchFromTMDB<T>(
     );
   }
 
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), {
+    next: { revalidate: 3600 },
+  });
 
   if (!res.ok) {
     throw new Error(`TMDB API error: ${res.status} ${res.statusText}`);

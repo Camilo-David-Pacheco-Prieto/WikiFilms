@@ -28,6 +28,7 @@ export function ContentCard({ content }: ContentCardProps) {
             fill
             className="object-cover"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+            loading="eager"
           />
         ) : (
           <div className="flex h-full items-center justify-center bg-surface text-text-secondary">
@@ -48,21 +49,6 @@ export function ContentCard({ content }: ContentCardProps) {
               {content.rating.toFixed(1)}
             </Badge>
           </div>
-        </div>
-      </div>
-      <div className="mt-2 px-1">
-        <p className="truncate font-display text-base font-bold uppercase text-white">
-          {content.title}
-        </p>
-        <div className="flex items-center gap-2 text-xs text-text-secondary">
-          <span>{content.year}</span>
-          <span>·</span>
-          <Badge
-            variant="secondary"
-            className="bg-accent/10 text-accent-brand"
-          >
-            {content.rating.toFixed(1)}
-          </Badge>
         </div>
       </div>
     </Link>

@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { auth } from "@/lib/auth";
 
-export function Navbar() {
+export default async function Navbar() {
+  const session = await auth();
+  const user = session?.user;
+
   return (
     <header className="sticky top-0 z-50 border-b border-border-subtle bg-base/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
@@ -16,22 +20,16 @@ export function Navbar() {
 
         <nav className="hidden items-center gap-6 md:flex">
           <Link
+            href="/"
+            className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
+          >
+            Inicio
+          </Link>
+          <Link
             href="/search"
             className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
           >
             Explorar
-          </Link>
-          <Link
-            href="/?type=movie"
-            className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
-          >
-            Películas
-          </Link>
-          <Link
-            href="/?type=tv"
-            className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
-          >
-            Series
           </Link>
         </nav>
 
@@ -43,12 +41,32 @@ export function Navbar() {
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">Buscar</span>
           </Link>
-          <Link
-            href="/login"
-            className="rounded-md bg-accent-brand px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-          >
-            Ingresar
-          </Link>
+
+          {user ? (
+            <div className="flex items-center gap-2">
+              {user.role === "ADMIN" && (
+                <Link
+                  href="/admin/users"
+                  className="rounded-md border border-border-subtle px-3 py-1.5 text-sm text-text-secondary transition-colors hover:border-accent-brand hover:text-accent-brand"
+                >
+                  Admin
+                </Link>
+              )}
+              <Link
+                href="/dashboard"
+                className="rounded-md bg-surface px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700"
+              >
+                {user.name}
+              </Link>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="rounded-md bg-accent-brand px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+            >
+              Ingresar
+            </Link>
+          )}
         </div>
       </div>
     </header>
