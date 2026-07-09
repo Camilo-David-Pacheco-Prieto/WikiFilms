@@ -11,6 +11,8 @@ import type {
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMG_BASE_URL = "https://image.tmdb.org/t/p/w500";
+const IMG_BASE_URL_LARGE = "https://image.tmdb.org/t/p/w780";
+const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280";
 
 async function fetchFromTMDB<T>(
   endpoint: string,
@@ -46,7 +48,7 @@ function mapMovieToResult(movie: TMDBMovie): ContentResult {
       ? `${IMG_BASE_URL}${movie.poster_path}`
       : null,
     backdropUrl: movie.backdrop_path
-      ? `${IMG_BASE_URL}${movie.backdrop_path}`
+      ? `${BACKDROP_BASE_URL}${movie.backdrop_path}`
       : null,
     rating: movie.vote_average,
     genres: movie.genres?.map((g) => g.name) ?? [],
@@ -63,7 +65,7 @@ function mapSeriesToResult(series: TMDBSeries): ContentResult {
       ? `${IMG_BASE_URL}${series.poster_path}`
       : null,
     backdropUrl: series.backdrop_path
-      ? `${IMG_BASE_URL}${series.backdrop_path}`
+      ? `${BACKDROP_BASE_URL}${series.backdrop_path}`
       : null,
     rating: series.vote_average,
     genres: series.genres?.map((g) => g.name) ?? [],
@@ -109,40 +111,68 @@ export async function searchContent(
   return { results, totalPages: data.total_pages };
 }
 
-export async function getMovieDetail(id: number): Promise<ContentDetail> {
-  const movie = await fetchFromTMDB<TMDBMovie>(`/movie/${id}`, {
-    append_to_response: "credits",
-  });
-
+function mapMovieToDetail(movie: TMDBMovie): ContentDetail {
   const director =
     movie.credits?.crew?.find((c) => c.job === "Director")?.name ?? "";
   const cast =
     movie.credits?.cast?.slice(0, 5).map((c) => c.name) ?? [];
 
   return {
-    ...mapMovieToResult(movie),
+    id: movie.id,
+    title: movie.title,
+    type: "movie",
+    year: movie.release_date?.split("-")[0] ?? "",
+    posterUrl: movie.poster_path
+      ? `${IMG_BASE_URL_LARGE}${movie.poster_path}`
+      : null,
+    backdropUrl: movie.backdrop_path
+      ? `${BACKDROP_BASE_URL}${movie.backdrop_path}`
+      : null,
+    rating: movie.vote_average,
+    genres: movie.genres?.map((g) => g.name) ?? [],
     overview: movie.overview,
     director,
     cast,
   };
 }
 
-export async function getSeriesDetail(id: number): Promise<ContentDetail> {
-  const series = await fetchFromTMDB<TMDBSeries>(`/tv/${id}`, {
-    append_to_response: "credits",
-  });
-
+function mapSeriesToDetail(series: TMDBSeries): ContentDetail {
   const director = series.created_by?.[0]?.name ?? "";
   const cast =
     series.credits?.cast?.slice(0, 5).map((c) => c.name) ?? [];
 
   return {
-    ...mapSeriesToResult(series),
+    id: series.id,
+    title: series.name,
+    type: "tv",
+    year: series.first_air_date?.split("-")[0] ?? "",
+    posterUrl: series.poster_path
+      ? `${IMG_BASE_URL_LARGE}${series.poster_path}`
+      : null,
+    backdropUrl: series.backdrop_path
+      ? `${BACKDROP_BASE_URL}${series.backdrop_path}`
+      : null,
+    rating: series.vote_average,
+    genres: series.genres?.map((g) => g.name) ?? [],
     overview: series.overview,
     director,
     cast,
     seasons: series.number_of_seasons,
   };
+}
+
+export async function getMovieDetail(id: number): Promise<ContentDetail> {
+  const movie = await fetchFromTMDB<TMDBMovie>(`/movie/${id}`, {
+    append_to_response: "credits",
+  });
+  return mapMovieToDetail(movie);
+}
+
+export async function getSeriesDetail(id: number): Promise<ContentDetail> {
+  const series = await fetchFromTMDB<TMDBSeries>(`/tv/${id}`, {
+    append_to_response: "credits",
+  });
+  return mapSeriesToDetail(series);
 }
 
 export async function getByGenre(

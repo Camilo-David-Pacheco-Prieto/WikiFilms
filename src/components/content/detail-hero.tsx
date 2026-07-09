@@ -51,20 +51,27 @@ export function DetailHero({ content }: DetailHeroProps) {
                 {content.title}
               </h1>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-secondary">
-                <span>{content.year}</span>
+                <span className="transition-colors hover:text-white">{content.year}</span>
                 <span className="text-border-subtle">|</span>
-                <span>{content.genres.join(", ")}</span>
+                {content.genres.map((genre) => (
+                  <span
+                    key={genre}
+                    className="transition-colors hover:text-accent-brand"
+                  >
+                    {genre}
+                  </span>
+                ))}
                 <span className="text-border-subtle">|</span>
                 <Badge
                   variant="secondary"
-                  className="bg-accent-brand/20 text-accent-brand font-bold"
+                  className="bg-accent-brand/20 text-accent-brand font-bold transition-all hover:scale-110 hover:shadow-lg hover:shadow-accent-brand/20"
                 >
                   ★ {content.rating.toFixed(1)}
                 </Badge>
                 {content.seasons && (
                   <>
                     <span className="text-border-subtle">|</span>
-                    <span>{content.seasons} temporadas</span>
+                    <span className="transition-colors hover:text-white">{content.seasons} temporadas</span>
                   </>
                 )}
               </div>
@@ -75,7 +82,7 @@ export function DetailHero({ content }: DetailHeroProps) {
                 <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
                   Director
                 </p>
-                <p className="mt-1 font-display text-lg font-bold text-white">
+                <p className="mt-1 font-display text-lg font-bold text-white transition-transform hover:translate-x-1">
                   {content.director}
                 </p>
               </div>
@@ -101,7 +108,7 @@ export function DetailHero({ content }: DetailHeroProps) {
                   {content.cast.map((actor) => (
                     <span
                       key={actor}
-                      className="rounded-md bg-surface px-3 py-1 text-sm text-text-secondary"
+                      className="rounded-md bg-surface px-3 py-1 text-sm text-text-secondary transition-all hover:scale-105 hover:bg-accent-brand/20 hover:text-accent-brand"
                     >
                       {actor}
                     </span>
