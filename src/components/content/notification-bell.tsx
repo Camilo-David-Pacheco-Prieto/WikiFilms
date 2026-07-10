@@ -79,6 +79,10 @@ export function NotificationBell({ userId }: { userId: string }) {
   }, [open]);
 
   async function markAsRead(id: string) {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+    );
+    setUnreadCount((prev) => Math.max(0, prev - 1));
     try {
       const res = await fetch("/api/notifications", {
         method: "PATCH",
@@ -86,29 +90,34 @@ export function NotificationBell({ userId }: { userId: string }) {
         body: JSON.stringify({ id }),
       });
       if (!res.ok) {
-        console.error("markAsRead failed with status", res.status);
-        return;
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: false } : n)),
+        );
+        setUnreadCount((prev) => prev + 1);
       }
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
-      );
-      setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (e) {
       console.error("markAsRead network error:", e);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read: false } : n)),
+      );
+      setUnreadCount((prev) => prev + 1);
     }
   }
 
   async function markAllRead() {
+    const prevNotifications = notifications;
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    setUnreadCount(0);
     try {
       const res = await fetch("/api/notifications/read-all", { method: "POST" });
       if (!res.ok) {
-        console.error("markAllRead failed with status", res.status);
-        return;
+        setNotifications(prevNotifications);
+        setUnreadCount(prevNotifications.filter((n) => !n.read).length);
       }
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-      setUnreadCount(0);
     } catch (e) {
       console.error("markAllRead network error:", e);
+      setNotifications(prevNotifications);
+      setUnreadCount(prevNotifications.filter((n) => !n.read).length);
     }
   }
 
@@ -116,7 +125,8 @@ export function NotificationBell({ userId }: { userId: string }) {
     await markAsRead(n.id);
     setOpen(false);
     if (n.contentId && n.contentType) {
-      router.push(`/${n.contentType}/${n.contentId}`);
+      const hash = n.reviewId ? `#review-${n.reviewId}` : "";
+      router.push(`/${n.contentType}/${n.contentId}${hash}`);
     }
   }
 

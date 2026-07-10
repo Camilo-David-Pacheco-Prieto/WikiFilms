@@ -280,6 +280,8 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const [reacting, setReacting] = useState<Set<string>>(new Set());
 
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+
   useEffect(() => {
     fetch(`/api/reviews?contentId=${contentId}`)
       .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
@@ -298,6 +300,24 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
       })
       .catch(() => setReviews([]));
   }, [contentId, session]);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash.startsWith("#review-")) return;
+    const id = hash.replace("#review-", "");
+    setHighlightId(id);
+    const el = document.getElementById(`review-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => {
+        el.classList.add("ring-2", "ring-accent-brand", "ring-offset-2", "ring-offset-surface");
+        setTimeout(() => {
+          el.classList.remove("ring-2", "ring-accent-brand", "ring-offset-2", "ring-offset-surface");
+          setHighlightId(null);
+        }, 2000);
+      }, 500);
+    }
+  }, []);
 
   async function submitReview(e: React.FormEvent) {
     e.preventDefault();
@@ -459,7 +479,8 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
             reviews.map((review) => (
               <div
                 key={review.id}
-                className="rounded-md bg-base p-4"
+                id={"review-" + review.id}
+                className={"rounded-md bg-base p-4 transition-shadow " + (highlightId === review.id ? "ring-2 ring-accent-brand ring-offset-2 ring-offset-surface" : "")}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-white">
