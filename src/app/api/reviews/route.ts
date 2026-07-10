@@ -10,13 +10,54 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing contentId" }, { status: 400 });
   }
 
+  const session = await auth();
+
   const reviews = await prisma.review.findMany({
     where: { contentId: Number(contentId) },
-    include: { user: { select: { id: true, name: true } } },
+    include: {
+      user: { select: { id: true, name: true } },
+      _count: { select: { comments: true, reactions: true } },
+      reactions: session?.user?.id
+        ? { where: { userId: session.user.id }, select: { type: true } }
+        : false,
+    },
     orderBy: { createdAt: "desc" },
   });
 
-  return NextResponse.json(reviews);
+  const reviewIds = reviews.map((r) => r.id);
+
+  const [likeCounts, dislikeCounts] = await Promise.all([
+    prisma.reviewReaction.groupBy({
+      by: ["reviewId"],
+      where: { reviewId: { in: reviewIds }, type: "LIKE" },
+      _count: true,
+    }),
+    prisma.reviewReaction.groupBy({
+      by: ["reviewId"],
+      where: { reviewId: { in: reviewIds }, type: "DISLIKE" },
+      _count: true,
+    }),
+  ]);
+
+  const likeMap = new Map(likeCounts.map((l) => [l.reviewId, l._count]));
+  const dislikeMap = new Map(dislikeCounts.map((d) => [d.reviewId, d._count]));
+
+  const result = reviews.map((r) => ({
+    id: r.id,
+    userId: r.userId,
+    contentId: r.contentId,
+    rating: r.rating,
+    comment: r.comment,
+    createdAt: r.createdAt,
+    updatedAt: r.updatedAt,
+    user: r.user,
+    likes: likeMap.get(r.id) ?? 0,
+    dislikes: dislikeMap.get(r.id) ?? 0,
+    commentCount: r._count.comments,
+    myReaction: r.reactions && r.reactions.length > 0 ? r.reactions[0].type : null,
+  }));
+
+  return NextResponse.json(result);
 }
 
 export async function POST(req: Request) {

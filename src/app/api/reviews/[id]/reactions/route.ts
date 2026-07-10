@@ -1,0 +1,47 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { type } = await req.json();
+  if (type !== "LIKE" && type !== "DISLIKE") {
+    return NextResponse.json({ error: "Invalid reaction type" }, { status: 400 });
+  }
+
+  const { id: reviewId } = await params;
+
+  const review = await prisma.review.findUnique({ where: { id: reviewId } });
+  if (!review) {
+    return NextResponse.json({ error: "Review not found" }, { status: 404 });
+  }
+
+  const existing = await prisma.reviewReaction.findUnique({
+    where: { reviewId_userId: { reviewId, userId: session.user.id } },
+  });
+
+  if (existing) {
+    if (existing.type === type) {
+      await prisma.reviewReaction.delete({ where: { id: existing.id } });
+      return NextResponse.json({ action: "removed", type });
+    }
+    await prisma.reviewReaction.update({
+      where: { id: existing.id },
+      data: { type },
+    });
+    return NextResponse.json({ action: "updated", type });
+  }
+
+  await prisma.reviewReaction.create({
+    data: { reviewId, userId: session.user.id, type },
+  });
+
+  return NextResponse.json({ action: "created", type });
+}

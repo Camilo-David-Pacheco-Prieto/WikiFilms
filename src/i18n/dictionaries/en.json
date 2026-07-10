@@ -124,6 +124,9 @@
   "reviews.updateButton": "Update review",
   "reviews.publishButton": "Publish review",
   "reviews.empty": "No reviews yet. Be the first to share your thoughts.",
+  "reviews.noComments": "No comments yet.",
+  "reviews.commentPlaceholder": "Write a comment...",
+  "reviews.commentButton": "Comment",
 
   "watchProviders.heading": "Where to watch",
   "watchProviders.streaming": "Streaming",

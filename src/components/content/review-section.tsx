@@ -3,17 +3,102 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslate, useLanguage } from "@/i18n/language-provider";
+import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
 
 interface Review {
   id: string;
+  userId: string;
   rating: number;
   comment: string | null;
+  createdAt: string;
+  user: { id: string; name: string };
+  likes: number;
+  dislikes: number;
+  commentCount: number;
+  myReaction: "LIKE" | "DISLIKE" | null;
+}
+
+interface ReviewComment {
+  id: string;
+  comment: string;
   createdAt: string;
   user: { id: string; name: string };
 }
 
 interface ReviewSectionProps {
   contentId: number;
+}
+
+function CommentSection({ reviewId }: { reviewId: string }) {
+  const { data: session } = useSession();
+  const t = useTranslate();
+  const [comments, setComments] = useState<ReviewComment[]>([]);
+  const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/reviews/${reviewId}/comments`)
+      .then((res) => res.json())
+      .then(setComments)
+      .catch(() => {});
+  }, [reviewId]);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!text.trim() || text.length > 500) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/reviews/${reviewId}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ comment: text.trim() }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setComments((prev) => [...prev, data]);
+        setText("");
+      }
+    } catch {
+      // silent
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="mt-3 space-y-2 border-t border-border-subtle pt-3">
+      {comments.length === 0 ? (
+        <p className="text-xs text-text-secondary/50">{t("reviews.noComments")}</p>
+      ) : (
+        <div className="max-h-48 space-y-2 overflow-y-auto">
+          {comments.map((c) => (
+            <div key={c.id} className="rounded bg-base/50 px-3 py-2">
+              <span className="text-xs font-medium text-white">{c.user.name}</span>
+              <p className="text-xs text-text-secondary">{c.comment}</p>
+            </div>
+          ))}
+        </div>
+      )}
+      {session?.user && (
+        <form onSubmit={submit} className="flex gap-2">
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            maxLength={500}
+            placeholder={t("reviews.commentPlaceholder")}
+            className="min-w-0 flex-1 rounded-md border border-border-subtle bg-base px-3 py-1.5 text-xs text-white outline-none transition-colors focus:border-accent-brand"
+          />
+          <button
+            type="submit"
+            disabled={loading || !text.trim()}
+            className="shrink-0 rounded-md bg-accent-brand px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+          >
+            {t("reviews.commentButton")}
+          </button>
+        </form>
+      )}
+    </div>
+  );
 }
 
 export function ReviewSection({ contentId }: ReviewSectionProps) {
@@ -26,6 +111,8 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(0);
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
+  const [reacting, setReacting] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetch(`/api/reviews?contentId=${contentId}`)
@@ -64,7 +151,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
             (r) => r.user.name !== session?.user?.name,
           );
           return [
-            { ...data, user: { id: session?.user?.id ?? "", name: session?.user?.name ?? "" } },
+            { ...data, user: { id: session?.user?.id ?? "", name: session?.user?.name ?? "" }, likes: 0, dislikes: 0, commentCount: 0, myReaction: null },
             ...filtered,
           ];
         });
@@ -74,6 +161,68 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function toggleReaction(reviewId: string, type: "LIKE" | "DISLIKE", e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!session?.user || reacting.has(reviewId)) return;
+    setReacting((prev) => new Set(prev).add(reviewId));
+
+    try {
+      const res = await fetch(`/api/reviews/${reviewId}/reactions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setReviews((prev) =>
+          prev.map((r) => {
+            if (r.id !== reviewId) return r;
+
+            let { likes, dislikes, myReaction } = r;
+
+            if (data.action === "removed") {
+              if (type === "LIKE") likes--;
+              else dislikes--;
+              myReaction = null;
+            } else if (data.action === "updated") {
+              if (type === "LIKE") {
+                likes++;
+                dislikes--;
+              } else {
+                dislikes++;
+                likes--;
+              }
+              myReaction = type;
+            } else {
+              if (type === "LIKE") likes++;
+              else dislikes++;
+              myReaction = type;
+            }
+
+            return { ...r, likes, dislikes, myReaction };
+          }),
+        );
+      }
+    } catch {
+      // silent
+    } finally {
+      setReacting((prev) => {
+        const next = new Set(prev);
+        next.delete(reviewId);
+        return next;
+      });
+    }
+  }
+
+  function toggleComments(reviewId: string) {
+    setExpandedComments((prev) => {
+      const next = new Set(prev);
+      if (next.has(reviewId)) next.delete(reviewId);
+      else next.add(reviewId);
+      return next;
+    });
   }
 
   return (
@@ -167,6 +316,42 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
                     day: "numeric",
                   })}
                 </p>
+
+                <div className="mt-2 flex items-center gap-3 text-xs text-text-secondary">
+                  <button
+                    onClick={(e) => toggleReaction(review.id, "LIKE", e)}
+                    disabled={!session?.user}
+                    className={`flex items-center gap-1 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed ${
+                      review.myReaction === "LIKE" ? "text-accent-brand" : ""
+                    }`}
+                  >
+                    <ThumbsUp className="h-3.5 w-3.5" />
+                    <span>{review.likes}</span>
+                  </button>
+                  <button
+                    onClick={(e) => toggleReaction(review.id, "DISLIKE", e)}
+                    disabled={!session?.user}
+                    className={`flex items-center gap-1 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed ${
+                      review.myReaction === "DISLIKE" ? "text-red-500" : ""
+                    }`}
+                  >
+                    <ThumbsDown className="h-3.5 w-3.5" />
+                    <span>{review.dislikes}</span>
+                  </button>
+                  <button
+                    onClick={() => toggleComments(review.id)}
+                    className={`flex items-center gap-1 transition-colors hover:text-white ${
+                      expandedComments.has(review.id) ? "text-accent-brand" : ""
+                    }`}
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    <span>{review.commentCount}</span>
+                  </button>
+                </div>
+
+                {expandedComments.has(review.id) && (
+                  <CommentSection reviewId={review.id} />
+                )}
               </div>
             ))
           )}

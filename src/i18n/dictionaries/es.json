@@ -124,6 +124,9 @@
   "reviews.updateButton": "Actualizar resena",
   "reviews.publishButton": "Publicar resena",
   "reviews.empty": "Aun no hay resenas. Se el primero en opinar.",
+  "reviews.noComments": "Sin comentarios aun.",
+  "reviews.commentPlaceholder": "Escribe un comentario...",
+  "reviews.commentButton": "Comentar",
 
   "watchProviders.heading": "Donde ver",
   "watchProviders.streaming": "Streaming",
