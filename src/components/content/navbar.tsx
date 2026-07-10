@@ -53,9 +53,7 @@ export default async function Navbar() {
           </Link>
 
           {user ? (
-            <div className="hidden md:flex">
-              <UserDropdown name={user.name} role={user.role} />
-            </div>
+            <UserDropdown name={user.name} role={user.role} />
           ) : (
             <Link
               href="/login"

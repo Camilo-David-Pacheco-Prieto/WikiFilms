@@ -31,7 +31,7 @@ export function ContentCard({ content }: ContentCardProps) {
             alt={content.title}
             fill
             className="object-cover"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
             loading="lazy"
           />
         ) : (

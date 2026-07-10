@@ -26,7 +26,7 @@ export default async function SettingsPage() {
         <h1 className="font-display text-3xl font-bold uppercase text-white">
           {dict["auth.settingsHeading"]}
         </h1>
-        <SettingsForm user={session.user as { id: string; name: string; email: string; username: string }} />
+        <SettingsForm user={{ id: session.user.id, name: session.user.name, email: session.user.email, username: (session.user as any).username }} />
       </div>
     </main>
   );

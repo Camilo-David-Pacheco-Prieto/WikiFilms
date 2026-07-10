@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const favorites = await prisma.favorite.findMany({
@@ -20,13 +20,13 @@ export async function GET() {
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { contentId, title, posterUrl, type } = await req.json();
 
   if (!contentId || !title || !type) {
-    return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   try {
@@ -52,20 +52,20 @@ export async function POST(req: Request) {
       });
       return NextResponse.json({ favorited: false });
     }
-    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }
 
 export async function DELETE(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { contentId } = await req.json();
 
   if (typeof contentId !== "number") {
-    return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   await prisma.favorite.delete({

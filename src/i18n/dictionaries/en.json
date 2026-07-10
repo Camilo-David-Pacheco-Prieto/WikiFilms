@@ -159,6 +159,16 @@
   "admin.heading": "Manage users",
   "admin.accessDenied": "Access denied",
   "admin.invalidData": "Invalid data",
+  "admin.editUser": "Edit user",
+  "admin.passwordPlaceholder": "New password (optional)",
+  "admin.role": "Role",
+  "admin.save": "Save",
+  "admin.delete": "Delete",
+
+  "notFound.title": "Page not found",
+  "notFound.heading": "Page not found",
+  "notFound.description": "The page you are looking for does not exist or has been moved.",
+  "notFound.backHome": "Back to home",
 
   "comingSoon.title": "Coming Soon \u2014 WikiFilms",
   "comingSoon.heading": "Coming Soon",

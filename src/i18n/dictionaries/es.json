@@ -159,6 +159,16 @@
   "admin.heading": "Administrar usuarios",
   "admin.accessDenied": "Acceso denegado",
   "admin.invalidData": "Datos invalidos",
+  "admin.editUser": "Editar usuario",
+  "admin.passwordPlaceholder": "Nueva contrasena (opcional)",
+  "admin.role": "Rol",
+  "admin.save": "Guardar",
+  "admin.delete": "Eliminar",
+
+  "notFound.title": "Pagina no encontrada",
+  "notFound.heading": "Pagina no encontrada",
+  "notFound.description": "La pagina que buscas no existe o fue movida.",
+  "notFound.backHome": "Volver al inicio",
 
   "comingSoon.title": "Proximamente \u2014 WikiFilms",
   "comingSoon.heading": "Proximamente",

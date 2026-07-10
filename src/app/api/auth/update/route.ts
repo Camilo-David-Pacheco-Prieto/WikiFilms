@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -15,7 +16,7 @@ const updateSchema = z.object({
 export async function PATCH(request: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -23,7 +24,7 @@ export async function PATCH(request: Request) {
     const parsed = updateSchema.safeParse(body);
 
     if (!parsed.success) {
-      return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
+      return NextResponse.json({ error: "Invalid data" }, { status: 400 });
     }
 
     const { name, email, username, currentPassword, newPassword } = parsed.data;
@@ -37,25 +38,25 @@ export async function PATCH(request: Request) {
 
     if (existing) {
       return NextResponse.json(
-        { error: "El correo o usuario ya está registrado" },
+        { error: "Email or username already registered" },
         { status: 409 },
       );
     }
 
-    const data: Record<string, string> = { name, email, username };
+    const data: Prisma.UserUpdateInput = { name, email, username };
 
     if (currentPassword && newPassword) {
       const user = await prisma.user.findUnique({
         where: { id: session.user.id },
       });
       if (!user) {
-        return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
 
       const isValid = await bcrypt.compare(currentPassword, user.password);
       if (!isValid) {
         return NextResponse.json(
-          { error: "Contraseña actual incorrecta" },
+          { error: "Current password is incorrect" },
           { status: 400 },
         );
       }
@@ -71,7 +72,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ message: "Cambios guardados" });
   } catch {
     return NextResponse.json(
-      { error: "Error al actualizar" },
+      { error: "Error updating profile" },
       { status: 500 },
     );
   }

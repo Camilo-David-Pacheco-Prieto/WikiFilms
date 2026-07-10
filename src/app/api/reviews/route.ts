@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const contentId = searchParams.get("contentId");
 
   if (!contentId) {
-    return NextResponse.json({ error: "Falta contentId" }, { status: 400 });
+    return NextResponse.json({ error: "Missing contentId" }, { status: 400 });
   }
 
   const reviews = await prisma.review.findMany({
@@ -22,17 +22,17 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { contentId, rating, comment } = await req.json();
 
   if (!contentId || !rating || rating < 1 || rating > 10) {
-    return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
 
   if (comment && comment.length > 500) {
-    return NextResponse.json({ error: "Comentario muy largo" }, { status: 400 });
+    return NextResponse.json({ error: "Comment too long" }, { status: 400 });
   }
 
   const review = await prisma.review.upsert({

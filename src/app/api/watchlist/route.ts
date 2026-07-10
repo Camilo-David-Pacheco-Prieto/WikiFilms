@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);
@@ -40,17 +40,17 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { contentId, title, posterUrl, type, status } = await req.json();
 
   if (!contentId || !title || !type || !status) {
-    return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   if (status !== "WATCHED" && status !== "PLAN_TO_WATCH") {
-    return NextResponse.json({ error: "Estado inválido" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
   const item = await prisma.watchlistItem.upsert({
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);

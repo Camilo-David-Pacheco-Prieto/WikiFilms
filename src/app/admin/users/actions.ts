@@ -1,6 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
@@ -8,7 +9,7 @@ import { z } from "zod";
 async function requireAdmin() {
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
-    throw new Error("Acceso denegado");
+    throw new Error("Access denied");
   }
 }
 
@@ -51,10 +52,10 @@ export async function updateUser(data: FormData) {
 
   const parsed = updateUserSchema.safeParse(raw);
   if (!parsed.success) {
-    throw new Error("Datos inválidos");
+    throw new Error("Invalid data");
   }
 
-  const updateData: any = {
+  const updateData: Prisma.UserUpdateInput = {
     name: parsed.data.name,
     email: parsed.data.email,
     username: parsed.data.username,

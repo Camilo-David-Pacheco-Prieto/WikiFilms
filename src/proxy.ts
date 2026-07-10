@@ -4,6 +4,8 @@ import * as jose from "jose";
 
 const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
 
+// Warning: in-memory Map does not persist across serverless instances.
+// For production on Vercel, replace with Vercel KV or Upstash Redis rate limiting.
 const rateLimit = new Map<string, { count: number; reset: number }>();
 const MAX_REQUESTS = 10;
 const WINDOW_MS = 60_000;
@@ -42,7 +44,7 @@ export async function proxy(request: NextRequest) {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
-        { error: "Demasiadas solicitudes. Intenta de nuevo más tarde." },
+        { error: "Too many requests. Please try again later." },
         { status: 429 },
       );
     }

@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
 import { Menu, X } from "lucide-react";
 import { useTranslate } from "@/i18n/language-provider";
-import { LanguageSwitcherInline } from "./language-switcher-inline";
 
 interface NavbarClientProps {
   user?: {
@@ -57,26 +55,19 @@ export function NavbarClient({ user }: NavbarClientProps) {
           </Link>
           {user && (
             <>
-              <hr className="border-border-subtle" />
-              <span className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-text-secondary/50">
-                {t("footer.community")}
-                <span className="rounded border border-border-subtle px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-text-secondary/50">
-                  {t("footer.comingSoon")}
-                </span>
-              </span>
-              <Link
-                href="/dashboard"
-                onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
-              >
-                {t("nav.favorites")}
-              </Link>
               <Link
                 href="/watchlist"
                 onClick={() => setOpen(false)}
                 className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
               >
                 {t("nav.watchlist")}
+              </Link>
+              <Link
+                href="/coming-soon"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+              >
+                {t("nav.comingSoon")}
               </Link>
               {user.role === "ADMIN" && (
                 <Link
@@ -87,28 +78,6 @@ export function NavbarClient({ user }: NavbarClientProps) {
                   {t("nav.admin")}
                 </Link>
               )}
-              <hr className="border-border-subtle" />
-              <div className="flex items-center justify-between rounded-md px-3 py-2">
-                <span className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-                  {t("nav.language")}
-                </span>
-                <LanguageSwitcherInline />
-              </div>
-              <hr className="border-border-subtle" />
-              <button
-                onClick={async () => {
-                  setOpen(false);
-                  try {
-                    await signOut({ callbackUrl: window.location.origin });
-                  } catch {
-                    await signOut({ redirect: false });
-                    window.location.href = window.location.origin;
-                  }
-                }}
-                className="rounded-md px-3 py-2 text-left text-sm font-medium text-accent-brand transition-colors hover:bg-surface"
-              >
-                {t("nav.signOut")}
-              </button>
             </>
           )}
         </div>
