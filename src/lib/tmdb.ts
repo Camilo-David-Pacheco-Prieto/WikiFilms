@@ -229,6 +229,23 @@ export async function getWatchProviders(
   );
 }
 
+export async function getTrending(
+  type: "all" | "movie" | "tv" = "all",
+  page = 1,
+  locale?: string,
+): Promise<ContentResult[]> {
+  const data = await fetchFromTMDB<TMDBPaginatedResponse<any>>(
+    `/trending/${type}/week`,
+    { page: String(page) },
+    localeToTMDBlang(locale),
+  );
+  return data.results.map((item: any) =>
+    item.media_type === "tv" || item.media_type === undefined && type === "tv"
+      ? mapSeriesToResult(item as TMDBSeries)
+      : mapMovieToResult(item as TMDBMovie),
+  );
+}
+
 export const GENRE_MAP: Record<string, number> = {
   Acción: 28,
   Aventura: 12,

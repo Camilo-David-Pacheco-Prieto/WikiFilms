@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getPopular, getByGenre, GENRE_MAP } from "@/lib/tmdb";
+import { getPopular, getByGenre, getTrending, GENRE_MAP } from "@/lib/tmdb";
 import { ContentGrid } from "@/components/content/content-grid";
 import { SkeletonGrid } from "@/components/content/skeleton-grid";
 import { GenreFilter } from "@/components/content/genre-filter";
@@ -43,11 +43,12 @@ export default async function HomePage({ searchParams }: Props) {
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
 
-  const popular = await getPopular("movie", 1, locale);
-  const backdrops = popular
+  const trending = await getTrending("all", 1, locale);
+  const shuffled = [...trending].sort(() => Math.random() - 0.5);
+  const backdrops = shuffled
     .map((m) => m.backdropUrl)
     .filter((u): u is string => u !== null)
-    .slice(0, 5);
+    .slice(0, 12);
 
   return (
     <main className="mx-auto max-w-7xl space-y-12 px-4 py-8">
