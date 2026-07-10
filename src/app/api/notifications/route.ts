@@ -62,10 +62,11 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Missing notification id" }, { status: 400 });
     }
 
-    await prisma.notification.updateMany({
-      where: { id, userId: session.user.id },
-      data: { read: true },
-    });
+    await prisma.$executeRaw`
+      UPDATE "Notification"
+      SET "read" = true
+      WHERE "id" = ${id} AND "userId" = ${session.user.id}
+    `;
 
     return NextResponse.json({ success: true });
   } catch (e) {

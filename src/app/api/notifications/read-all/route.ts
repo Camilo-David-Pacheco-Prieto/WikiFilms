@@ -9,10 +9,11 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await prisma.notification.updateMany({
-      where: { userId: session.user.id, read: false },
-      data: { read: true },
-    });
+    await prisma.$executeRaw`
+      UPDATE "Notification"
+      SET "read" = true
+      WHERE "userId" = ${session.user.id} AND "read" = false
+    `;
 
     return NextResponse.json({ success: true });
   } catch (e) {
