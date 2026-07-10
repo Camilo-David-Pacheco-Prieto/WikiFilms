@@ -35,6 +35,7 @@ function CommentSection({ reviewId }: { reviewId: string }) {
   const [comments, setComments] = useState<ReviewComment[]>([]);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetch(`/api/reviews/${reviewId}/comments`)
@@ -47,6 +48,7 @@ function CommentSection({ reviewId }: { reviewId: string }) {
     e.preventDefault();
     if (!text.trim() || text.length > 500) return;
     setLoading(true);
+    setError("");
     try {
       const res = await fetch(`/api/reviews/${reviewId}/comments`, {
         method: "POST",
@@ -57,9 +59,13 @@ function CommentSection({ reviewId }: { reviewId: string }) {
         const data = await res.json();
         setComments((prev) => [...prev, data]);
         setText("");
+      } else {
+        setError("Error al enviar comentario");
+        setTimeout(() => setError(""), 3000);
       }
     } catch {
-      // silent
+      setError("Error de conexión");
+      setTimeout(() => setError(""), 3000);
     } finally {
       setLoading(false);
     }
@@ -78,6 +84,9 @@ function CommentSection({ reviewId }: { reviewId: string }) {
             </div>
           ))}
         </div>
+      )}
+      {error && (
+        <p className="text-xs text-red-500">{error}</p>
       )}
       {session?.user && (
         <form onSubmit={submit} className="flex gap-2">

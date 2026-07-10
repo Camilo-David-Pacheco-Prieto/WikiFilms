@@ -7,7 +7,7 @@ const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
 // Warning: in-memory Map does not persist across serverless instances.
 // For production on Vercel, replace with Vercel KV or Upstash Redis rate limiting.
 const rateLimit = new Map<string, { count: number; reset: number }>();
-const MAX_REQUESTS = 10;
+const MAX_REQUESTS = 40;
 const WINDOW_MS = 60_000;
 
 function getToken(request: NextRequest): string | undefined {
@@ -41,6 +41,10 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api/auth")) {
+    // Saltar rate limit para rutas internas de NextAuth (session, csrf, callback)
+    if (pathname === "/api/auth/session" || pathname === "/api/auth/csrf" || pathname.startsWith("/api/auth/callback")) {
+      return NextResponse.next();
+    }
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
