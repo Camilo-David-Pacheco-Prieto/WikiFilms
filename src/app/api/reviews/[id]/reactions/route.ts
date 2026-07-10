@@ -27,6 +27,8 @@ export async function POST(
     where: { reviewId_userId: { reviewId, userId: session.user.id } },
   });
 
+  let action: string;
+
   if (existing) {
     if (existing.type === type) {
       await prisma.reviewReaction.delete({ where: { id: existing.id } });
@@ -36,12 +38,24 @@ export async function POST(
       where: { id: existing.id },
       data: { type },
     });
-    return NextResponse.json({ action: "updated", type });
+    action = "updated";
+  } else {
+    await prisma.reviewReaction.create({
+      data: { reviewId, userId: session.user.id, type },
+    });
+    action = "created";
   }
 
-  await prisma.reviewReaction.create({
-    data: { reviewId, userId: session.user.id, type },
-  });
+  if (review.userId !== session.user.id) {
+    await prisma.notification.create({
+      data: {
+        userId: review.userId,
+        actorId: session.user.id,
+        type,
+        reviewId: review.id,
+      },
+    });
+  }
 
-  return NextResponse.json({ action: "created", type });
+  return NextResponse.json({ action, type });
 }

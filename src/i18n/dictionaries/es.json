@@ -128,6 +128,17 @@
   "reviews.commentPlaceholder": "Escribe un comentario...",
   "reviews.commentButton": "Comentar",
 
+  "notifications.title": "Notificaciones",
+  "notifications.empty": "Sin notificaciones.",
+  "notifications.commented": "comentó en tu reseña",
+  "notifications.liked": "le dio like a tu reseña",
+  "notifications.disliked": "le dio dislike a tu reseña",
+  "notifications.markAllRead": "Marcar todas leídas",
+  "notifications.justNow": "ahora",
+  "notifications.minutesAgo": "hace {n} min",
+  "notifications.hoursAgo": "hace {n} h",
+  "notifications.daysAgo": "hace {n} d",
+
   "watchProviders.heading": "Donde ver",
   "watchProviders.streaming": "Streaming",
   "watchProviders.rent": "Alquiler",

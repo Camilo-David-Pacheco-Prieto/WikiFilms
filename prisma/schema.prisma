@@ -30,6 +30,7 @@ model User {
   reviews        Review[]
   reviewComments ReviewComment[]
   reviewReactions ReviewReaction[]
+  notifications  Notification[]
 }
 
 model Favorite {
@@ -99,4 +100,16 @@ model ReviewReaction {
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([reviewId, userId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  actorId   String
+  type      String
+  reviewId  String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

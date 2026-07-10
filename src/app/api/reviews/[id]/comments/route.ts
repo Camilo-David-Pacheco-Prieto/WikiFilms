@@ -47,5 +47,16 @@ export async function POST(
     include: { user: { select: { id: true, name: true } } },
   });
 
+  if (review.userId !== session.user.id) {
+    await prisma.notification.create({
+      data: {
+        userId: review.userId,
+        actorId: session.user.id,
+        type: "COMMENT",
+        reviewId: review.id,
+      },
+    });
+  }
+
   return NextResponse.json(created);
 }

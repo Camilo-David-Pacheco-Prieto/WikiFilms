@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { NavbarClient } from "./navbar-client";
 import { UserDropdown } from "./user-dropdown";
+import { NotificationBell } from "./notification-bell";
 import { LanguageSwitcher } from "./language-switcher";
 import { SearchBar } from "./search-bar";
 import { NavLink } from "./nav-link";
@@ -51,6 +52,8 @@ export default async function Navbar() {
           >
             <Search className="h-4 w-4" />
           </Link>
+
+          {user && <NotificationBell userId={user.id} />}
 
           {user ? (
             <UserDropdown name={user.name} role={user.role} />

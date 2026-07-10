@@ -38,9 +38,9 @@ function CommentSection({ reviewId }: { reviewId: string }) {
 
   useEffect(() => {
     fetch(`/api/reviews/${reviewId}/comments`)
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then(setComments)
-      .catch(() => {});
+      .catch(() => setComments([]));
   }, [reviewId]);
 
   async function submit(e: React.FormEvent) {
@@ -116,7 +116,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
 
   useEffect(() => {
     fetch(`/api/reviews?contentId=${contentId}`)
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then((data: Review[]) => {
         setReviews(data);
         if (session?.user) {
@@ -130,7 +130,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
           }
         }
       })
-      .catch(() => {});
+      .catch(() => setReviews([]));
   }, [contentId, session]);
 
   async function submitReview(e: React.FormEvent) {

@@ -69,6 +69,20 @@ export function NavbarClient({ user }: NavbarClientProps) {
               >
                 {t("nav.comingSoon")}
               </Link>
+              <Link
+                href="/dashboard"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+              >
+                {t("userDropdown.favorites")}
+              </Link>
+              <Link
+                href="/settings"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+              >
+                {t("userDropdown.settings")}
+              </Link>
               {user.role === "ADMIN" && (
                 <Link
                   href="/admin/users"
