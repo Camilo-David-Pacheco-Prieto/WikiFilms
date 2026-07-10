@@ -79,21 +79,37 @@ export function NotificationBell({ userId }: { userId: string }) {
   }, [open]);
 
   async function markAsRead(id: string) {
-    await fetch("/api/notifications", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-    }).catch(() => {});
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
-    );
-    setUnreadCount((prev) => Math.max(0, prev - 1));
+    try {
+      const res = await fetch("/api/notifications", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) {
+        console.error("markAsRead failed with status", res.status);
+        return;
+      }
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch (e) {
+      console.error("markAsRead network error:", e);
+    }
   }
 
   async function markAllRead() {
-    await fetch("/api/notifications/read-all", { method: "POST" }).catch(() => {});
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    setUnreadCount(0);
+    try {
+      const res = await fetch("/api/notifications/read-all", { method: "POST" });
+      if (!res.ok) {
+        console.error("markAllRead failed with status", res.status);
+        return;
+      }
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      setUnreadCount(0);
+    } catch (e) {
+      console.error("markAllRead network error:", e);
+    }
   }
 
   async function handleClick(n: Notification) {
@@ -136,18 +152,14 @@ export function NotificationBell({ userId }: { userId: string }) {
           </div>
 
           <div className="max-h-80 overflow-y-auto">
-            {notifications.length === 0 ? (
+            {unreadCount === 0 ? (
               <p className="px-4 py-6 text-center text-xs text-text-secondary">
                 {t("notifications.empty")}
               </p>
             ) : (
-              notifications.map((n) => {
+              notifications.filter((n) => !n.read).map((n) => {
                 const content = (
-                  <div
-                    className={`flex w-full gap-3 px-4 py-3 transition-colors hover:bg-base/50 ${
-                      !n.read ? "bg-accent-brand/5" : ""
-                    }`}
-                  >
+                  <div className="flex w-full gap-3 bg-accent-brand/5 px-4 py-3 transition-colors hover:bg-base/50">
                     <span className="mt-0.5 shrink-0 text-base">
                       {iconMap[n.type] ?? "🔔"}
                     </span>
@@ -162,9 +174,7 @@ export function NotificationBell({ userId }: { userId: string }) {
                         {timeAgo(n.createdAt, t)}
                       </p>
                     </div>
-                    {!n.read && (
-                      <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent-brand" />
-                    )}
+                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent-brand" />
                   </div>
                 );
 
@@ -179,6 +189,14 @@ export function NotificationBell({ userId }: { userId: string }) {
                 );
               })
             )}
+          </div>
+          <div className="border-t border-border-subtle p-3">
+            <button
+              onClick={() => { setOpen(false); router.push("/notifications"); }}
+              className="w-full text-center text-xs text-accent-brand transition-colors hover:text-accent-hover"
+            >
+              {t("notifications.viewAll")}
+            </button>
           </div>
         </div>
       )}

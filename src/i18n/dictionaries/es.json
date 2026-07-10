@@ -144,6 +144,10 @@
   "notifications.minutesAgo": "hace {n} min",
   "notifications.hoursAgo": "hace {n} h",
   "notifications.daysAgo": "hace {n} d",
+  "notifications.viewAll": "Ver historial",
+  "notifications.pageTitle": "Historial de notificaciones — WikiFilms",
+  "notifications.pageHeading": "Historial de notificaciones",
+  "notifications.allCaughtUp": "No hay notificaciones.",
 
   "watchProviders.heading": "Donde ver",
   "watchProviders.streaming": "Streaming",
