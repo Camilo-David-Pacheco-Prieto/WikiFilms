@@ -4,6 +4,8 @@ import { getMovieDetail, getPopular, getWatchProviders } from "@/lib/tmdb";
 import { DetailHero } from "@/components/content/detail-hero";
 import { ContentGrid } from "@/components/content/content-grid";
 import { FavoriteButton } from "@/components/content/favorite-button";
+import { WatchlistButton } from "@/components/content/watchlist-button";
+import { ReviewSection } from "@/components/content/review-section";
 import { WatchProviders } from "@/components/content/watch-providers";
 import { notFound } from "next/navigation";
 import type { TMDBWatchProvidersResponse } from "@/types/tmdb";
@@ -63,13 +65,23 @@ export default async function MoviePage({ params }: Props) {
       )}
 
       <section className="mx-auto max-w-7xl px-4 py-8">
-        <FavoriteButton
-          contentId={movie.id}
-          title={movie.title}
-          posterUrl={movie.posterUrl}
-          type="movie"
-        />
+        <div className="flex flex-wrap gap-3">
+          <FavoriteButton
+            contentId={movie.id}
+            title={movie.title}
+            posterUrl={movie.posterUrl}
+            type="movie"
+          />
+          <WatchlistButton
+            contentId={movie.id}
+            title={movie.title}
+            posterUrl={movie.posterUrl}
+            type="movie"
+          />
+        </div>
       </section>
+
+      <ReviewSection contentId={movie.id} />
 
       <section className="mx-auto max-w-7xl px-4 py-16">
         <ContentGrid title="Más películas populares" items={popular} />

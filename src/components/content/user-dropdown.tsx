@@ -31,6 +31,13 @@ export function UserDropdown({ name, role }: UserDropdownProps) {
             >
               Favoritos
             </Link>
+            <Link
+              href="/settings"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
+            >
+              Configuracion
+            </Link>
             {role === "ADMIN" && (
               <Link
                 href="/admin/users"

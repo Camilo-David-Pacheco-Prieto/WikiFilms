@@ -11,16 +11,23 @@ enum Role {
   ADMIN
 }
 
+enum WatchStatus {
+  WATCHED
+  PLAN_TO_WATCH
+}
+
 model User {
-  id        String     @id @default(cuid())
-  name      String
-  email     String     @unique
-  username  String     @unique
-  password  String
-  role      Role       @default(USER)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  favorites Favorite[]
+  id             String          @id @default(cuid())
+  name           String
+  email          String          @unique
+  username       String          @unique
+  password       String
+  role           Role            @default(USER)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  favorites      Favorite[]
+  watchlistItems WatchlistItem[]
+  reviews        Review[]
 }
 
 model Favorite {
@@ -31,6 +38,34 @@ model Favorite {
   posterUrl String?
   type      String
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentId])
+}
+
+model WatchlistItem {
+  id        String      @id @default(cuid())
+  userId    String
+  contentId Int
+  title     String
+  posterUrl String?
+  type      String
+  status    WatchStatus @default(PLAN_TO_WATCH)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  contentId Int
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, contentId])

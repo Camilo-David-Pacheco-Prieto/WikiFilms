@@ -19,6 +19,13 @@ export function RegisterForm() {
     const email = form.get("email") as string;
     const username = form.get("username") as string;
     const password = form.get("password") as string;
+    const confirmPassword = form.get("confirmPassword") as string;
+
+    if (password !== confirmPassword) {
+      setError("Las contraseñas no coinciden");
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await fetch("/api/auth/register", {
@@ -118,6 +125,24 @@ export function RegisterForm() {
           minLength={6}
           className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
           placeholder="Mínimo 6 caracteres"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label
+          htmlFor="confirmPassword"
+          className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
+        >
+          Confirmar contraseña
+        </label>
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          required
+          minLength={6}
+          className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
+          placeholder="Repite la contraseña"
         />
       </div>
 

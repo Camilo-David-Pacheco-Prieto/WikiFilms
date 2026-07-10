@@ -31,10 +31,8 @@ export async function POST(request: Request) {
     });
 
     if (existingUser) {
-      const campo =
-        existingUser.email === email ? "correo" : "usuario";
       return NextResponse.json(
-        { error: `El ${campo} ya está registrado` },
+        { error: "El correo o usuario ya está registrado" },
         { status: 409 },
       );
     }
