@@ -77,7 +77,14 @@ export function UserDropdown({ name, role }: UserDropdownProps) {
             )}
             <hr className="border-border" />
             <button
-              onClick={() => signOut({ callbackUrl: window.location.origin })}
+              onClick={async () => {
+                try {
+                  await signOut({ callbackUrl: window.location.origin });
+                } catch {
+                  await signOut({ redirect: false });
+                  window.location.href = window.location.origin;
+                }
+              }}
               className="flex w-full items-center px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             >
               {t("userDropdown.signOut")}

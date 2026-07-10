@@ -96,7 +96,15 @@ export function NavbarClient({ user }: NavbarClientProps) {
               </div>
               <hr className="border-border-subtle" />
               <button
-                onClick={() => { signOut({ callbackUrl: window.location.origin }); setOpen(false); }}
+                onClick={async () => {
+                  setOpen(false);
+                  try {
+                    await signOut({ callbackUrl: window.location.origin });
+                  } catch {
+                    await signOut({ redirect: false });
+                    window.location.href = window.location.origin;
+                  }
+                }}
                 className="rounded-md px-3 py-2 text-left text-sm font-medium text-accent-brand transition-colors hover:bg-surface"
               >
                 {t("nav.signOut")}
