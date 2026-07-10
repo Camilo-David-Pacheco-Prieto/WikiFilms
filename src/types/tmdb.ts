@@ -1,3 +1,14 @@
+export interface TMDBVideoResponse {
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  official: boolean;
+  id: string;
+  published_at?: string;
+  size?: number;
+}
+
 export interface TMDBMovie {
   id: number;
   title: string;
@@ -11,6 +22,7 @@ export interface TMDBMovie {
     cast: { name: string }[];
     crew: { job: string; name: string }[];
   };
+  videos?: { results: TMDBVideoResponse[] };
 }
 
 export interface TMDBSeries {
@@ -27,6 +39,7 @@ export interface TMDBSeries {
     cast: { name: string }[];
   };
   created_by?: { name: string }[];
+  videos?: { results: TMDBVideoResponse[] };
 }
 
 export interface TMDBPaginatedResponse<T> {
@@ -59,6 +72,7 @@ export interface ContentDetail extends ContentResult {
   director: string;
   cast: string[];
   seasons?: number;
+  trailerKey?: string;
 }
 
 export interface TMDBWatchProvider {

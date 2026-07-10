@@ -7,6 +7,7 @@ import type {
   ContentDetail,
   SearchResult,
   TMDBWatchProvidersResponse,
+  TMDBVideoResponse,
 } from "@/types/tmdb";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -113,6 +114,20 @@ export async function searchContent(
   return { results, totalPages: data.total_pages };
 }
 
+function extractTrailerKey(videos: { results: TMDBVideoResponse[] } | undefined): string | undefined {
+  if (!videos?.results) return undefined;
+  const ys = videos.results.filter((v) => v.site === "YouTube");
+  const priority = (v: TMDBVideoResponse): number => {
+    if (v.official && v.type === "Trailer") return 0;
+    if (v.type === "Trailer") return 1;
+    if (v.official && v.type === "Teaser") return 2;
+    if (v.type === "Teaser") return 3;
+    return 4;
+  };
+  ys.sort((a, b) => priority(a) - priority(b));
+  return ys[0]?.key;
+}
+
 function mapMovieToDetail(movie: TMDBMovie): ContentDetail {
   const director =
     movie.credits?.crew?.find((c) => c.job === "Director")?.name ?? "";
@@ -135,6 +150,7 @@ function mapMovieToDetail(movie: TMDBMovie): ContentDetail {
     overview: movie.overview,
     director,
     cast,
+    trailerKey: extractTrailerKey(movie.videos),
   };
 }
 
@@ -160,19 +176,20 @@ function mapSeriesToDetail(series: TMDBSeries): ContentDetail {
     director,
     cast,
     seasons: series.number_of_seasons,
+    trailerKey: extractTrailerKey(series.videos),
   };
 }
 
 export async function getMovieDetail(id: number): Promise<ContentDetail> {
   const movie = await fetchFromTMDB<TMDBMovie>(`/movie/${id}`, {
-    append_to_response: "credits",
+    append_to_response: "credits,videos",
   });
   return mapMovieToDetail(movie);
 }
 
 export async function getSeriesDetail(id: number): Promise<ContentDetail> {
   const series = await fetchFromTMDB<TMDBSeries>(`/tv/${id}`, {
-    append_to_response: "credits",
+    append_to_response: "credits,videos",
   });
   return mapSeriesToDetail(series);
 }

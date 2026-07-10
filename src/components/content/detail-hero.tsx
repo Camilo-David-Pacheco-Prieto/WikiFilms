@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { TrailerModal } from "@/components/content/trailer-modal";
 import type { ContentDetail } from "@/types/tmdb";
 
 interface DetailHeroProps {
@@ -7,6 +11,8 @@ interface DetailHeroProps {
 }
 
 export function DetailHero({ content }: DetailHeroProps) {
+  const [showTrailer, setShowTrailer] = useState(false);
+
   return (
     <section className="relative overflow-hidden">
       {content.backdropUrl && (
@@ -116,9 +122,34 @@ export function DetailHero({ content }: DetailHeroProps) {
                 </div>
               </div>
             )}
+
+            {content.trailerKey && (
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowTrailer(true)}
+                  className="group flex items-center gap-2 rounded-md bg-accent-brand/20 px-4 py-2 text-sm font-medium text-accent-brand transition-all hover:scale-105 hover:bg-accent-brand hover:text-white hover:shadow-lg hover:shadow-accent-brand/30"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="h-4 w-4 transition-transform group-hover:scale-110"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  Ver trailer
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {showTrailer && content.trailerKey && (
+        <TrailerModal
+          videoKey={content.trailerKey}
+          onClose={() => setShowTrailer(false)}
+        />
+      )}
     </section>
   );
 }
