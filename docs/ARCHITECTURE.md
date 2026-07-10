@@ -102,8 +102,8 @@ Prisma 7 con adapter Neon HTTP no soporta transacciones. Por eso:
 ## Variables de Entorno (Produccion)
 
 ```
-TMDB_API_KEY=2b4a72141ca6729ae43afd155ad04ef0
-DATABASE_URL= (desde Vercel Postgres Storage)
-AUTH_SECRET= (generado con openssl rand -base64 32)
-NEXTAUTH_URL=https://wiki-films-fawn.vercel.app
+TMDB_API_KEY=tu_api_key_de_tmdb
+DATABASE_URL=postgresql://... (desde Vercel Postgres Storage)
+AUTH_SECRET=openssl rand -base64 32
+NEXTAUTH_URL=https://tu-dominio.vercel.app
 ```
