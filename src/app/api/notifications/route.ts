@@ -11,18 +11,39 @@ export async function GET() {
 
     const userId = session.user.id;
 
-    const [notifications, unreadCount] = await Promise.all([
-      prisma.notification.findMany({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-        take: 20,
-      }),
-      prisma.notification.count({
-        where: { userId, read: false },
-      }),
-    ]);
+    const notifications = await prisma.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+    });
 
-    return NextResponse.json({ notifications, unreadCount });
+    const unreadCount = await prisma.notification.count({
+      where: { userId, read: false },
+    });
+
+    const actorIds = [...new Set(notifications.map((n) => n.actorId))];
+    const actors = actorIds.length > 0
+      ? await prisma.user.findMany({
+          where: { id: { in: actorIds } },
+          select: { id: true, name: true },
+        })
+      : [];
+    const actorMap = new Map(actors.map((a) => [a.id, a.name]));
+
+    const result = notifications.map((n) => ({
+      id: n.id,
+      userId: n.userId,
+      actorId: n.actorId,
+      actorName: actorMap.get(n.actorId) ?? "Unknown",
+      type: n.type,
+      reviewId: n.reviewId,
+      contentId: n.contentId,
+      contentType: n.contentType,
+      read: n.read,
+      createdAt: n.createdAt,
+    }));
+
+    return NextResponse.json({ notifications: result, unreadCount });
   } catch (e) {
     console.error("GET notifications error:", e);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

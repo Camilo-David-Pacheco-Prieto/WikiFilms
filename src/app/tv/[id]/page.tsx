@@ -88,7 +88,7 @@ export default async function SeriesPage({ params }: Props) {
         </div>
       </section>
 
-      <ReviewSection contentId={series.id} />
+      <ReviewSection contentId={series.id} contentType="tv" />
 
       <section className="mx-auto max-w-7xl px-4 py-16">
         <ContentGrid title={dict["content.morePopularSeries"]} items={popular} />

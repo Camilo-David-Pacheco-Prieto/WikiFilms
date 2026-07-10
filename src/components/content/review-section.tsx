@@ -27,9 +27,10 @@ interface ReviewComment {
 
 interface ReviewSectionProps {
   contentId: number;
+  contentType: "movie" | "tv";
 }
 
-function CommentSection({ reviewId }: { reviewId: string }) {
+function CommentSection({ reviewId, contentType }: { reviewId: string; contentType: string }) {
   const { data: session } = useSession();
   const t = useTranslate();
   const [comments, setComments] = useState<ReviewComment[]>([]);
@@ -53,7 +54,7 @@ function CommentSection({ reviewId }: { reviewId: string }) {
       const res = await fetch(`/api/reviews/${reviewId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comment: text.trim() }),
+        body: JSON.stringify({ comment: text.trim(), contentType }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -110,7 +111,7 @@ function CommentSection({ reviewId }: { reviewId: string }) {
   );
 }
 
-export function ReviewSection({ contentId }: ReviewSectionProps) {
+export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
   const { data: session } = useSession();
   const t = useTranslate();
   const { locale } = useLanguage();
@@ -181,7 +182,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
       const res = await fetch(`/api/reviews/${reviewId}/reactions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type }),
+        body: JSON.stringify({ type, contentType }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -359,7 +360,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
                 </div>
 
                 {expandedComments.has(review.id) && (
-                  <CommentSection reviewId={review.id} />
+                  <CommentSection reviewId={review.id} contentType={contentType} />
                 )}
               </div>
             ))

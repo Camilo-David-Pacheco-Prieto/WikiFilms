@@ -34,7 +34,7 @@ export async function POST(
 
     const { id: reviewId } = await params;
 
-    const { comment } = await req.json();
+    const { comment, contentType } = await req.json();
     if (!comment || typeof comment !== "string" || comment.trim().length === 0) {
       return NextResponse.json({ error: "Comment is required" }, { status: 400 });
     }
@@ -54,18 +54,16 @@ export async function POST(
     });
 
     if (review.userId !== session.user.id) {
-      try {
-        await prisma.notification.create({
-          data: {
-            userId: review.userId,
-            actorId: session.user.id,
-            type: "COMMENT",
-            reviewId: review.id,
-          },
-        });
-      } catch (e) {
-        console.error("Failed to create notification:", e);
-      }
+      prisma.notification.create({
+        data: {
+          userId: review.userId,
+          actorId: session.user.id,
+          type: "COMMENT",
+          reviewId: review.id,
+          contentId: review.contentId,
+          contentType: contentType ?? null,
+        },
+      }).catch((e) => console.error("Failed to create notification:", e));
     }
 
     return NextResponse.json(created);

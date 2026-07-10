@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { Bell } from "lucide-react";
 import { useTranslate } from "@/i18n/language-provider";
 
 interface Notification {
   id: string;
-  userId: string;
-  actorId: string;
+  actorName: string;
   type: string;
   reviewId: string | null;
+  contentId: number | null;
+  contentType: string | null;
   read: boolean;
   createdAt: string;
 }
@@ -25,6 +27,18 @@ function timeAgo(dateStr: string, t: (key: string) => string): string {
   const days = Math.floor(hours / 24);
   return t("notifications.daysAgo").replace("{n}", String(days));
 }
+
+const iconMap: Record<string, string> = {
+  LIKE: "👍",
+  DISLIKE: "👎",
+  COMMENT: "💬",
+};
+
+const textKeyMap: Record<string, string> = {
+  LIKE: "notifications.liked",
+  DISLIKE: "notifications.disliked",
+  COMMENT: "notifications.commented",
+};
 
 export function NotificationBell({ userId }: { userId: string }) {
   const t = useTranslate();
@@ -66,7 +80,7 @@ export function NotificationBell({ userId }: { userId: string }) {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
-    });
+    }).catch(() => {});
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
     );
@@ -74,22 +88,15 @@ export function NotificationBell({ userId }: { userId: string }) {
   }
 
   async function markAllRead() {
-    await fetch("/api/notifications/read-all", { method: "POST" });
+    await fetch("/api/notifications/read-all", { method: "POST" }).catch(() => {});
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
   }
 
-  const iconMap: Record<string, string> = {
-    LIKE: "👍",
-    DISLIKE: "👎",
-    COMMENT: "💬",
-  };
-
-  const textKeyMap: Record<string, string> = {
-    LIKE: "notifications.liked",
-    DISLIKE: "notifications.disliked",
-    COMMENT: "notifications.commented",
-  };
+  function handleClick(n: Notification) {
+    markAsRead(n.id);
+    setOpen(false);
+  }
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -128,30 +135,59 @@ export function NotificationBell({ userId }: { userId: string }) {
                 {t("notifications.empty")}
               </p>
             ) : (
-              notifications.map((n) => (
-                <button
-                  key={n.id}
-                  onClick={() => markAsRead(n.id)}
-                  className={`flex w-full gap-3 px-4 py-3 text-left transition-colors hover:bg-base/50 ${
-                    !n.read ? "bg-accent-brand/5" : ""
-                  }`}
-                >
-                  <span className="mt-0.5 shrink-0 text-base">
-                    {iconMap[n.type] ?? "🔔"}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-white">
-                      {t(textKeyMap[n.type] ?? "notifications.commented")}
-                    </p>
-                    <p className="text-xs text-text-secondary/50">
-                      {timeAgo(n.createdAt, t)}
-                    </p>
+              notifications.map((n) => {
+                const href = n.contentId && n.contentType
+                  ? `/${n.contentType}/${n.contentId}`
+                  : null;
+
+                const content = (
+                  <div
+                    className={`flex w-full gap-3 px-4 py-3 transition-colors hover:bg-base/50 ${
+                      !n.read ? "bg-accent-brand/5" : ""
+                    }`}
+                  >
+                    <span className="mt-0.5 shrink-0 text-base">
+                      {iconMap[n.type] ?? "🔔"}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-white">
+                        {n.actorName}
+                      </p>
+                      <p className="text-xs text-text-secondary">
+                        {t(textKeyMap[n.type] ?? "notifications.commented")}
+                      </p>
+                      <p className="text-xs text-text-secondary/50">
+                        {timeAgo(n.createdAt, t)}
+                      </p>
+                    </div>
+                    {!n.read && (
+                      <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent-brand" />
+                    )}
                   </div>
-                  {!n.read && (
-                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent-brand" />
-                  )}
-                </button>
-              ))
+                );
+
+                if (href) {
+                  return (
+                    <Link
+                      key={n.id}
+                      href={href}
+                      onClick={() => handleClick(n)}
+                    >
+                      {content}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <button
+                    key={n.id}
+                    onClick={() => handleClick(n)}
+                    className="w-full"
+                  >
+                    {content}
+                  </button>
+                );
+              })
             )}
           </div>
         </div>

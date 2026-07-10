@@ -12,7 +12,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { type } = await req.json();
+    const { type, contentType } = await req.json();
     if (type !== "LIKE" && type !== "DISLIKE") {
       return NextResponse.json({ error: "Invalid reaction type" }, { status: 400 });
     }
@@ -48,18 +48,16 @@ export async function POST(
     }
 
     if (review.userId !== session.user.id) {
-      try {
-        await prisma.notification.create({
-          data: {
-            userId: review.userId,
-            actorId: session.user.id,
-            type,
-            reviewId: review.id,
-          },
-        });
-      } catch (e) {
-        console.error("Failed to create notification:", e);
-      }
+      prisma.notification.create({
+        data: {
+          userId: review.userId,
+          actorId: session.user.id,
+          type,
+          reviewId: review.id,
+          contentId: review.contentId,
+          contentType: contentType ?? null,
+        },
+      }).catch((e) => console.error("Failed to create notification:", e));
     }
 
     return NextResponse.json({ action, type });
