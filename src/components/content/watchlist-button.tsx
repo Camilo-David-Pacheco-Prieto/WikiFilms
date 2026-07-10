@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { List, Eye, Clock } from "lucide-react";
+import { useTranslate } from "@/i18n/language-provider";
 
 type WatchStatus = "WATCHED" | "PLAN_TO_WATCH";
 
@@ -20,6 +21,7 @@ export function WatchlistButton({
   type,
 }: WatchlistButtonProps) {
   const { data: session } = useSession();
+  const t = useTranslate();
   const [currentStatus, setCurrentStatus] = useState<WatchStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -74,10 +76,10 @@ export function WatchlistButton({
 
   const icon = currentStatus === "WATCHED" ? Eye : currentStatus === "PLAN_TO_WATCH" ? Clock : List;
   const label = currentStatus === "WATCHED"
-    ? "Vista"
+    ? t("watchlistButton.watched")
     : currentStatus === "PLAN_TO_WATCH"
-      ? "Por ver"
-      : "Mi lista";
+      ? t("watchlistButton.planToWatch")
+      : t("watchlistButton.add");
 
   return (
     <div className="relative">
@@ -104,7 +106,7 @@ export function WatchlistButton({
                 <Eye className="h-4 w-4" />
               )}
               {currentStatus === "WATCHED" && <span className="text-green-400">✓ </span>}
-              Marcar vista
+              {t("watchlistButton.markWatched")}
             </button>
             <button
               onClick={() => setStatus("PLAN_TO_WATCH")}
@@ -117,7 +119,7 @@ export function WatchlistButton({
                 <Clock className="h-4 w-4" />
               )}
               {currentStatus === "PLAN_TO_WATCH" && <span className="text-yellow-400">✓ </span>}
-              Marcar por ver
+              {t("watchlistButton.markPlanToWatch")}
             </button>
             {currentStatus && (
               <>
@@ -126,7 +128,7 @@ export function WatchlistButton({
                   onClick={remove}
                   className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
                 >
-                  Quitar de mi lista
+                  {t("watchlistButton.remove")}
                 </button>
               </>
             )}

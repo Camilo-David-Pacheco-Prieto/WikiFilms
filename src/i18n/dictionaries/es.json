@@ -9,6 +9,7 @@
   "nav.admin": "Admin",
   "nav.openMenu": "Abrir menu",
   "nav.closeMenu": "Cerrar menu",
+  "nav.language": "Idioma",
 
   "home.title": "WikiFilms",
   "home.subtitle": "Tu enciclopedia cinematografica personal. Explora las peliculas y series mas populares, descubre detalles y encuentra tu proxima historia favorita.",
@@ -104,6 +105,8 @@
   "content.cast": "Elenco",
   "content.seasons": "{count} temporadas",
   "content.watchTrailer": "Ver trailer",
+  "content.notFoundMovie": "Pelicula no encontrada \u2014 WikiFilms",
+  "content.notFoundSeries": "Serie no encontrada \u2014 WikiFilms",
 
   "search.title": "Buscar",
   "search.placeholder": "Buscar peliculas o series...",

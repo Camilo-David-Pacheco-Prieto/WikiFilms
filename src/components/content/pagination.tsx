@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslate } from "@/i18n/language-provider";
 
 interface PaginationProps {
   currentPage: number;
@@ -11,6 +12,7 @@ interface PaginationProps {
 export function Pagination({ currentPage, totalPages }: PaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslate();
 
   function goToPage(page: number) {
     const params = new URLSearchParams(searchParams.toString());
@@ -28,7 +30,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
         className="flex items-center gap-1 rounded-md border border-border-subtle px-3 py-2 text-sm text-text-secondary transition-colors hover:border-accent-brand hover:text-accent-brand disabled:opacity-30 disabled:cursor-not-allowed"
       >
         <ChevronLeft className="h-4 w-4" />
-        Anterior
+        {t("pagination.previous")}
       </button>
 
       <div className="flex items-center gap-2">
@@ -54,7 +56,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
         disabled={currentPage >= totalPages}
         className="flex items-center gap-1 rounded-md border border-border-subtle px-3 py-2 text-sm text-text-secondary transition-colors hover:border-accent-brand hover:text-accent-brand disabled:opacity-30 disabled:cursor-not-allowed"
       >
-        Siguiente
+        {t("pagination.next")}
         <ChevronRight className="h-4 w-4" />
       </button>
     </div>

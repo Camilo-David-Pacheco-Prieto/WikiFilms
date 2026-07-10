@@ -2,19 +2,20 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTranslate } from "@/i18n/language-provider";
 import type { TMDBWatchProvidersResponse } from "@/types/tmdb";
 
 const LOGO_BASE_URL = "https://image.tmdb.org/t/p/w92";
 
-const REGIONS = [
-  { code: "CO", name: "Colombia" },
-  { code: "MX", name: "Mexico" },
-  { code: "AR", name: "Argentina" },
-  { code: "CL", name: "Chile" },
-  { code: "PE", name: "Peru" },
-  { code: "EC", name: "Ecuador" },
-  { code: "US", name: "Estados Unidos" },
-  { code: "ES", name: "Espana" },
+const REGIONS: { code: string; nameKey: string }[] = [
+  { code: "CO", nameKey: "watchProviders.regionColombia" },
+  { code: "MX", nameKey: "watchProviders.regionMexico" },
+  { code: "AR", nameKey: "watchProviders.regionArgentina" },
+  { code: "CL", nameKey: "watchProviders.regionChile" },
+  { code: "PE", nameKey: "watchProviders.regionPeru" },
+  { code: "EC", nameKey: "watchProviders.regionEcuador" },
+  { code: "US", nameKey: "watchProviders.regionUsa" },
+  { code: "ES", nameKey: "watchProviders.regionSpain" },
 ];
 
 interface WatchProvidersProps {
@@ -23,6 +24,7 @@ interface WatchProvidersProps {
 }
 
 export function WatchProviders({ providers, detectedRegion }: WatchProvidersProps) {
+  const t = useTranslate();
   const [region, setRegion] = useState<string>(
     detectedRegion && providers.results[detectedRegion] ? detectedRegion : "US",
   );
@@ -30,10 +32,10 @@ export function WatchProviders({ providers, detectedRegion }: WatchProvidersProp
   const regionData = providers.results[region];
   if (!regionData) return null;
 
-  const sections: { key: "flatrate" | "rent" | "buy"; label: string }[] = [
-    { key: "flatrate", label: "Streaming" },
-    { key: "rent", label: "Alquiler" },
-    { key: "buy", label: "Compra" },
+  const sections: { key: "flatrate" | "rent" | "buy"; labelKey: string }[] = [
+    { key: "flatrate", labelKey: "watchProviders.streaming" },
+    { key: "rent", labelKey: "watchProviders.rent" },
+    { key: "buy", labelKey: "watchProviders.buy" },
   ];
 
   const hasAny = sections.some((s) => (regionData[s.key]?.length ?? 0) > 0);
@@ -43,8 +45,8 @@ export function WatchProviders({ providers, detectedRegion }: WatchProvidersProp
     <section className="mx-auto max-w-7xl px-4 py-6">
       <div className="rounded-lg border border-border-subtle bg-surface p-4 md:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="font-display text-lg font-bold uppercase text-white md:text-xl">
-            Donde ver
+            <h2 className="font-display text-lg font-bold uppercase text-white md:text-xl">
+            {t("watchProviders.heading")}
           </h2>
           <select
             value={region}
@@ -53,20 +55,20 @@ export function WatchProviders({ providers, detectedRegion }: WatchProvidersProp
           >
             {REGIONS.map((r) => (
               <option key={r.code} value={r.code}>
-                {r.name}
+                {t(r.nameKey)}
               </option>
             ))}
           </select>
         </div>
 
         <div className="mt-4 space-y-4">
-          {sections.map(({ key, label }) => {
+          {sections.map(({ key, labelKey }) => {
             const items = regionData[key];
             if (!items || items.length === 0) return null;
             return (
               <div key={key}>
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-text-secondary md:text-xs">
-                  {label}
+                  {t(labelKey)}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {items.map((p) => (
@@ -98,7 +100,7 @@ export function WatchProviders({ providers, detectedRegion }: WatchProvidersProp
         </div>
 
         <p className="mt-4 text-[10px] text-text-secondary/50">
-          Datos proporcionados por{" "}
+          {t("watchProviders.dataProvidedBy")}
           <a
             href="https://www.justwatch.com"
             target="_blank"

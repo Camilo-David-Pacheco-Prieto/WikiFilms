@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslate } from "@/i18n/language-provider";
 
 interface Review {
   id: string;
@@ -17,6 +18,7 @@ interface ReviewSectionProps {
 
 export function ReviewSection({ contentId }: ReviewSectionProps) {
   const { data: session } = useSession();
+  const t = useTranslate();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [myReview, setMyReview] = useState<Review | null>(null);
   const [rating, setRating] = useState(0);
@@ -77,7 +79,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
     <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="rounded-lg border border-border-subtle bg-surface p-4 md:p-6">
         <h2 className="font-display text-lg font-bold uppercase text-white md:text-xl">
-          Reseñas
+          {t("reviews.heading")}
         </h2>
 
         {session?.user && (
@@ -109,7 +111,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               maxLength={500}
-              placeholder="Escribe tu reseña (opcional)"
+              placeholder={t("reviews.placeholder")}
               rows={3}
               className="w-full rounded-md border border-border-subtle bg-base px-4 py-2 text-sm text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand placeholder:text-text-secondary/50"
             />
@@ -123,10 +125,10 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
                 className="rounded-md bg-accent-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
               >
                 {loading
-                  ? "Guardando..."
+                  ? t("reviews.saveLoading")
                   : myReview
-                    ? "Actualizar reseña"
-                    : "Publicar reseña"}
+                    ? t("reviews.updateButton")
+                    : t("reviews.publishButton")}
               </button>
             </div>
           </form>
@@ -135,7 +137,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
         <div className="mt-6 space-y-4">
           {reviews.length === 0 ? (
             <p className="text-sm text-text-secondary">
-              Aún no hay reseñas. Sé el primero en opinar.
+              {t("reviews.empty")}
             </p>
           ) : (
             reviews.map((review) => (
@@ -158,7 +160,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
                   </p>
                 )}
                 <p className="mt-1 text-xs text-text-secondary/50">
-                  {new Date(review.createdAt).toLocaleDateString("es-CO", {
+                  {new Date(review.createdAt).toLocaleDateString(undefined, {
                     year: "numeric",
                     month: "short",
                     day: "numeric",

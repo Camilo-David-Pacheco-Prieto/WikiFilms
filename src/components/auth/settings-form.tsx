@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslate } from "@/i18n/language-provider";
 
 interface SettingsFormProps {
   user: {
@@ -14,6 +15,7 @@ interface SettingsFormProps {
 
 export function SettingsForm({ user }: SettingsFormProps) {
   const router = useRouter();
+  const t = useTranslate();
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [username, setUsername] = useState(user.username);
@@ -50,12 +52,12 @@ export function SettingsForm({ user }: SettingsFormProps) {
         return;
       }
 
-      setSuccess("Cambios guardados correctamente");
+      setSuccess(t("auth.savedSuccess"));
       setCurrentPassword("");
       setNewPassword("");
       router.refresh();
     } catch {
-      setError("Error al conectar con el servidor");
+      setError(t("auth.serverError"));
     } finally {
       setLoading(false);
     }
@@ -79,7 +81,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
           htmlFor="name"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Nombre
+          {t("auth.name")}
         </label>
         <input
           id="name"
@@ -97,7 +99,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
           htmlFor="email"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Correo electrónico
+          {t("auth.email")}
         </label>
         <input
           id="email"
@@ -114,7 +116,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
           htmlFor="username"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Usuario
+          {t("auth.username")}
         </label>
         <input
           id="username"
@@ -134,14 +136,14 @@ export function SettingsForm({ user }: SettingsFormProps) {
           htmlFor="currentPassword"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Contraseña actual
+          {t("auth.currentPassword")}
         </label>
         <input
           id="currentPassword"
           type="password"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
-          placeholder="Dejar vacío para no cambiar"
+          placeholder={t("auth.currentPasswordPlaceholder")}
           className="w-full rounded-md border border-border-subtle bg-base px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand placeholder:text-text-secondary/50"
         />
       </div>
@@ -151,7 +153,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
           htmlFor="newPassword"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Nueva contraseña
+          {t("auth.newPassword")}
         </label>
         <input
           id="newPassword"
@@ -159,7 +161,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
           minLength={6}
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="Mínimo 6 caracteres"
+          placeholder={t("auth.newPasswordPlaceholder")}
           className="w-full rounded-md border border-border-subtle bg-base px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand placeholder:text-text-secondary/50"
         />
       </div>
@@ -169,7 +171,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
         disabled={loading}
         className="w-full rounded-md bg-accent-brand px-4 py-2.5 font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
       >
-        {loading ? "Guardando..." : "Guardar cambios"}
+        {loading ? t("auth.saveLoading") : t("auth.saveButton")}
       </button>
     </form>
   );

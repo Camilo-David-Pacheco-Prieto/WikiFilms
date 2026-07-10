@@ -9,6 +9,7 @@
   "nav.admin": "Admin",
   "nav.openMenu": "Open menu",
   "nav.closeMenu": "Close menu",
+  "nav.language": "Language",
 
   "home.title": "WikiFilms",
   "home.subtitle": "Your personal movie encyclopedia. Explore the most popular movies and series, discover details, and find your next favorite story.",
@@ -104,6 +105,8 @@
   "content.cast": "Cast",
   "content.seasons": "{count} seasons",
   "content.watchTrailer": "Watch trailer",
+  "content.notFoundMovie": "Movie not found \u2014 WikiFilms",
+  "content.notFoundSeries": "Series not found \u2014 WikiFilms",
 
   "search.title": "Search",
   "search.placeholder": "Search movies or series...",

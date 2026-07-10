@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { useTranslate } from "@/i18n/language-provider";
 
 interface SearchFormProps {
   initialQuery?: string;
@@ -14,6 +15,7 @@ export function SearchForm({
   initialType,
 }: SearchFormProps) {
   const router = useRouter();
+  const t = useTranslate();
   const [query, setQuery] = useState(initialQuery ?? "");
   const [type, setType] = useState(initialType ?? "");
 
@@ -51,7 +53,7 @@ export function SearchForm({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar películas o series..."
+          placeholder={t("search.placeholder")}
           className="w-full rounded-lg border border-border-subtle bg-surface py-3 pl-12 pr-4 text-white placeholder-text-secondary outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
         />
       </div>
@@ -63,7 +65,7 @@ export function SearchForm({
           data-active={type === "movie"}
           className="rounded-md border border-border-subtle px-4 py-1.5 text-sm font-medium transition-colors data-[active=true]:border-accent-brand data-[active=true]:bg-accent-brand/10 data-[active=true]:text-accent-brand text-text-secondary hover:border-zinc-600"
         >
-          Películas
+          {t("search.filterMovies")}
         </button>
         <button
           type="button"
@@ -71,7 +73,7 @@ export function SearchForm({
           data-active={type === "tv"}
           className="rounded-md border border-border-subtle px-4 py-1.5 text-sm font-medium transition-colors data-[active=true]:border-accent-brand data-[active=true]:bg-accent-brand/10 data-[active=true]:text-accent-brand text-text-secondary hover:border-zinc-600"
         >
-          Series
+          {t("search.filterSeries")}
         </button>
       </div>
     </form>

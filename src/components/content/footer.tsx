@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { auth } from "@/lib/auth";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
+import { LanguageSwitcherInline } from "./language-switcher-inline";
 
 export default async function Footer() {
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
+  const session = await auth();
+  const user = session?.user;
 
   return (
     <footer className="border-t border-border-subtle bg-gradient-to-b from-base via-accent-brand/[0.015] to-base py-12 md:py-16">
@@ -26,38 +30,6 @@ export default async function Footer() {
 
           <div>
             <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-text-secondary md:text-xs">
-              {dict["footer.navigate"]}
-            </p>
-            <div className="flex flex-col gap-1.5 text-xs md:text-sm">
-              <Link
-                href="/"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
-              >
-                {dict["footer.home"]}
-              </Link>
-              <Link
-                href="/search"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
-              >
-                {dict["footer.explore"]}
-              </Link>
-              <Link
-                href="/search?type=movie"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
-              >
-                {dict["footer.movies"]}
-              </Link>
-              <Link
-                href="/search?type=tv"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
-              >
-                {dict["footer.series"]}
-              </Link>
-            </div>
-          </div>
-
-          <div>
-            <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-text-secondary md:text-xs">
               {dict["footer.more"]}
             </p>
             <div className="flex flex-col gap-1.5 text-xs md:text-sm">
@@ -66,6 +38,12 @@ export default async function Footer() {
                 className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
               >
                 {dict["footer.favorites"]}
+              </Link>
+              <Link
+                href="/watchlist"
+                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+              >
+                {dict["nav.watchlist"]}
               </Link>
               <span className="flex items-center gap-2 text-text-secondary/50">
                 {dict["footer.community"]}
@@ -79,12 +57,27 @@ export default async function Footer() {
                   {dict["footer.comingSoon"]}
                 </span>
               </span>
-              <Link
-                href="/login"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
-              >
-                {dict["footer.signIn"]}
-              </Link>
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-text-secondary md:text-xs">
+              {dict["nav.language"]}
+            </p>
+            <div className="flex flex-col gap-1.5 text-xs md:text-sm">
+              <LanguageSwitcherInline />
+              {user ? (
+                <span className="mt-2 text-xs font-semibold uppercase tracking-wider text-accent-brand">
+                  {dict["nav.signOut"]}
+                </span>
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                >
+                  {dict["footer.signIn"]}
+                </Link>
+              )}
             </div>
           </div>
         </div>

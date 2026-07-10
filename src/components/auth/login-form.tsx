@@ -4,9 +4,11 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslate } from "@/i18n/language-provider";
 
 export function LoginForm() {
   const router = useRouter();
+  const t = useTranslate();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +30,7 @@ export function LoginForm() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Usuario o contraseña incorrectos");
+      setError(t("auth.loginError"));
       return;
     }
 
@@ -49,7 +51,7 @@ export function LoginForm() {
           htmlFor="username"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Usuario
+          {t("auth.username")}
         </label>
         <input
           id="username"
@@ -57,7 +59,7 @@ export function LoginForm() {
           type="text"
           required
           className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
-          placeholder="Tu usuario"
+          placeholder={t("auth.usernamePlaceholder")}
         />
       </div>
 
@@ -66,7 +68,7 @@ export function LoginForm() {
           htmlFor="password"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Contraseña
+          {t("auth.password")}
         </label>
         <input
           id="password"
@@ -74,7 +76,7 @@ export function LoginForm() {
           type="password"
           required
           className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
-          placeholder="Tu contraseña"
+          placeholder={t("auth.passwordPlaceholder")}
         />
       </div>
 
@@ -83,16 +85,16 @@ export function LoginForm() {
         disabled={loading}
         className="w-full rounded-md bg-accent-brand px-4 py-2.5 font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
       >
-        {loading ? "Ingresando..." : "Ingresar"}
+        {loading ? t("auth.loginLoading") : t("auth.loginButton")}
       </button>
 
       <p className="text-center text-sm text-text-secondary">
-        ¿No tienes cuenta?{" "}
+        {t("auth.noAccount")}{" "}
         <Link
           href="/register"
           className="font-medium text-accent-brand hover:underline"
         >
-          Regístrate
+          {t("auth.registerLink")}
         </Link>
       </p>
     </form>

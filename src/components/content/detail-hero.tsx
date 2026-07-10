@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { TrailerModal } from "@/components/content/trailer-modal";
+import { useTranslate } from "@/i18n/language-provider";
 import type { ContentDetail } from "@/types/tmdb";
 
 interface DetailHeroProps {
@@ -11,6 +12,7 @@ interface DetailHeroProps {
 }
 
 export function DetailHero({ content }: DetailHeroProps) {
+  const t = useTranslate();
   const [showTrailer, setShowTrailer] = useState(false);
 
   return (
@@ -69,7 +71,7 @@ export function DetailHero({ content }: DetailHeroProps) {
                 />
               ) : (
                 <div className="flex h-full items-center justify-center bg-surface text-text-secondary text-sm">
-                  Sin imagen
+                  {t("content.noImage")}
                 </div>
               )}
             </div>
@@ -101,7 +103,7 @@ export function DetailHero({ content }: DetailHeroProps) {
                 {content.seasons && (
                   <>
                     <span className="text-border-subtle">|</span>
-                    <span className="transition-colors hover:text-white">{content.seasons} temporadas</span>
+                    <span className="transition-colors hover:text-white">{t("content.seasons")?.replace("{count}", String(content.seasons))}</span>
                   </>
                 )}
               </div>
@@ -110,7 +112,7 @@ export function DetailHero({ content }: DetailHeroProps) {
             {content.director && (
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-                  Director
+                  {t("content.director")}
                 </p>
                 <p className="mt-1 font-display text-lg font-bold text-white transition-transform hover:translate-x-1">
                   {content.director}
@@ -121,7 +123,7 @@ export function DetailHero({ content }: DetailHeroProps) {
             {content.overview && (
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-                  Sinopsis
+                  {t("content.synopsis")}
                 </p>
                 <p className="mt-1 leading-relaxed text-text-secondary">
                   {content.overview}
@@ -132,7 +134,7 @@ export function DetailHero({ content }: DetailHeroProps) {
             {content.cast.length > 0 && (
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-                  Elenco
+                  {t("content.cast")}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {content.cast.map((actor) => (
@@ -160,7 +162,7 @@ export function DetailHero({ content }: DetailHeroProps) {
                   >
                     <path d="M8 5v14l11-7z" />
                   </svg>
-                  Ver trailer
+                  {t("content.watchTrailer")}
                 </button>
               </div>
             )}

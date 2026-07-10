@@ -1,11 +1,14 @@
 import { redirect } from "next/navigation";
-import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { getUsers } from "./actions";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 
-export const metadata: Metadata = {
-  title: "Admin — Usuarios — WikiFilms",
-};
+export async function generateMetadata() {
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+  return { title: dict["admin.title"] };
+}
 
 export default async function AdminUsersPage() {
   const session = await auth();
@@ -14,11 +17,13 @@ export default async function AdminUsersPage() {
   if ((session.user as any).role !== "ADMIN") redirect("/");
 
   const users = await getUsers();
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
       <h1 className="font-display text-3xl font-bold uppercase text-white">
-        Administrar usuarios
+        {dict["admin.heading"]}
       </h1>
 
       <div className="mt-8 space-y-3">
@@ -41,7 +46,7 @@ export default async function AdminUsersPage() {
                 {user.role}
               </span>
               <p className="text-xs text-text-secondary whitespace-nowrap">
-                {new Date(user.createdAt).toLocaleDateString("es-ES")}
+                {new Date(user.createdAt).toLocaleDateString(locale === "en" ? "en-US" : "es-ES")}
               </p>
             </div>
           </div>

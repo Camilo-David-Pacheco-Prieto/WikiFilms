@@ -1,11 +1,14 @@
-import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { SettingsForm } from "@/components/auth/settings-form";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 
-export const metadata: Metadata = {
-  title: "Configuración — WikiFilms",
-};
+export async function generateMetadata() {
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+  return { title: dict["auth.settingsTitle"] };
+}
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -14,11 +17,14 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+
   return (
     <main className="mx-auto max-w-2xl px-4 py-16">
       <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
         <h1 className="font-display text-3xl font-bold uppercase text-white">
-          Configuración
+          {dict["auth.settingsHeading"]}
         </h1>
         <SettingsForm user={session.user as { id: string; name: string; email: string; username: string }} />
       </div>

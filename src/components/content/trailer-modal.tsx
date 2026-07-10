@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslate } from "@/i18n/language-provider";
 
 interface TrailerModalProps {
   videoKey: string;
@@ -8,6 +9,7 @@ interface TrailerModalProps {
 }
 
 export function TrailerModal({ videoKey, onClose }: TrailerModalProps) {
+  const t = useTranslate();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export function TrailerModal({ videoKey, onClose }: TrailerModalProps) {
           onClick={handleClose}
           className="absolute -top-10 right-0 z-10 flex items-center gap-1 text-sm text-white/60 transition-colors hover:text-white md:-top-10"
         >
-          <span className="hidden sm:inline">Cerrar</span>
+          <span className="hidden sm:inline">{t("trailerModal.close")}</span>
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-lg leading-none backdrop-blur-sm transition-colors hover:bg-white/20 sm:h-6 sm:w-6">
             &times;
           </span>
@@ -56,7 +58,7 @@ export function TrailerModal({ videoKey, onClose }: TrailerModalProps) {
             allow="autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
             className="h-full w-full"
-            title="Trailer"
+            title={t("trailerModal.title")}
           />
         </div>
       </div>

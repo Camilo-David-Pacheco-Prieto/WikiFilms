@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslate } from "@/i18n/language-provider";
 
 export function RegisterForm() {
   const router = useRouter();
+  const t = useTranslate();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +24,7 @@ export function RegisterForm() {
     const confirmPassword = form.get("confirmPassword") as string;
 
     if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden");
+      setError(t("auth.passwordMismatch"));
       setLoading(false);
       return;
     }
@@ -44,7 +46,7 @@ export function RegisterForm() {
 
       router.push("/login");
     } catch {
-      setError("Error al conectar con el servidor");
+      setError(t("auth.serverError"));
       setLoading(false);
     }
   }
@@ -62,7 +64,7 @@ export function RegisterForm() {
           htmlFor="name"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Nombre
+          {t("auth.name")}
         </label>
         <input
           id="name"
@@ -71,7 +73,7 @@ export function RegisterForm() {
           required
           minLength={2}
           className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
-          placeholder="Tu nombre"
+          placeholder={t("auth.namePlaceholder")}
         />
       </div>
 
@@ -80,7 +82,7 @@ export function RegisterForm() {
           htmlFor="email"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Correo electrónico
+          {t("auth.email")}
         </label>
         <input
           id="email"
@@ -88,7 +90,7 @@ export function RegisterForm() {
           type="email"
           required
           className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
-          placeholder="correo@ejemplo.com"
+          placeholder={t("auth.emailPlaceholder")}
         />
       </div>
 
@@ -97,7 +99,7 @@ export function RegisterForm() {
           htmlFor="username"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Usuario
+          {t("auth.username")}
         </label>
         <input
           id="username"
@@ -106,7 +108,7 @@ export function RegisterForm() {
           required
           minLength={3}
           className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
-          placeholder="Tu usuario"
+          placeholder={t("auth.usernamePlaceholder")}
         />
       </div>
 
@@ -115,7 +117,7 @@ export function RegisterForm() {
           htmlFor="password"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Contraseña
+          {t("auth.password")}
         </label>
         <input
           id="password"
@@ -124,7 +126,7 @@ export function RegisterForm() {
           required
           minLength={6}
           className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
-          placeholder="Mínimo 6 caracteres"
+          placeholder={t("auth.passwordMin")}
         />
       </div>
 
@@ -133,7 +135,7 @@ export function RegisterForm() {
           htmlFor="confirmPassword"
           className="text-xs font-semibold uppercase tracking-widest text-text-secondary"
         >
-          Confirmar contraseña
+          {t("auth.confirmPassword")}
         </label>
         <input
           id="confirmPassword"
@@ -142,7 +144,7 @@ export function RegisterForm() {
           required
           minLength={6}
           className="w-full rounded-md border border-border-subtle bg-surface px-4 py-2.5 text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand"
-          placeholder="Repite la contraseña"
+          placeholder={t("auth.confirmPasswordPlaceholder")}
         />
       </div>
 
@@ -151,16 +153,16 @@ export function RegisterForm() {
         disabled={loading}
         className="w-full rounded-md bg-accent-brand px-4 py-2.5 font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
       >
-        {loading ? "Registrando..." : "Crear cuenta"}
+        {loading ? t("auth.registerLoading") : t("auth.registerButton")}
       </button>
 
       <p className="text-center text-sm text-text-secondary">
-        ¿Ya tienes cuenta?{" "}
+        {t("auth.haveAccount")}{" "}
         <Link
           href="/login"
           className="font-medium text-accent-brand hover:underline"
         >
-          Inicia sesión
+          {t("auth.loginLink")}
         </Link>
       </p>
     </form>

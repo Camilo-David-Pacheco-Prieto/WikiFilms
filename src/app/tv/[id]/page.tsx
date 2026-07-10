@@ -8,6 +8,8 @@ import { WatchlistButton } from "@/components/content/watchlist-button";
 import { ReviewSection } from "@/components/content/review-section";
 import { WatchProviders } from "@/components/content/watch-providers";
 import { notFound } from "next/navigation";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 import type { TMDBWatchProvidersResponse } from "@/types/tmdb";
 
 interface Props {
@@ -28,7 +30,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     };
   } catch {
-    return { title: "Serie no encontrada — WikiFilms" };
+    const locale = await getServerLocale();
+    const dict = await getDictionary(locale);
+    return { title: dict["content.notFoundSeries"] };
   }
 }
 
@@ -41,6 +45,8 @@ export default async function SeriesPage({ params }: Props) {
   const { id } = await params;
   const h = await headers();
   const region = extractRegion(h.get("accept-language") ?? "");
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
 
   let series;
   let popular;
@@ -84,7 +90,7 @@ export default async function SeriesPage({ params }: Props) {
       <ReviewSection contentId={series.id} />
 
       <section className="mx-auto max-w-7xl px-4 py-16">
-        <ContentGrid title="Más series populares" items={popular} />
+        <ContentGrid title={dict["content.morePopularSeries"]} items={popular} />
       </section>
     </main>
   );

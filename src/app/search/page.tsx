@@ -2,6 +2,8 @@ import { searchContent } from "@/lib/tmdb";
 import { ContentGrid } from "@/components/content/content-grid";
 import { Pagination } from "@/components/content/pagination";
 import { SearchForm } from "./search-form";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 import type { MediaType } from "@/types/tmdb";
 
 interface Props {
@@ -12,6 +14,8 @@ export default async function SearchPage({ searchParams }: Props) {
   const { q, type, page } = await searchParams;
   const mediaType = type === "tv" ? "tv" : type === "movie" ? "movie" : undefined;
   const currentPage = Math.max(1, Number(page) || 1);
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
 
   let results;
   let totalPages = 0;
@@ -33,7 +37,7 @@ export default async function SearchPage({ searchParams }: Props) {
         results.length > 0 ? (
           <>
             <ContentGrid
-              title={`Resultados para "${q}"`}
+              title={dict["search.resultsFor"]?.replace("{q}", q)}
               items={results}
             />
             <Pagination currentPage={currentPage} totalPages={totalPages} />
@@ -41,7 +45,7 @@ export default async function SearchPage({ searchParams }: Props) {
         ) : (
           <div className="mt-16 text-center">
             <p className="text-lg text-text-secondary">
-              No encontramos resultados para{" "}
+              {dict["search.noResults"]}
               <span className="font-bold text-white">&quot;{q}&quot;</span>
             </p>
           </div>
@@ -49,7 +53,7 @@ export default async function SearchPage({ searchParams }: Props) {
       ) : (
         <div className="mt-16 text-center">
           <p className="text-lg text-text-secondary">
-            Busca tu película o serie favorita
+            {dict["search.emptyPrompt"]}
           </p>
         </div>
       )}

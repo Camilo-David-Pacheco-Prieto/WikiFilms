@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslate } from "@/i18n/language-provider";
 
 interface FavoriteButtonProps {
   contentId: number;
@@ -18,6 +19,7 @@ export function FavoriteButton({
   type,
 }: FavoriteButtonProps) {
   const { data: session } = useSession();
+  const t = useTranslate();
   const [favorited, setFavorited] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -61,7 +63,7 @@ export function FavoriteButton({
       <Heart
         className={`h-4 w-4 ${favorited ? "fill-accent-brand" : ""}`}
       />
-      {favorited ? "Quitar de favoritos" : "Agregar a favoritos"}
+      {favorited ? t("favoriteButton.remove") : t("favoriteButton.add")}
     </button>
   );
 }
