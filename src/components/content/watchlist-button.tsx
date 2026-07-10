@@ -89,27 +89,36 @@ export function WatchlistButton({
       >
         {label}
       </button>
-      {open && (
+          {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div className="absolute left-0 top-full z-20 mt-1 w-44 rounded-md border border-border-subtle bg-surface py-1 shadow-lg">
-            {currentStatus === "WATCHED" ? (
-              <button
-                onClick={() => setStatus("PLAN_TO_WATCH")}
-                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
-              >
-                <Clock className="h-4 w-4" />
-                Marcar por ver
-              </button>
-            ) : (
-              <button
-                onClick={() => setStatus("WATCHED")}
-                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
-              >
+            <button
+              onClick={() => setStatus("WATCHED")}
+              disabled={currentStatus === "WATCHED"}
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white"
+            >
+              {currentStatus === "WATCHED" ? (
+                <Eye className="h-4 w-4 text-green-400" />
+              ) : (
                 <Eye className="h-4 w-4" />
-                Marcar vista
-              </button>
-            )}
+              )}
+              {currentStatus === "WATCHED" && <span className="text-green-400">✓ </span>}
+              Marcar vista
+            </button>
+            <button
+              onClick={() => setStatus("PLAN_TO_WATCH")}
+              disabled={currentStatus === "PLAN_TO_WATCH"}
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white"
+            >
+              {currentStatus === "PLAN_TO_WATCH" ? (
+                <Clock className="h-4 w-4 text-yellow-400" />
+              ) : (
+                <Clock className="h-4 w-4" />
+              )}
+              {currentStatus === "PLAN_TO_WATCH" && <span className="text-yellow-400">✓ </span>}
+              Marcar por ver
+            </button>
             {currentStatus && (
               <>
                 <hr className="border-border-subtle" />

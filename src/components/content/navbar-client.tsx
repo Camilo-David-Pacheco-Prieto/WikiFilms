@@ -82,7 +82,7 @@ export function NavbarClient({ user }: NavbarClientProps) {
               )}
               <hr className="border-border-subtle" />
               <button
-                onClick={() => { signOut({ callbackUrl: "/" }); setOpen(false); }}
+                onClick={() => { signOut({ callbackUrl: window.location.origin }); setOpen(false); }}
                 className="rounded-md px-3 py-2 text-left text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white md:hover:bg-transparent"
               >
                 Cerrar sesion
