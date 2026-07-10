@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { Menu, X } from "lucide-react";
 
 interface NavbarClientProps {
@@ -72,6 +73,13 @@ export function NavbarClient({ user }: NavbarClientProps) {
                   Admin
                 </Link>
               )}
+              <hr className="border-border-subtle" />
+              <button
+                onClick={() => { signOut({ callbackUrl: "/" }); setOpen(false); }}
+                className="rounded-md px-3 py-2 text-left text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white md:hover:bg-transparent"
+              >
+                Cerrar sesion
+              </button>
             </>
           )}
         </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { NavbarClient } from "./navbar-client";
+import { UserDropdown } from "./user-dropdown";
 
 export default async function Navbar() {
   const session = await auth();
@@ -52,21 +53,8 @@ export default async function Navbar() {
           </Link>
 
           {user ? (
-            <div className="hidden items-center gap-2 md:flex">
-              {user.role === "ADMIN" && (
-                <Link
-                  href="/admin/users"
-                  className="rounded-md border border-border-subtle px-3 py-1.5 text-sm text-text-secondary transition-colors hover:border-accent-brand hover:text-accent-brand"
-                >
-                  Admin
-                </Link>
-              )}
-              <Link
-                href="/dashboard"
-                className="rounded-md bg-surface px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700"
-              >
-                {user.name}
-              </Link>
+            <div className="hidden md:flex">
+              <UserDropdown name={user.name} role={user.role} />
             </div>
           ) : (
             <Link

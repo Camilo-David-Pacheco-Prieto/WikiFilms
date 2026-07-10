@@ -23,10 +23,10 @@ export function FavoriteButton({
 
   useEffect(() => {
     if (!session?.user) return;
-    fetch("/api/favorites")
+    fetch(`/api/favorites/check?contentId=${contentId}`)
       .then((res) => res.json())
-      .then((data: { contentId: number }[]) => {
-        setFavorited(data.some((f) => f.contentId === contentId));
+      .then((data: { favorited: boolean }) => {
+        setFavorited(data.favorited);
       })
       .catch(() => {});
   }, [session, contentId]);

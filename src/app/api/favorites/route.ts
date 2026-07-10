@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -28,26 +29,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
   }
 
-  const existing = await prisma.favorite.findUnique({
-    where: { userId_contentId: { userId: session.user.id, contentId } },
-  });
-
-  if (existing) {
-    await prisma.favorite.delete({ where: { id: existing.id } });
-    return NextResponse.json({ favorited: false });
+  try {
+    await prisma.favorite.create({
+      data: {
+        userId: session.user.id,
+        contentId,
+        title,
+        posterUrl,
+        type,
+      },
+    });
+    return NextResponse.json({ favorited: true });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2002"
+    ) {
+      await prisma.favorite.delete({
+        where: {
+          userId_contentId: { userId: session.user.id, contentId },
+        },
+      });
+      return NextResponse.json({ favorited: false });
+    }
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
-
-  await prisma.favorite.create({
-    data: {
-      userId: session.user.id,
-      contentId,
-      title,
-      posterUrl,
-      type,
-    },
-  });
-
-  return NextResponse.json({ favorited: true });
 }
 
 export async function DELETE(req: Request) {
@@ -58,8 +64,14 @@ export async function DELETE(req: Request) {
 
   const { contentId } = await req.json();
 
-  await prisma.favorite.deleteMany({
-    where: { userId: session.user.id, contentId },
+  if (typeof contentId !== "number") {
+    return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
+  }
+
+  await prisma.favorite.delete({
+    where: {
+      userId_contentId: { userId: session.user.id, contentId },
+    },
   });
 
   return NextResponse.json({ success: true });
