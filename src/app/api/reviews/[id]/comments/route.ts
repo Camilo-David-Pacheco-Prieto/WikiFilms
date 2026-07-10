@@ -50,7 +50,6 @@ export async function POST(
 
     const created = await prisma.reviewComment.create({
       data: { reviewId, userId: session.user.id, comment: comment.trim() },
-      include: { user: { select: { id: true, name: true } } },
     });
 
     if (review.userId !== session.user.id) {
@@ -66,7 +65,10 @@ export async function POST(
       }).catch((e) => console.error("Failed to create notification:", e));
     }
 
-    return NextResponse.json(created);
+    return NextResponse.json({
+      ...created,
+      user: { id: session.user.id, name: session.user.name },
+    });
   } catch (e) {
     console.error("POST comment error:", e);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
