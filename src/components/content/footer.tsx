@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { auth } from "@/lib/auth";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 
 export default async function Footer() {
+  const session = await auth();
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
 
@@ -61,12 +63,21 @@ export default async function Footer() {
               {dict["footer.more"]}
             </p>
             <div className="flex flex-col gap-1.5 text-xs md:text-sm">
-              <Link
-                href="/dashboard"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
-              >
-                {dict["footer.favorites"]}
-              </Link>
+              {session?.user ? (
+                <Link
+                  href="/dashboard"
+                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                >
+                  {dict["footer.favorites"]}
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                >
+                  {dict["footer.signIn"]}
+                </Link>
+              )}
               <span className="flex items-center gap-2 text-text-secondary/50">
                 {dict["footer.community"]}
                 <span className="rounded border border-border-subtle px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-text-secondary/50">
@@ -79,12 +90,6 @@ export default async function Footer() {
                   {dict["footer.comingSoon"]}
                 </span>
               </span>
-              <Link
-                href="/login"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
-              >
-                {dict["footer.signIn"]}
-              </Link>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { useTranslate } from "@/i18n/language-provider";
 import type { ContentResult } from "@/types/tmdb";
 
 interface ContentCardProps {
@@ -10,10 +11,13 @@ interface ContentCardProps {
 }
 
 export function ContentCard({ content }: ContentCardProps) {
+  const t = useTranslate();
   const href =
     content.type === "movie"
       ? `/movie/${content.id}`
-      : `/tv/${content.id}`;
+      : content.type === "tv"
+        ? `/tv/${content.id}`
+        : "#";
 
   return (
     <Link
@@ -28,11 +32,11 @@ export function ContentCard({ content }: ContentCardProps) {
             fill
             className="object-cover"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-            loading="eager"
+            loading="lazy"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-surface text-text-secondary">
-            Sin imagen
+          <div className="flex h-full items-center justify-center bg-surface text-text-secondary text-sm">
+            {t("content.noImage")}
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 transition-opacity duration-300 md:group-hover:opacity-100" />

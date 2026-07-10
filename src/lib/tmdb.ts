@@ -247,23 +247,37 @@ export async function getTrending(
 }
 
 export const GENRE_MAP: Record<string, number> = {
-  Acción: 28,
-  Aventura: 12,
-  Animación: 16,
-  Comedia: 35,
-  Crimen: 80,
-  Documental: 99,
+  Acción: 28, Action: 28,
+  Aventura: 12, Adventure: 12,
+  Animación: 16, Animation: 16,
+  Comedia: 35, Comedy: 35,
+  Crimen: 80, Crime: 80,
+  Documental: 99, Documentary: 99,
   Drama: 18,
-  Familia: 10751,
-  Fantasía: 14,
-  Historia: 36,
-  Terror: 27,
-  Música: 10402,
-  Misterio: 9648,
+  Familia: 10751, Family: 10751,
+  Fantasía: 14, Fantasy: 14,
+  Historia: 36, History: 36,
+  Terror: 27, Horror: 27,
+  Música: 10402, Music: 10402,
+  Misterio: 9648, Mystery: 9648,
   Romance: 10749,
-  "Ciencia ficción": 878,
-  "Película de TV": 10770,
-  Suspenso: 53,
-  Bélica: 10752,
+  "Ciencia ficción": 878, "Science Fiction": 878,
+  "Película de TV": 10770, "TV Movie": 10770,
+  Suspenso: 53, Thriller: 53,
+  Bélica: 10752, War: 10752,
   Western: 37,
 };
+
+export const GENRE_ORDER_ES = [
+  "Acción", "Aventura", "Animación", "Comedia", "Crimen",
+  "Documental", "Drama", "Familia", "Fantasía", "Historia",
+  "Terror", "Música", "Misterio", "Romance", "Ciencia ficción",
+  "Película de TV", "Suspenso", "Bélica", "Western",
+];
+
+export const GENRE_ORDER_EN = [
+  "Action", "Adventure", "Animation", "Comedy", "Crime",
+  "Documentary", "Drama", "Family", "Fantasy", "History",
+  "Horror", "Music", "Mystery", "Romance", "Science Fiction",
+  "TV Movie", "Thriller", "War", "Western",
+];

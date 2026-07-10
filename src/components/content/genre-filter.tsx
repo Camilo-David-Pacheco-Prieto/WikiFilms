@@ -1,12 +1,15 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { GENRE_MAP } from "@/lib/tmdb";
+import { GENRE_ORDER_ES, GENRE_ORDER_EN } from "@/lib/tmdb";
+import { useLanguage } from "@/i18n/language-provider";
 
 export function GenreFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { locale } = useLanguage();
   const activeGenre = searchParams.get("genre") || "";
+  const genreNames = locale === "en" ? GENRE_ORDER_EN : GENRE_ORDER_ES;
 
   function handleGenre(genreName: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -21,7 +24,7 @@ export function GenreFilter() {
 
   return (
     <div className="flex flex-wrap gap-2">
-      {Object.keys(GENRE_MAP).map((name) => (
+      {genreNames.map((name) => (
         <button
           key={name}
           onClick={() => handleGenre(name)}

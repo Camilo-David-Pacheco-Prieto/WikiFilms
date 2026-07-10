@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ContentResult } from "@/types/tmdb";
 import { ContentCard } from "./content-card";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 
 interface ContentGridProps {
   items: ContentResult[];
@@ -8,7 +10,10 @@ interface ContentGridProps {
   href?: string;
 }
 
-export function ContentGrid({ items, title, href }: ContentGridProps) {
+export async function ContentGrid({ items, title, href }: ContentGridProps) {
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+
   return (
     <section>
       {title && (
@@ -21,7 +26,7 @@ export function ContentGrid({ items, title, href }: ContentGridProps) {
               href={href}
               className="text-sm font-medium text-accent-brand transition-colors hover:underline"
             >
-              Ver todo →
+              {dict["content.viewAll"]}
             </Link>
           )}
         </div>

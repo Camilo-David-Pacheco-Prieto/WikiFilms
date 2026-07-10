@@ -12,7 +12,7 @@ export async function GET(req: Request) {
 
   const reviews = await prisma.review.findMany({
     where: { contentId: Number(contentId) },
-    include: { user: { select: { name: true } } },
+    include: { user: { select: { id: true, name: true } } },
     orderBy: { createdAt: "desc" },
   });
 

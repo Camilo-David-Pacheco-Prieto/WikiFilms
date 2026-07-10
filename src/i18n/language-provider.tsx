@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 import { defaultLocale, cookieName, type Locale } from "./config";
 
 interface LanguageContextValue {
@@ -22,35 +22,38 @@ function setCookie(value: string) {
   document.cookie = `${cookieName}=${value}; path=/; max-age=31536000; SameSite=Lax`;
 }
 
-let sharedDict: Record<string, string> = {};
-let dictPromise: Promise<void> | null = null;
-
-function ensureDict(locale: string) {
-  if (!dictPromise) {
-    dictPromise = import(`./dictionaries/${locale}.json`)
-      .then((m) => { sharedDict = m.default; })
-      .catch(() => { sharedDict = {}; });
+async function loadDict(locale: string): Promise<Record<string, string>> {
+  try {
+    const m = await import(`./dictionaries/${locale}.json`);
+    return m.default;
+  } catch {
+    return {};
   }
-  return dictPromise;
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(getCookie);
-  const [, setTick] = useState(0);
+  const [dict, setDict] = useState<Record<string, string>>({});
+  const loadingRef = useRef<string | null>(null);
 
   useEffect(() => {
-    ensureDict(locale).then(() => setTick((n) => n + 1));
+    const current = locale;
+    loadingRef.current = current;
+    loadDict(current).then((d) => {
+      if (loadingRef.current === current) {
+        setDict(d);
+      }
+    });
   }, [locale]);
 
   const setLocale = useCallback((next: Locale) => {
     setCookie(next);
-    dictPromise = null;
     setLocaleState(next);
   }, []);
 
   const t = useCallback(
     (key: string, params?: Record<string, string | number>): string => {
-      let val = sharedDict[key] ?? key;
+      let val = dict[key] ?? key;
       if (params) {
         for (const [k, v] of Object.entries(params)) {
           val = val.replace(`{${k}}`, String(v));
@@ -58,7 +61,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
       return val;
     },
-    [],
+    [dict],
   );
 
   return (

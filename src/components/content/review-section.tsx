@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useTranslate } from "@/i18n/language-provider";
+import { useTranslate, useLanguage } from "@/i18n/language-provider";
 
 interface Review {
   id: string;
   rating: number;
   comment: string | null;
   createdAt: string;
-  user: { name: string };
+  user: { id: string; name: string };
 }
 
 interface ReviewSectionProps {
@@ -19,6 +19,7 @@ interface ReviewSectionProps {
 export function ReviewSection({ contentId }: ReviewSectionProps) {
   const { data: session } = useSession();
   const t = useTranslate();
+  const { locale } = useLanguage();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [myReview, setMyReview] = useState<Review | null>(null);
   const [rating, setRating] = useState(0);
@@ -33,7 +34,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
         setReviews(data);
         if (session?.user) {
           const mine = data.find(
-            (r) => r.user.name === session.user.name,
+            (r) => r.user.id === session.user.id,
           );
           if (mine) {
             setMyReview(mine);
@@ -63,7 +64,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
             (r) => r.user.name !== session?.user?.name,
           );
           return [
-            { ...data, user: { name: session?.user?.name ?? "" } },
+            { ...data, user: { id: session?.user?.id ?? "", name: session?.user?.name ?? "" } },
             ...filtered,
           ];
         });
@@ -160,7 +161,7 @@ export function ReviewSection({ contentId }: ReviewSectionProps) {
                   </p>
                 )}
                 <p className="mt-1 text-xs text-text-secondary/50">
-                  {new Date(review.createdAt).toLocaleDateString(undefined, {
+                  {new Date(review.createdAt).toLocaleDateString(locale === "es" ? "es-CO" : "en-US", {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
