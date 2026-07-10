@@ -4,10 +4,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 
-export const metadata: Metadata = {
-  title: "Mi perfil — WikiFilms",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+  return { title: dict["dashboard.title"] };
+}
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -21,36 +25,38 @@ export default async function DashboardPage() {
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
   });
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
 
   return (
     <main className="mx-auto max-w-2xl space-y-8 px-4 py-16">
       <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
         <h1 className="font-display text-3xl font-bold uppercase text-white">
-          Mi perfil
+          {dict["dashboard.profile"]}
         </h1>
 
         <div className="mt-8 space-y-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-              Nombre
+              {dict["dashboard.name"]}
             </p>
             <p className="mt-1 text-lg text-white">{user.name}</p>
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-              Correo
+              {dict["dashboard.email"]}
             </p>
             <p className="mt-1 text-lg text-white">{user.email}</p>
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-              Usuario
+              {dict["dashboard.username"]}
             </p>
             <p className="mt-1 text-lg text-white">{user.username}</p>
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-              Rol
+              {dict["dashboard.role"]}
             </p>
             <p className="mt-1 text-lg text-white">{user.role}</p>
           </div>
@@ -59,7 +65,7 @@ export default async function DashboardPage() {
 
       <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
         <h2 className="font-display text-2xl font-bold uppercase text-white">
-          Mis favoritos
+          {dict["dashboard.favorites"]}
         </h2>
 
         {favorites.length > 0 ? (
@@ -82,7 +88,7 @@ export default async function DashboardPage() {
                   </div>
                 ) : (
                   <div className="flex aspect-[2/3] items-center justify-center bg-surface text-sm text-text-secondary">
-                    Sin imagen
+                    {dict["dashboard.noImage"]}
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 md:opacity-100" />
@@ -96,7 +102,7 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <p className="mt-4 text-text-secondary">
-            No tienes favoritos aun. Explora peliculas y series y agregalas a tu lista.
+            {dict["dashboard.noFavorites"]}
           </p>
         )}
       </div>

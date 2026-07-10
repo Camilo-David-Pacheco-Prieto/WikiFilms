@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import Navbar from "@/components/content/navbar";
-import { Footer } from "@/components/content/footer";
+import Footer from "@/components/content/footer";
 import { Providers } from "@/components/providers";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,20 +17,25 @@ const oswald = Oswald({
   variable: "--font-display",
 });
 
-export const metadata: Metadata = {
-  title: "WikiFilms — Tu enciclopedia cinematográfica",
-  description:
-    "Explora películas y series con información detallada, puntuaciones y más.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+  return {
+    title: dict["home.title"],
+    description: dict["home.subtitle"],
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getServerLocale();
+
   return (
     <html
-      lang="es"
+      lang={locale}
       className={`${inter.variable} ${oswald.variable} h-full antialiased`}
       suppressHydrationWarning
     >

@@ -4,10 +4,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 
-export const metadata: Metadata = {
-  title: "Mi lista — WikiFilms",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+  return { title: dict["watchlist.title"] };
+}
 
 export default async function WatchlistPage() {
   const session = await auth();
@@ -26,6 +30,8 @@ export default async function WatchlistPage() {
       orderBy: { updatedAt: "desc" },
     }),
   ]);
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
 
   function renderGrid(
     items: { id: string; contentId: number; type: string; title: string; posterUrl: string | null }[],
@@ -54,7 +60,7 @@ export default async function WatchlistPage() {
               </div>
             ) : (
               <div className="flex aspect-[2/3] items-center justify-center bg-surface text-sm text-text-secondary">
-                Sin imagen
+                {dict["watchlist.noImage"]}
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 md:opacity-100" />
@@ -73,22 +79,22 @@ export default async function WatchlistPage() {
     <main className="mx-auto max-w-2xl space-y-8 px-4 py-16">
       <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
         <h1 className="font-display text-3xl font-bold uppercase text-white">
-          Mi lista
+          {dict["watchlist.heading"]}
         </h1>
 
         <div className="mt-8 space-y-6">
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-green-400">
-              Vistas ({watched.length})
+              {dict["watchlist.watched"]?.replace("{count}", String(watched.length))}
             </p>
-            {renderGrid(watched, "No has marcado nada como visto.")}
+            {renderGrid(watched, dict["watchlist.emptyWatched"])}
           </div>
 
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-yellow-400">
-              Por ver ({planToWatch.length})
+              {dict["watchlist.planToWatch"]?.replace("{count}", String(planToWatch.length))}
             </p>
-            {renderGrid(planToWatch, "No tienes nada pendiente.")}
+            {renderGrid(planToWatch, dict["watchlist.emptyPlanToWatch"])}
           </div>
         </div>
       </div>

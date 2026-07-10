@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useTranslate } from "@/i18n/language-provider";
 
 interface UserDropdownProps {
   name: string;
@@ -11,6 +12,7 @@ interface UserDropdownProps {
 
 export function UserDropdown({ name, role }: UserDropdownProps) {
   const [open, setOpen] = useState(false);
+  const t = useTranslate();
 
   return (
     <div className="relative">
@@ -29,14 +31,14 @@ export function UserDropdown({ name, role }: UserDropdownProps) {
               onClick={() => setOpen(false)}
               className="block px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
             >
-              Favoritos
+              {t("userDropdown.favorites")}
             </Link>
             <Link
               href="/settings"
               onClick={() => setOpen(false)}
               className="block px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
             >
-              Configuracion
+              {t("userDropdown.settings")}
             </Link>
             {role === "ADMIN" && (
               <Link
@@ -44,7 +46,7 @@ export function UserDropdown({ name, role }: UserDropdownProps) {
                 onClick={() => setOpen(false)}
                 className="block px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
               >
-                Admin
+                {t("userDropdown.admin")}
               </Link>
             )}
             <hr className="border-border-subtle" />
@@ -52,7 +54,7 @@ export function UserDropdown({ name, role }: UserDropdownProps) {
               onClick={() => signOut({ callbackUrl: window.location.origin })}
               className="flex w-full items-center px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
             >
-              Cerrar sesion
+              {t("userDropdown.signOut")}
             </button>
           </div>
         </>

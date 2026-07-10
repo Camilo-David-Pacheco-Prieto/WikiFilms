@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 
-export function Footer() {
+export default async function Footer() {
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+
   return (
     <footer className="border-t border-border-subtle bg-gradient-to-b from-base via-accent-brand/[0.015] to-base py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-4">
@@ -11,75 +16,74 @@ export function Footer() {
                 W
               </div>
               <span className="font-display text-base font-bold uppercase tracking-wider text-white">
-                WikiFilms
+                {dict["footer.brand"]}
               </span>
             </div>
             <p className="mt-2 text-xs leading-relaxed text-text-secondary md:text-sm">
-              Tu enciclopedia cinematográfica personal. Explora, descubre y
-              guarda tus películas y series favoritas.
+              {dict["footer.description"]}
             </p>
           </div>
 
           <div>
             <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-text-secondary md:text-xs">
-              Navegar
+              {dict["footer.navigate"]}
             </p>
             <div className="flex flex-col gap-1.5 text-xs md:text-sm">
               <Link
                 href="/"
                 className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
               >
-                Inicio
+                {dict["footer.home"]}
               </Link>
               <Link
                 href="/search"
                 className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
               >
-                Explorar
+                {dict["footer.explore"]}
               </Link>
               <Link
                 href="/search?type=movie"
                 className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
               >
-                Películas
+                {dict["footer.movies"]}
               </Link>
               <Link
                 href="/search?type=tv"
                 className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
               >
-                Series
+                {dict["footer.series"]}
               </Link>
             </div>
           </div>
 
           <div>
             <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-text-secondary md:text-xs">
-              Más
+              {dict["footer.more"]}
             </p>
             <div className="flex flex-col gap-1.5 text-xs md:text-sm">
               <Link
                 href="/dashboard"
                 className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
               >
-                Favoritos
+                {dict["footer.favorites"]}
               </Link>
               <span className="flex items-center gap-2 text-text-secondary/50">
-                Comunidad
+                {dict["footer.community"]}
                 <span className="rounded border border-border-subtle px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-text-secondary/50">
-                  Pronto
+                  {dict["footer.comingSoon"]}
                 </span>
               </span>
               <span className="flex items-center gap-2 text-text-secondary/50">
-                Estadísticas
+                {dict["footer.stats"]}
                 <span className="rounded border border-border-subtle px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-text-secondary/50">
-                  Pronto
+                  {dict["footer.comingSoon"]}
                 </span>
               </span>
               <Link
                 href="/login"
                 className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
               >
-                Ingresar
+                {dict["footer.signIn"]}
               </Link>
             </div>
           </div>
@@ -88,11 +92,11 @@ export function Footer() {
         <div className="relative mt-10 pt-6 text-center text-[10px] text-text-secondary md:text-xs">
           <div className="absolute -top-px left-1/2 h-px w-16 -translate-x-1/2 bg-accent-brand/50" />
           <p>
-            Web desarrollada por{" "}
-            <span className="font-medium text-white">Camilo Pacheco</span>
+            {dict["footer.developedBy"]}
+            <span className="font-medium text-white">{dict["footer.developerName"]}</span>
           </p>
           <p className="mt-0.5">
-            Datos proporcionados por{" "}
+            {dict["footer.dataProvidedBy"]}
             <a
               href="https://www.themoviedb.org"
               target="_blank"
@@ -102,7 +106,7 @@ export function Footer() {
               TMDB
             </a>
           </p>
-          <p className="mt-0.5">© {new Date().getFullYear()} WikiFilms</p>
+          <p className="mt-0.5">{dict["footer.copyright"]?.replace("{year}", String(new Date().getFullYear()))}</p>
         </div>
       </div>
     </footer>

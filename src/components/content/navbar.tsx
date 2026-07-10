@@ -3,10 +3,15 @@ import { Search } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { NavbarClient } from "./navbar-client";
 import { UserDropdown } from "./user-dropdown";
+import { LanguageSwitcher } from "./language-switcher";
+import { getServerLocale } from "@/i18n/get-locale";
+import { getDictionary } from "@/i18n/dictionary";
 
 export default async function Navbar() {
   const session = await auth();
   const user = session?.user;
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border-subtle bg-base/80 backdrop-blur-xl">
@@ -25,13 +30,13 @@ export default async function Navbar() {
             href="/"
             className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
           >
-            Inicio
+            {dict["nav.home"]}
           </Link>
           <Link
             href="/search"
             className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
           >
-            Explorar
+            {dict["nav.explore"]}
           </Link>
           {user && (
             <>
@@ -39,13 +44,13 @@ export default async function Navbar() {
                 href="/dashboard"
                 className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
               >
-                Favoritos
+                {dict["nav.favorites"]}
               </Link>
               <Link
                 href="/watchlist"
                 className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
               >
-                Mi lista
+                {dict["nav.watchlist"]}
               </Link>
             </>
           )}
@@ -57,8 +62,10 @@ export default async function Navbar() {
             className="flex items-center gap-1 rounded-md bg-surface px-3 py-1.5 text-sm text-text-secondary transition-colors hover:bg-zinc-700"
           >
             <Search className="h-4 w-4" />
-            <span className="hidden sm:inline">Buscar</span>
+            <span className="hidden sm:inline">{dict["nav.search"]}</span>
           </Link>
+
+          <LanguageSwitcher />
 
           {user ? (
             <div className="hidden md:flex">
@@ -69,7 +76,7 @@ export default async function Navbar() {
               href="/login"
               className="rounded-md bg-accent-brand px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
             >
-              Ingresar
+              {dict["nav.signIn"]}
             </Link>
           )}
 
