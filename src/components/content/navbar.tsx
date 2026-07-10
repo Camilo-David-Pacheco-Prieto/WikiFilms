@@ -34,12 +34,20 @@ export default async function Navbar() {
             Explorar
           </Link>
           {user && (
-            <Link
-              href="/dashboard"
-              className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
-            >
-              Favoritos
-            </Link>
+            <>
+              <Link
+                href="/dashboard"
+                className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
+              >
+                Favoritos
+              </Link>
+              <Link
+                href="/watchlist"
+                className="font-body text-sm font-medium text-text-secondary transition-colors hover:text-white"
+              >
+                Mi lista
+              </Link>
+            </>
           )}
         </nav>
 

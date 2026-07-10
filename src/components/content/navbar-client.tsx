@@ -64,6 +64,13 @@ export function NavbarClient({ user }: NavbarClientProps) {
               >
                 Favoritos
               </Link>
+              <Link
+                href="/watchlist"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white md:hover:bg-transparent"
+              >
+                Mi lista
+              </Link>
               {user.role === "ADMIN" && (
                 <Link
                   href="/admin/users"

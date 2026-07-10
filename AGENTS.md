@@ -178,7 +178,7 @@ pnpm prisma migrate deploy # Migrar DB producción (Vercel)
 TMDB_API_KEY=2b4a72141ca6729ae43afd155ad04ef0
 DATABASE_URL=<pegar desde Vercel Postgres>
 AUTH_SECRET=<generar con: openssl rand -base64 32>
-NEXTAUTH_URL=https://wikifilms.vercel.app
+NEXTAUTH_URL=https://wiki-films-fawn.vercel.app
 ```
 
 #### 4. Migrar esquema
