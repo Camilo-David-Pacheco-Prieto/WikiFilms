@@ -36,47 +36,45 @@ export function NavbarClient({ user }: NavbarClientProps) {
       )}
 
       <nav
-        className={`fixed left-0 right-0 top-16 z-50 border-b border-border-subtle bg-base/95 backdrop-blur-xl transition-transform duration-300 md:static md:flex md:items-center md:gap-6 md:border-none md:bg-transparent md:backdrop-blur-none md:translate-x-0 ${
-          open
-            ? "translate-x-0"
-            : "-translate-x-full md:translate-x-0"
+        className={`fixed left-0 right-0 top-16 z-50 border-b border-border-subtle bg-base/95 backdrop-blur-xl transition-transform duration-300 md:hidden ${
+          open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex flex-col gap-2 px-4 py-4 md:flex-row md:items-center md:px-0 md:py-0">
+        <div className="flex flex-col gap-2 px-4 py-4">
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white md:hover:bg-transparent"
+            className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
           >
             {t("nav.home")}
           </Link>
           <Link
             href="/search"
             onClick={() => setOpen(false)}
-            className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white md:hover:bg-transparent"
+            className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
           >
             {t("nav.explore")}
           </Link>
-          <span className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-text-secondary/50">
-            {t("footer.community")}
-            <span className="rounded border border-border-subtle px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-text-secondary/50">
-              {t("footer.comingSoon")}
-            </span>
-          </span>
           {user && (
             <>
-              <hr className="border-border-subtle md:hidden" />
+              <hr className="border-border-subtle" />
+              <span className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-text-secondary/50">
+                {t("footer.community")}
+                <span className="rounded border border-border-subtle px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-text-secondary/50">
+                  {t("footer.comingSoon")}
+                </span>
+              </span>
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white md:hover:bg-transparent"
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
               >
                 {t("nav.favorites")}
               </Link>
               <Link
                 href="/watchlist"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white md:hover:bg-transparent"
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
               >
                 {t("nav.watchlist")}
               </Link>
@@ -84,7 +82,7 @@ export function NavbarClient({ user }: NavbarClientProps) {
                 <Link
                   href="/admin/users"
                   onClick={() => setOpen(false)}
-                  className="rounded-md px-3 py-2 text-sm font-medium text-accent-brand transition-colors hover:bg-surface md:hover:bg-transparent"
+                  className="rounded-md px-3 py-2 text-sm font-medium text-accent-brand transition-colors hover:bg-surface"
                 >
                   {t("nav.admin")}
                 </Link>
