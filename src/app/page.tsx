@@ -11,10 +11,10 @@ interface Props {
   searchParams: Promise<{ genre?: string }>;
 }
 
-async function PopularMovies({ genreId, title }: { genreId?: number; title: string }) {
+async function PopularMovies({ genreId, title, locale }: { genreId?: number; title: string; locale?: string }) {
   const movies = genreId
-    ? await getByGenre("movie", genreId)
-    : await getPopular("movie");
+    ? await getByGenre("movie", genreId, 1, locale)
+    : await getPopular("movie", 1, locale);
   return (
     <ContentGrid
       title={title}
@@ -24,10 +24,10 @@ async function PopularMovies({ genreId, title }: { genreId?: number; title: stri
   );
 }
 
-async function PopularSeries({ genreId, title }: { genreId?: number; title: string }) {
+async function PopularSeries({ genreId, title, locale }: { genreId?: number; title: string; locale?: string }) {
   const series = genreId
-    ? await getByGenre("tv", genreId)
-    : await getPopular("tv");
+    ? await getByGenre("tv", genreId, 1, locale)
+    : await getPopular("tv", 1, locale);
   return (
     <ContentGrid
       title={title}
@@ -43,7 +43,7 @@ export default async function HomePage({ searchParams }: Props) {
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
 
-  const popular = await getPopular("movie", 1);
+  const popular = await getPopular("movie", 1, locale);
   const backdrops = popular
     .map((m) => m.backdropUrl)
     .filter((u): u is string => u !== null)
@@ -71,14 +71,14 @@ export default async function HomePage({ searchParams }: Props) {
         key={`movies-${genreId ?? "all"}`}
         fallback={<SkeletonGrid title={dict["home.popularMovies"]} />}
       >
-        <PopularMovies genreId={genreId} title={dict["home.popularMovies"]} />
+        <PopularMovies genreId={genreId} title={dict["home.popularMovies"]} locale={locale} />
       </Suspense>
 
       <Suspense
         key={`series-${genreId ?? "all"}`}
         fallback={<SkeletonGrid title={dict["home.popularSeries"]} />}
       >
-        <PopularSeries genreId={genreId} title={dict["home.popularSeries"]} />
+        <PopularSeries genreId={genreId} title={dict["home.popularSeries"]} locale={locale} />
       </Suspense>
     </main>
   );

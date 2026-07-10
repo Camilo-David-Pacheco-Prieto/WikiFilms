@@ -10,6 +10,8 @@
   "nav.openMenu": "Abrir menu",
   "nav.closeMenu": "Cerrar menu",
   "nav.language": "Idioma",
+  "nav.searchPlaceholder": "Buscar peliculas o series...",
+  "nav.comingSoon": "Proximamente",
 
   "home.title": "WikiFilms",
   "home.subtitle": "Tu enciclopedia cinematografica personal. Explora las peliculas y series mas populares, descubre detalles y encuentra tu proxima historia favorita.",
@@ -157,6 +159,16 @@
   "admin.heading": "Administrar usuarios",
   "admin.accessDenied": "Acceso denegado",
   "admin.invalidData": "Datos invalidos",
+
+  "comingSoon.title": "Proximamente \u2014 WikiFilms",
+  "comingSoon.heading": "Proximamente",
+  "comingSoon.description": "Estamos trabajando en nuevas secciones para WikiFilms. Mantente atento a estas proximas funcionalidades:",
+  "comingSoon.actors": "Actores y Directores",
+  "comingSoon.actorsDesc": "Biografias, filmografias y datos de tus actores y directores favoritos.",
+  "comingSoon.books": "Libros y Comics",
+  "comingSoon.booksDesc": "Base de datos de libros y comics relacionados con peliculas y series.",
+  "comingSoon.announcements": "Anuncios y Novedades",
+  "comingSoon.announcementsDesc": "Noticias, actualizaciones y anuncios sobre WikiFilms.",
 
   "api.nameTooShort": "Nombre muy corto",
   "api.invalidEmail": "Correo invalido",

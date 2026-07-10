@@ -27,11 +27,11 @@ export function UserDropdown({ name, role }: UserDropdownProps) {
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div className="absolute right-0 top-full z-20 mt-1 w-48 rounded-md border border-border-subtle bg-surface py-1 shadow-lg">
             <Link
-              href="/dashboard"
+              href="/coming-soon"
               onClick={() => setOpen(false)}
               className="block px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
             >
-              {t("userDropdown.favorites")}
+              {t("nav.comingSoon")}
             </Link>
             <Link
               href="/settings"

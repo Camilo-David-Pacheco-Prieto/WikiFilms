@@ -23,7 +23,7 @@ export default async function SearchPage({ searchParams }: Props) {
   if (q) {
     const trimmed = q.trim();
     if (trimmed) {
-      const data = await searchContent(trimmed, mediaType as MediaType, currentPage);
+      const data = await searchContent(trimmed, mediaType as MediaType, currentPage, locale);
       results = data.results;
       totalPages = data.totalPages;
     }

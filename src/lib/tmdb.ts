@@ -17,13 +17,18 @@ const IMG_BASE_URL_LARGE = "https://image.tmdb.org/t/p/w780";
 const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280";
 const LOGO_BASE_URL = "https://image.tmdb.org/t/p/w92";
 
+function localeToTMDBlang(locale?: string): string {
+  return locale === "es" ? "es-ES" : "en-US";
+}
+
 async function fetchFromTMDB<T>(
   endpoint: string,
   params?: Record<string, string>,
+  lang?: string,
 ): Promise<T> {
   const url = new URL(`${BASE_URL}${endpoint}`);
   url.searchParams.set("api_key", TMDB_API_KEY ?? "");
-  url.searchParams.set("language", "es-ES");
+  url.searchParams.set("language", lang ?? "es-ES");
   if (params) {
     Object.entries(params).forEach(([key, value]) =>
       url.searchParams.set(key, value),
@@ -78,10 +83,12 @@ function mapSeriesToResult(series: TMDBSeries): ContentResult {
 export async function getPopular(
   type: MediaType = "movie",
   page = 1,
+  locale?: string,
 ): Promise<ContentResult[]> {
   const data = await fetchFromTMDB<TMDBPaginatedResponse<any>>(
     `/${type}/popular`,
     { page: String(page) },
+    localeToTMDBlang(locale),
   );
 
   return data.results.map((item: any) =>
@@ -95,12 +102,13 @@ export async function searchContent(
   query: string,
   type?: MediaType,
   page = 1,
+  locale?: string,
 ): Promise<SearchResult> {
   const searchType = type ?? "multi";
   const data = await fetchFromTMDB<TMDBPaginatedResponse<any>>(`/search/${searchType}`, {
     query,
     page: String(page),
-  });
+  }, localeToTMDBlang(locale));
 
   const results = data.results
     .filter((item: any) => item.media_type !== "person")
@@ -180,17 +188,17 @@ function mapSeriesToDetail(series: TMDBSeries): ContentDetail {
   };
 }
 
-export async function getMovieDetail(id: number): Promise<ContentDetail> {
+export async function getMovieDetail(id: number, locale?: string): Promise<ContentDetail> {
   const movie = await fetchFromTMDB<TMDBMovie>(`/movie/${id}`, {
     append_to_response: "credits,videos",
-  });
+  }, localeToTMDBlang(locale));
   return mapMovieToDetail(movie);
 }
 
-export async function getSeriesDetail(id: number): Promise<ContentDetail> {
+export async function getSeriesDetail(id: number, locale?: string): Promise<ContentDetail> {
   const series = await fetchFromTMDB<TMDBSeries>(`/tv/${id}`, {
     append_to_response: "credits,videos",
-  });
+  }, localeToTMDBlang(locale));
   return mapSeriesToDetail(series);
 }
 
@@ -198,10 +206,12 @@ export async function getByGenre(
   type: MediaType = "movie",
   genreId: number,
   page = 1,
+  locale?: string,
 ): Promise<ContentResult[]> {
   const data = await fetchFromTMDB<TMDBPaginatedResponse<TMDBMovie>>(
     `/discover/${type}`,
     { with_genres: String(genreId), page: String(page) },
+    localeToTMDBlang(locale),
   );
 
   return data.results.map(type === "movie" ? mapMovieToResult : (item: any) => mapSeriesToResult(item as TMDBSeries));
@@ -210,9 +220,12 @@ export async function getByGenre(
 export async function getWatchProviders(
   type: MediaType,
   id: number,
+  locale?: string,
 ): Promise<TMDBWatchProvidersResponse> {
   return fetchFromTMDB<TMDBWatchProvidersResponse>(
     `/${type}/${id}/watch/providers`,
+    undefined,
+    localeToTMDBlang(locale),
   );
 }
 

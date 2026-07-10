@@ -19,7 +19,8 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { id } = await params;
-    const movie = await getMovieDetail(Number(id));
+    const locale = await getServerLocale();
+    const movie = await getMovieDetail(Number(id), locale);
     return {
       title: `${movie.title} (${movie.year}) — WikiFilms`,
       description: movie.overview.slice(0, 160),
@@ -54,9 +55,9 @@ export default async function MoviePage({ params }: Props) {
 
   try {
     [movie, popular, watchProviders] = await Promise.all([
-      getMovieDetail(Number(id)),
-      getPopular("movie"),
-      getWatchProviders("movie", Number(id)).catch(() => null),
+      getMovieDetail(Number(id), locale),
+      getPopular("movie", 1, locale),
+      getWatchProviders("movie", Number(id), locale).catch(() => null),
     ]);
   } catch {
     notFound();
