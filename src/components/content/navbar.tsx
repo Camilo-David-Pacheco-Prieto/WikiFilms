@@ -5,6 +5,7 @@ import { NavbarClient } from "./navbar-client";
 import { UserDropdown } from "./user-dropdown";
 import { LanguageSwitcher } from "./language-switcher";
 import { SearchBar } from "./search-bar";
+import { NavLink } from "./nav-link";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 
@@ -28,32 +29,12 @@ export default async function Navbar() {
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
-            <Link
-              href="/"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-white"
-            >
-              {dict["nav.home"]}
-            </Link>
-            <Link
-              href="/search"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-white"
-            >
-              {dict["nav.explore"]}
-            </Link>
+            <NavLink href="/">{dict["nav.home"]}</NavLink>
+            <NavLink href="/search">{dict["nav.explore"]}</NavLink>
             {user && (
               <>
-                <Link
-                  href="/watchlist"
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-white"
-                >
-                  {dict["nav.watchlist"]}
-                </Link>
-                <Link
-                  href="/coming-soon"
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-white"
-                >
-                  {dict["nav.comingSoon"]}
-                </Link>
+                <NavLink href="/watchlist">{dict["nav.watchlist"]}</NavLink>
+                <NavLink href="/coming-soon">{dict["nav.comingSoon"]}</NavLink>
               </>
             )}
           </nav>

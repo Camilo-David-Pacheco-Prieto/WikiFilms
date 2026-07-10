@@ -46,20 +46,6 @@ export function UserDropdown({ name, role }: UserDropdownProps) {
               {t("userDropdown.favorites")}
             </Link>
             <Link
-              href="/coming-soon"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              {t("nav.comingSoon")}
-            </Link>
-            <Link
-              href="/watchlist"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              {t("nav.watchlist")}
-            </Link>
-            <Link
               href="/settings"
               onClick={() => setOpen(false)}
               className="block px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
