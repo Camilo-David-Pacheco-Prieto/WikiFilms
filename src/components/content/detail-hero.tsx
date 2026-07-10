@@ -25,7 +25,31 @@ export function DetailHero({ content }: DetailHeroProps) {
             sizes="100vw"
             priority
           />
-          <div className="absolute inset-0 bg-surface-glass backdrop-blur-xl" />
+
+          {content.trailerKey && (
+            <div className="absolute inset-0 overflow-hidden hidden md:block">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${content.trailerKey}?autoplay=1&mute=1&loop=1&playlist=${content.trailerKey}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`}
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                style={{
+                  width: "177.78vh",
+                  height: "56.25vw",
+                  minWidth: "100%",
+                  minHeight: "100%",
+                }}
+                allow="autoplay"
+                title=""
+              />
+            </div>
+          )}
+
+          <div
+            className={`absolute inset-0 transition-all duration-500 ${
+              content.trailerKey
+                ? "bg-black/50"
+                : "bg-surface-glass backdrop-blur-xl"
+            }`}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-base via-base/50 to-transparent" />
         </div>
       )}
