@@ -82,13 +82,16 @@ model Review {
 }
 
 model ReviewComment {
-  id        String   @id @default(cuid())
+  id        String         @id @default(cuid())
   reviewId  String
   userId    String
+  parentId  String?
   comment   String
-  createdAt DateTime @default(now())
-  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+  review    Review         @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    ReviewComment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   ReviewComment[] @relation("CommentReplies")
 }
 
 model ReviewReaction {

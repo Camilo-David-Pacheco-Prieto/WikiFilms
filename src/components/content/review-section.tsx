@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslate, useLanguage } from "@/i18n/language-provider";
 import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
@@ -23,6 +23,13 @@ interface ReviewComment {
   comment: string;
   createdAt: string;
   user: { id: string; name: string };
+  parentId: string | null;
+  parentUser: string | null;
+}
+
+interface CommentNode extends ReviewComment {
+  children: CommentNode[];
+  depth: number;
 }
 
 interface ReviewSectionProps {
@@ -37,13 +44,53 @@ function CommentSection({ reviewId, contentType }: { reviewId: string; contentTy
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const replyInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch(`/api/reviews/${reviewId}/comments`)
       .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
-      .then(setComments)
+      .then((data: ReviewComment[]) => {
+        setComments(data);
+        const map = new Map<string, { children: number; depth: number }>();
+        data.forEach((c) => map.set(c.id, { children: 0, depth: 0 }));
+        data.forEach((c) => {
+          if (c.parentId && map.has(c.parentId)) {
+            const child = map.get(c.id)!;
+            child.depth = map.get(c.parentId)!.depth + 1;
+            map.get(c.parentId)!.children++;
+          }
+        });
+        const initial = new Set<string>();
+        map.forEach((node, id) => {
+          if (node.depth >= 2 && node.children > 0) initial.add(id);
+        });
+        setCollapsed(initial);
+      })
       .catch(() => setComments([]));
   }, [reviewId]);
+
+  function buildTree(): CommentNode[] {
+    const map = new Map<string, CommentNode>();
+    const roots: CommentNode[] = [];
+
+    comments.forEach((c) => {
+      map.set(c.id, { ...c, children: [], depth: 0 });
+    });
+
+    comments.forEach((c) => {
+      const node = map.get(c.id)!;
+      if (c.parentId && map.has(c.parentId)) {
+        node.depth = map.get(c.parentId)!.depth + 1;
+        map.get(c.parentId)!.children.push(node);
+      } else {
+        roots.push(node);
+      }
+    });
+
+    return roots;
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -54,42 +101,151 @@ function CommentSection({ reviewId, contentType }: { reviewId: string; contentTy
       const res = await fetch(`/api/reviews/${reviewId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comment: text.trim(), contentType }),
+        body: JSON.stringify({ comment: text.trim(), contentType, parentId: replyingTo || undefined }),
       });
       if (res.ok) {
         const data = await res.json();
+        data.parentUser = null;
         setComments((prev) => [...prev, data]);
         setText("");
+        setReplyingTo(null);
       } else {
         setError("Error al enviar comentario");
         setTimeout(() => setError(""), 3000);
       }
     } catch {
-      setError("Error de conexión");
+      setError("Error de conexion");
       setTimeout(() => setError(""), 3000);
     } finally {
       setLoading(false);
     }
   }
 
+  function startReply(commentId: string) {
+    setReplyingTo(commentId);
+    setText("");
+    setTimeout(() => replyInputRef.current?.focus(), 100);
+  }
+
+  function cancelReply() {
+    setReplyingTo(null);
+    setText("");
+  }
+
+  function toggleReplies(commentId: string) {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(commentId)) next.delete(commentId);
+      else next.add(commentId);
+      return next;
+    });
+  }
+
+  function renderComment(node: CommentNode): React.ReactNode {
+    const childrenCollapsed = collapsed.has(node.id);
+    const showReplyForm = replyingTo === node.id;
+
+    return (
+      <div key={node.id} className={node.depth > 0 ? "ml-6 border-l border-border-subtle pl-4" : ""}>
+        <div className="rounded bg-base/50 px-3 py-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-white">{node.user.name}</span>
+            {node.parentUser && (
+              <span className="text-xs text-text-secondary/60">
+                {t("reviews.repliedTo").replace("{name}", node.parentUser)}
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-text-secondary">{node.comment}</p>
+          <div className="mt-1 flex items-center gap-3">
+            <span className="text-[10px] text-text-secondary/40">
+              {new Date(node.createdAt).toLocaleDateString("es-CO", {
+                year: "numeric", month: "short", day: "numeric",
+              })}
+            </span>
+            {session?.user && (
+              <button
+                onClick={() => startReply(node.id)}
+                className="text-[10px] text-accent-brand transition-colors hover:text-accent-hover"
+              >
+                {t("reviews.reply")}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {showReplyForm && (
+          <div className={node.depth > 0 ? "ml-6 mt-2" : "mt-2"}>
+            <form onSubmit={submit} className="flex gap-2">
+              <input
+                ref={replyInputRef}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                maxLength={500}
+                placeholder={t("reviews.commentPlaceholder")}
+                className="min-w-0 flex-1 rounded-md border border-border-subtle bg-base px-3 py-1.5 text-xs text-white outline-none transition-colors focus:border-accent-brand"
+              />
+              <button
+                type="submit"
+                disabled={loading || !text.trim()}
+                className="shrink-0 rounded-md bg-accent-brand px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+              >
+                {t("reviews.commentButton")}
+              </button>
+              <button
+                type="button"
+                onClick={cancelReply}
+                className="shrink-0 rounded-md border border-border-subtle px-3 py-1.5 text-xs text-text-secondary transition-colors hover:text-white"
+              >
+                {t("reviews.cancel")}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {node.children.length > 0 && (
+          <>
+            {childrenCollapsed ? (
+              <button
+                onClick={() => toggleReplies(node.id)}
+                className="ml-6 mt-1 text-[10px] text-accent-brand transition-colors hover:text-accent-hover"
+              >
+                {t("reviews.viewMore").replace("{n}", String(node.children.length))}
+              </button>
+            ) : (
+              <>
+                {node.children.map(renderComment)}
+                {node.depth >= 2 && (
+                  <button
+                    onClick={() => toggleReplies(node.id)}
+                    className="ml-6 mt-1 text-[10px] text-text-secondary transition-colors hover:text-white"
+                  >
+                    {t("reviews.hideReplies")}
+                  </button>
+                )}
+              </>
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  const tree = buildTree();
+
   return (
     <div className="mt-3 space-y-2 border-t border-border-subtle pt-3">
-      {comments.length === 0 ? (
+      {tree.length === 0 ? (
         <p className="text-xs text-text-secondary/50">{t("reviews.noComments")}</p>
       ) : (
         <div className="max-h-48 space-y-2 overflow-y-auto">
-          {comments.map((c) => (
-            <div key={c.id} className="rounded bg-base/50 px-3 py-2">
-              <span className="text-xs font-medium text-white">{c.user.name}</span>
-              <p className="text-xs text-text-secondary">{c.comment}</p>
-            </div>
-          ))}
+          {tree.map(renderComment)}
         </div>
       )}
       {error && (
         <p className="text-xs text-red-500">{error}</p>
       )}
-      {session?.user && (
+      {session?.user && !replyingTo && (
         <form onSubmit={submit} className="flex gap-2">
           <input
             value={text}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import { useTranslate } from "@/i18n/language-provider";
 
@@ -32,16 +32,19 @@ const iconMap: Record<string, string> = {
   LIKE: "👍",
   DISLIKE: "👎",
   COMMENT: "💬",
+  REPLY: "💬",
 };
 
 const textKeyMap: Record<string, string> = {
   LIKE: "notifications.liked",
   DISLIKE: "notifications.disliked",
   COMMENT: "notifications.commented",
+  REPLY: "notifications.replied",
 };
 
 export function NotificationBell({ userId }: { userId: string }) {
   const t = useTranslate();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -93,9 +96,12 @@ export function NotificationBell({ userId }: { userId: string }) {
     setUnreadCount(0);
   }
 
-  function handleClick(n: Notification) {
-    markAsRead(n.id);
+  async function handleClick(n: Notification) {
+    await markAsRead(n.id);
     setOpen(false);
+    if (n.contentId && n.contentType) {
+      router.push(`/${n.contentType}/${n.contentId}`);
+    }
   }
 
   return (
@@ -136,10 +142,6 @@ export function NotificationBell({ userId }: { userId: string }) {
               </p>
             ) : (
               notifications.map((n) => {
-                const href = n.contentId && n.contentType
-                  ? `/${n.contentType}/${n.contentId}`
-                  : null;
-
                 const content = (
                   <div
                     className={`flex w-full gap-3 px-4 py-3 transition-colors hover:bg-base/50 ${
@@ -165,18 +167,6 @@ export function NotificationBell({ userId }: { userId: string }) {
                     )}
                   </div>
                 );
-
-                if (href) {
-                  return (
-                    <Link
-                      key={n.id}
-                      href={href}
-                      onClick={() => handleClick(n)}
-                    >
-                      {content}
-                    </Link>
-                  );
-                }
 
                 return (
                   <button
