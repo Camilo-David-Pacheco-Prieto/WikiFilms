@@ -10,8 +10,10 @@ interface Notification {
   actorName: string;
   type: string;
   reviewId: string | null;
+  commentId: string | null;
   contentId: number | null;
   contentType: string | null;
+  message: string | null;
   read: boolean;
   createdAt: string;
 }
@@ -158,7 +160,12 @@ export function NotificationBell({ userId }: { userId: string }) {
     await markAsRead(n.id);
     setOpen(false);
     if (n.contentId && n.contentType) {
-      const hash = n.reviewId ? `#review-${n.reviewId}` : "";
+      const isCommentNotif = n.type === "COMMENT_LIKE" || n.type === "COMMENT_DISLIKE";
+      const hash = isCommentNotif && n.commentId
+        ? `#comment-${n.commentId}`
+        : n.reviewId
+          ? `#review-${n.reviewId}`
+          : "";
       router.push(`/${n.contentType}/${n.contentId}${hash}`);
     }
   }
@@ -213,6 +220,11 @@ export function NotificationBell({ userId }: { userId: string }) {
                       <p className="text-xs text-text-secondary">
                         {t(textKeyMap[n.type] ?? "notifications.commented")}
                       </p>
+                      {n.message && (
+                        <p className="mt-0.5 truncate text-[10px] text-text-secondary/40">
+                          &ldquo;{n.message}&rdquo;
+                        </p>
+                      )}
                       <p className="text-xs text-text-secondary/50">
                         {timeAgo(n.createdAt, t)}
                       </p>

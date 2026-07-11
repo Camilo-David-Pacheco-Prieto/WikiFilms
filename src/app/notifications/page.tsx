@@ -87,8 +87,14 @@ export default async function NotificationsPage() {
         ) : (
           <div className="mt-6 space-y-1">
             {notifications.map((n) => {
+              const isCommentNotif = n.type === "COMMENT_LIKE" || n.type === "COMMENT_DISLIKE";
+              const hash = isCommentNotif && n.commentId
+                ? `#comment-${n.commentId}`
+                : n.reviewId
+                  ? `#review-${n.reviewId}`
+                  : "";
               const href = n.contentId && n.contentType
-                ? `/${n.contentType}/${n.contentId}`
+                ? `/${n.contentType}/${n.contentId}${hash}`
                 : null;
 
               return (
@@ -107,6 +113,11 @@ export default async function NotificationsPage() {
                     <p className="text-xs text-text-secondary">
                       {textKeyMap[n.type] ?? dict["notifications.commented"]}
                     </p>
+                    {n.message && (
+                      <p className="mt-0.5 truncate text-[10px] text-text-secondary/40">
+                        &ldquo;{n.message}&rdquo;
+                      </p>
+                    )}
                     <p className="text-xs text-text-secondary/50">
                       {timeAgo(n.createdAt.toISOString())}
                     </p>

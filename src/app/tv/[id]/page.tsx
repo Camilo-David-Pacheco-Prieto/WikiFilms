@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { getSeriesDetail, getPopular, getWatchProviders } from "@/lib/tmdb";
+import { getSeriesDetail, getPopular, getRecommendations, getWatchProviders } from "@/lib/tmdb";
 import { DetailHero } from "@/components/content/detail-hero";
 import { ContentGrid } from "@/components/content/content-grid";
 import { FavoriteButton } from "@/components/content/favorite-button";
@@ -50,17 +50,21 @@ export default async function SeriesPage({ params }: Props) {
   const dict = await getDictionary(locale);
 
   let series;
-  let popular;
+  let recommendations;
   let watchProviders: TMDBWatchProvidersResponse | null = null;
 
   try {
-    [series, popular, watchProviders] = await Promise.all([
+    [series, recommendations, watchProviders] = await Promise.all([
       getSeriesDetail(Number(id), locale),
-      getPopular("tv", 1, locale),
+      getRecommendations("tv", Number(id), locale),
       getWatchProviders("tv", Number(id), locale).catch(() => null),
     ]);
   } catch {
     notFound();
+  }
+
+  if (recommendations.length === 0) {
+    recommendations = await getPopular("tv", 1, locale);
   }
 
   return (
@@ -91,7 +95,7 @@ export default async function SeriesPage({ params }: Props) {
       <ReviewSection contentId={series.id} contentType="tv" />
 
       <section className="mx-auto max-w-7xl px-4 py-16">
-        <ContentGrid title={dict["content.morePopularSeries"]} items={popular} />
+        <ContentGrid title={dict["content.recommendations"]} items={recommendations} />
       </section>
     </main>
   );

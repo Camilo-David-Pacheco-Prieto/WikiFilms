@@ -126,8 +126,10 @@ model Notification {
   actorId     String
   type        String
   reviewId    String?
+  commentId   String?
   contentId   Int?
   contentType String?
+  message     String?
   read        Boolean  @default(false)
   createdAt   DateTime @default(now())
 

@@ -13,14 +13,14 @@ export async function POST(
     }
 
     const { commentId } = await params;
-    const { type } = await req.json();
+    const { type, contentType } = await req.json();
     if (type !== "LIKE" && type !== "DISLIKE") {
       return NextResponse.json({ error: "Invalid reaction type" }, { status: 400 });
     }
 
     const comment = await prisma.reviewComment.findUnique({
       where: { id: commentId },
-      select: { userId: true, deletedAt: true },
+      select: { id: true, userId: true, comment: true, deletedAt: true, reviewId: true },
     });
 
     if (!comment) {
@@ -55,6 +55,11 @@ export async function POST(
     }
 
     if (comment.userId !== session.user.id) {
+      const parentReview = await prisma.review.findUnique({
+        where: { id: comment.reviewId },
+        select: { contentId: true },
+      });
+      const msg = comment.comment.length > 80 ? comment.comment.slice(0, 80) + "..." : comment.comment;
       for (let attempt = 0; attempt <= 1; attempt++) {
         try {
           await prisma.notification.create({
@@ -62,7 +67,11 @@ export async function POST(
               userId: comment.userId,
               actorId: session.user.id,
               type: type === "LIKE" ? "COMMENT_LIKE" : "COMMENT_DISLIKE",
-              reviewId: commentId,
+              reviewId: comment.reviewId,
+              commentId: comment.id,
+              contentId: parentReview?.contentId ?? null,
+              contentType: contentType ?? null,
+              message: msg,
             },
           });
           break;

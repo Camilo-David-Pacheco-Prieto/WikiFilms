@@ -260,6 +260,28 @@ export async function getTrending(
   );
 }
 
+export async function getRecommendations(
+  type: MediaType,
+  id: number,
+  locale?: string,
+): Promise<ContentResult[]> {
+  try {
+    const data = await fetchFromTMDB<TMDBPaginatedResponse<any>>(
+      `/${type}/${id}/recommendations`,
+      {},
+      localeToTMDBlang(locale),
+      localeToTMDBRegion(locale),
+    );
+    return data.results.map((item: any) =>
+      type === "movie"
+        ? mapMovieToResult(item as TMDBMovie)
+        : mapSeriesToResult(item as TMDBSeries),
+    );
+  } catch {
+    return [];
+  }
+}
+
 export const GENRE_MAP: Record<string, number> = {
   Acción: 28, Action: 28,
   Aventura: 12, Adventure: 12,

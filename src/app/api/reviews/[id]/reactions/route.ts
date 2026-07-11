@@ -48,6 +48,9 @@ export async function POST(
     }
 
     if (review.userId !== session.user.id) {
+      const msg = review.comment && review.comment.length > 80
+        ? review.comment.slice(0, 80) + "..."
+        : review.comment ?? "";
       for (let attempt = 0; attempt <= 1; attempt++) {
         try {
           await prisma.notification.create({
@@ -58,6 +61,7 @@ export async function POST(
               reviewId: review.id,
               contentId: review.contentId,
               contentType: contentType ?? null,
+              message: msg,
             },
           });
           break;

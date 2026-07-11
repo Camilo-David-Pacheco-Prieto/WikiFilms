@@ -104,14 +104,18 @@ export async function POST(
       }
     }
 
+    const msg = comment.trim().length > 80 ? comment.trim().slice(0, 80) + "..." : comment.trim();
+
     if (review.userId !== session.user.id) {
       await createNotif({
         userId: review.userId,
         actorId: session.user.id,
         type: "COMMENT",
         reviewId: review.id,
+        commentId: created.id,
         contentId,
         contentType: notifContentType,
+        message: msg,
       });
     }
 
@@ -126,8 +130,10 @@ export async function POST(
           actorId: session.user.id,
           type: "REPLY",
           reviewId: review.id,
+          commentId: created.id,
           contentId,
           contentType: notifContentType,
+          message: msg,
         });
       }
     }

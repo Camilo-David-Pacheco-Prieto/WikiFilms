@@ -265,7 +265,7 @@ function CommentSection({ reviewId, contentType }: { reviewId: string; contentTy
       const res = await fetch(`/api/reviews/${reviewId}/comments/${commentId}/reactions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type }),
+        body: JSON.stringify({ type, contentType }),
       });
       if (!res.ok) revert();
     } catch {
@@ -286,7 +286,7 @@ function CommentSection({ reviewId, contentType }: { reviewId: string; contentTy
 
     if (isDeleted) {
       return (
-        <div key={node.id} className={depthClass}>
+        <div key={node.id} id={"comment-" + node.id} className={depthClass}>
           <div className="rounded bg-base/30 px-3 py-2 opacity-60">
             <p className="text-xs italic text-text-secondary/50">{t("reviews.deleted")}</p>
           </div>
@@ -298,7 +298,7 @@ function CommentSection({ reviewId, contentType }: { reviewId: string; contentTy
     }
 
     return (
-      <div key={node.id} className={depthClass}>
+      <div key={node.id} id={"comment-" + node.id} className={depthClass}>
         <div className="rounded bg-base/50 px-3 py-2">
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-white">{node.user.name}</span>
@@ -547,12 +547,9 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
       .catch(() => setReviews([]));
   }, [contentId, session]);
 
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (!hash.startsWith("#review-")) return;
-    const id = hash.replace("#review-", "");
+  function scrollToEl(id: string) {
     setHighlightId(id);
-    const el = document.getElementById(`review-${id}`);
+    const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
       setTimeout(() => {
@@ -562,6 +559,15 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
           setHighlightId(null);
         }, 2000);
       }, 500);
+    }
+  }
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash.startsWith("#review-")) {
+      scrollToEl(hash.replace("#review-", "review-"));
+    } else if (hash.startsWith("#comment-")) {
+      scrollToEl(hash.replace("#", ""));
     }
   }, []);
 
