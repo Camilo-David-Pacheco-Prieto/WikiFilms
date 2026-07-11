@@ -38,7 +38,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
   if (!current) return null;
 
   return (
-    <section className="relative h-[360px] overflow-hidden rounded-none md:h-[500px] md:rounded-2xl md:shadow-[0_20px_60px_rgba(0,0,0,0.45)] lg:h-[540px] lg:rounded-3xl">
+    <section className="relative h-[360px] overflow-hidden rounded-none md:h-[500px] md:rounded-2xl md:shadow-[0_20px_60px_rgba(0,0,0,0.45)] lg:h-[460px] lg:rounded-3xl">
       {slides.map((item, i) => (
         <div
           key={item.id}
@@ -57,7 +57,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
           ) : (
             <div className="h-full w-full bg-surface" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/85 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/90 to-transparent" />
         </div>
       ))}
 
@@ -68,7 +68,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
               {t("hero.trending")}
             </span>
 
-            <h2 className="font-display text-[34px] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white line-clamp-2 md:text-[48px] lg:text-[64px]">
+            <h2 className="font-display text-[34px] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white line-clamp-2 md:text-[48px]">
               {current.title}
             </h2>
 
@@ -79,7 +79,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
             )}
 
             {current.overview && (
-              <p className="text-[15px] leading-relaxed text-white/80 line-clamp-3 md:text-base lg:text-[18px] lg:leading-[1.7]">
+              <p className="text-[15px] leading-relaxed text-white line-clamp-3 md:text-base lg:text-[18px] lg:leading-[1.7]">
                 {current.overview}
               </p>
             )}
