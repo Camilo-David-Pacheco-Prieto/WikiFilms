@@ -63,26 +63,26 @@ export function HeroSlider({ items }: HeroSliderProps) {
 
       <div className="relative z-10 flex h-full items-center">
         <div className="mx-auto flex w-full max-w-7xl px-2 md:px-12">
-          <div className="w-full px-3 py-3 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
+          <div className="w-full px-3 py-5 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
             <span className="inline-block w-fit rounded-[4px] bg-accent-brand/20 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wider text-accent-brand md:rounded-[10px] md:px-3.5 md:py-2 md:text-sm">
               #{currentIndex + 1} · {t("hero.trending")}
             </span>
 
             <h2 className="mt-1.5 font-display text-[14px] font-black uppercase leading-[1] tracking-[-0.03em] text-white line-clamp-1 md:mt-4 md:text-[48px] md:line-clamp-2"
-                style={{ textShadow: "0 1px 8px rgba(0,0,0,0.8)" }}>
+                style={{ textShadow: "0 0 6px rgba(0,0,0,0.25)" }}>
               {current.title}
             </h2>
 
             {current.genres.length > 0 && (
               <p className="mt-1 text-[7px] text-white/60 md:mt-2 md:text-sm"
-                 style={{ textShadow: "0 1px 6px rgba(0,0,0,0.7)" }}>
+                 style={{ textShadow: "0 0 6px rgba(0,0,0,0.25)" }}>
                 {current.genres.join(" · ")}
               </p>
             )}
 
             {current.overview && (
-              <p className="mt-1.5 text-[7px] leading-snug text-accent-brand line-clamp-3 md:mt-2 md:text-base lg:text-[18px] lg:leading-[1.7] lg:line-clamp-3"
-                 style={{ textShadow: "0 1px 8px rgba(0,0,0,0.85)" }}>
+              <p className="mt-1.5 font-display text-[7px] leading-snug text-white line-clamp-3 md:mt-2 md:text-base lg:text-[18px] lg:leading-[1.7] lg:line-clamp-3"
+                 style={{ textShadow: "0 0 6px rgba(0,0,0,0.25)" }}>
                 {current.overview}
               </p>
             )}
