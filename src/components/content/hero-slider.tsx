@@ -38,7 +38,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
   if (!current) return null;
 
   return (
-    <section className="relative h-[260px] overflow-hidden rounded-none md:h-[500px] md:rounded-2xl md:shadow-[0_20px_60px_rgba(0,0,0,0.45)] lg:h-[460px] lg:rounded-3xl">
+    <section className="relative h-[180px] overflow-hidden rounded-2xl md:h-[500px] md:rounded-2xl md:shadow-[0_20px_60px_rgba(0,0,0,0.45)] lg:h-[460px] lg:rounded-3xl">
       {slides.map((item, i) => (
         <div
           key={item.id}
@@ -62,36 +62,33 @@ export function HeroSlider({ items }: HeroSliderProps) {
       ))}
 
       <div className="relative z-10 flex h-full items-center">
-        <div className="mx-auto flex w-full max-w-7xl px-6 md:px-12">
-          <div className="w-full p-5 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
-            <span className="inline-block w-fit rounded-[8px] bg-accent-brand/20 px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-accent-brand md:rounded-[10px] md:px-3.5 md:py-2 md:text-sm">
+        <div className="mx-auto flex w-full max-w-7xl px-4 md:px-12">
+          <div className="w-full p-4 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
+            <span className="inline-block w-fit rounded-[6px] bg-accent-brand/20 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-accent-brand md:rounded-[10px] md:px-3.5 md:py-2 md:text-sm">
               #{currentIndex + 1} · {t("hero.trending")}
             </span>
 
-            <h2 className="mt-3 font-display text-[22px] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white line-clamp-2 md:mt-4 md:text-[48px]">
+            <h2 className="mt-2 font-display text-[16px] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white line-clamp-1 md:mt-4 md:text-[48px] md:line-clamp-2">
               {current.title}
             </h2>
 
             {current.genres.length > 0 && (
-              <p className="mt-1.5 text-[10px] text-white/60 md:mt-2 md:text-sm">
+              <p className="mt-1 text-[8px] text-white/60 md:mt-2 md:text-sm">
                 {current.genres.join(" · ")}
               </p>
             )}
 
             {current.overview && (
-              <p
-                className="mt-1.5 text-[12px] leading-relaxed text-white line-clamp-2 md:mt-2 md:text-base lg:text-[18px] lg:leading-[1.7] lg:line-clamp-3"
-                style={{ textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
-              >
+              <p className="mt-1 text-[10px] leading-relaxed text-white line-clamp-1 md:mt-2 md:text-base lg:text-[18px] lg:leading-[1.7] lg:line-clamp-3">
                 {current.overview}
               </p>
             )}
 
             <Link
               href={`/${current.type}/${current.id}`}
-              className="mt-2 inline-flex h-8 items-center gap-1.5 rounded-[10px] bg-gradient-to-r from-accent-brand to-accent-hover px-4 text-[11px] font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30 md:mt-3 md:h-10 md:gap-2 md:rounded-[12px] md:px-5 md:text-sm"
+              className="mt-1.5 inline-flex h-6 items-center gap-1 rounded-[7px] bg-gradient-to-r from-accent-brand to-accent-hover px-3 text-[9px] font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30 md:mt-3 md:h-10 md:gap-2 md:rounded-[12px] md:px-5 md:text-sm"
             >
-              <Play className="h-3 w-3 fill-current md:h-4 md:w-4" />
+              <Play className="h-2.5 w-2.5 fill-current md:h-4 md:w-4" />
               {t("hero.viewInfo")}
             </Link>
           </div>
@@ -120,15 +117,15 @@ export function HeroSlider({ items }: HeroSliderProps) {
       )}
 
       {slides.length > 1 && (
-        <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 md:bottom-6">
+        <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 md:bottom-6 md:gap-2">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
               className="rounded-full transition-all duration-300"
               style={{
-                height: i === currentIndex ? "6px" : "6px",
-                width: i === currentIndex ? "20px" : "6px",
+                height: "4px",
+                width: i === currentIndex ? "12px" : "4px",
                 backgroundColor:
                   i === currentIndex
                     ? "var(--color-accent-brand, #e11d48)"
