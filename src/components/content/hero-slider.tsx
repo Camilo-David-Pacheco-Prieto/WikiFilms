@@ -81,14 +81,14 @@ export function HeroSlider({ items }: HeroSliderProps) {
             )}
 
             {current.overview && (
-              <p className="mt-2.5 text-[6px] leading-snug text-gray-200 line-clamp-2 md:mt-4 md:text-lg md:leading-[1.7] md:text-white lg:text-lg lg:leading-[1.7] lg:text-white lg:line-clamp-3">
+              <p className="mt-3 text-[6px] leading-snug text-gray-200 line-clamp-1 max-w-[80%] md:mt-4 md:max-w-none md:text-lg md:leading-[1.7] md:text-white lg:text-lg lg:leading-[1.7] lg:text-white lg:line-clamp-3">
                 {current.overview}
               </p>
             )}
 
             <Link
               href={`/${current.type}/${current.id}`}
-              className="mt-3 inline-flex h-4 items-center gap-1 rounded-[5px] bg-gradient-to-r from-accent-brand to-accent-hover px-2 text-[7px] font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30 md:mt-5 md:h-10 md:gap-2 md:rounded-[12px] md:px-5 md:text-sm"
+              className="mt-3.5 inline-flex h-4 items-center gap-1 rounded-[5px] bg-gradient-to-r from-accent-brand to-accent-hover px-2 text-[7px] font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30 md:mt-5 md:h-10 md:gap-2 md:rounded-[12px] md:px-5 md:text-sm"
             >
               <Play className="h-2 w-2 fill-current md:h-4 md:w-4" />
               {t("hero.viewInfo")}
