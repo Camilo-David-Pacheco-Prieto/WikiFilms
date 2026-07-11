@@ -81,7 +81,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
             )}
 
             {current.overview && (
-              <p className="mt-1.5 text-[7px] leading-snug text-gray-200 line-clamp-3 md:mt-2 md:text-base md:leading-[1.7] lg:text-base lg:leading-[1.7] lg:line-clamp-3">
+              <p className="mt-1.5 text-[7px] leading-snug text-gray-200 line-clamp-3 md:mt-2 md:text-lg md:leading-[1.7] md:text-white lg:text-lg lg:leading-[1.7] lg:text-white lg:line-clamp-3">
                 {current.overview}
               </p>
             )}
