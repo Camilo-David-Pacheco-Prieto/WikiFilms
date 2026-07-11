@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { getPopular, getByGenre, getTrending, GENRE_MAP } from "@/lib/tmdb";
 import { ContentGrid } from "@/components/content/content-grid";
 import { SkeletonGrid } from "@/components/content/skeleton-grid";
+import { SkeletonHero } from "@/components/content/skeleton-hero";
 import { GenreFilter } from "@/components/content/genre-filter";
 import { HeroSlider } from "@/components/content/hero-slider";
 import { getServerLocale } from "@/i18n/get-locale";
@@ -52,7 +53,7 @@ export default async function HomePage({ searchParams }: Props) {
 
   return (
     <main className="mx-auto max-w-7xl space-y-12 px-4 py-8">
-      <Suspense fallback={<div className="min-h-[400px] rounded-xl bg-surface md:min-h-[500px]" />}>
+      <Suspense fallback={<SkeletonHero />}>
         <HeroSection locale={locale} />
       </Suspense>
 

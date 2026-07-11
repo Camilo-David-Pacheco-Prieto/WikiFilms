@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { useTranslate } from "@/i18n/language-provider";
 import type { ContentResult } from "@/types/tmdb";
 
@@ -24,8 +25,20 @@ export function HeroSlider({ items }: HeroSliderProps) {
     return () => clearInterval(timer);
   }, [slides.length]);
 
+  const goTo = useCallback((index: number) => setCurrentIndex(index), []);
+  const prev = useCallback(
+    () => setCurrentIndex((p) => (p - 1 + slides.length) % slides.length),
+    [slides.length],
+  );
+  const next = useCallback(
+    () => setCurrentIndex((p) => (p + 1) % slides.length),
+    [slides.length],
+  );
+
+  if (!current) return null;
+
   return (
-    <section className="relative overflow-hidden rounded-xl">
+    <section className="relative h-[360px] overflow-hidden rounded-xl md:h-[500px] lg:h-[540px]">
       {slides.map((item, i) => (
         <div
           key={item.id}
@@ -48,52 +61,70 @@ export function HeroSlider({ items }: HeroSliderProps) {
         </div>
       ))}
 
-      <div className="relative z-10 flex min-h-[400px] items-center md:min-h-[500px]">
+      <div className="relative z-10 flex h-full items-center">
         <div className="mx-auto flex w-full max-w-7xl px-6 md:px-12">
-          <div className="max-w-xl space-y-4">
-            <span className="inline-block w-fit rounded bg-accent-brand/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-brand">
+          <div className="max-w-[700px] space-y-4 p-7 md:p-14 lg:p-16">
+            <span className="inline-block w-fit rounded-[10px] bg-accent-brand/20 px-3.5 py-2 text-sm font-bold uppercase tracking-wider text-accent-brand">
               {t("hero.trending")}
             </span>
 
-            <h2 className="font-display text-3xl font-black uppercase leading-tight text-white md:text-5xl">
-              {current?.title}
+            <h2 className="font-display text-[34px] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white line-clamp-2 md:text-[48px] lg:text-[64px]">
+              {current.title}
             </h2>
 
-            {current?.genres.length > 0 && (
-              <p className="text-sm text-text-secondary">
-                {current.genres.join(" · ")}
-              </p>
-            )}
-
-            {current?.overview && (
-              <p className="line-clamp-3 leading-relaxed text-text-secondary md:text-base">
+            {current.overview && (
+              <p className="max-w-[680px] text-[15px] leading-relaxed text-white/80 line-clamp-3 md:text-base lg:text-[18px] lg:leading-[1.7]">
                 {current.overview}
               </p>
             )}
 
-            {current && (
-              <Link
-                href={`/${current.type}/${current.id}`}
-                className="inline-block rounded-md bg-accent-brand px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-              >
-                {t("hero.watchNow")}
-              </Link>
-            )}
+            <Link
+              href={`/${current.type}/${current.id}`}
+              className="inline-flex h-12 items-center gap-2 rounded-[14px] bg-accent-brand px-6 text-base font-bold text-white transition-all hover:scale-105 hover:bg-accent-hover hover:shadow-lg hover:shadow-accent-brand/30 md:h-14 md:px-7 md:text-lg lg:h-16 lg:rounded-[18px] lg:px-7 lg:text-[22px] lg:font-extrabold"
+            >
+              <Play className="h-4 w-4 fill-current md:h-5 md:w-5 lg:h-6 lg:w-6" />
+              {t("hero.watchNow")}
+            </Link>
           </div>
         </div>
       </div>
 
       {slides.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-3 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md transition-all hover:bg-black/70 md:left-6 md:h-[60px] md:w-[60px]"
+            style={{ border: "1px solid rgba(255,255,255,0.12)" }}
+            aria-label="Previous"
+          >
+            <ChevronLeft className="h-5 w-5 md:h-7 md:w-7" />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-3 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md transition-all hover:bg-black/70 md:right-6 md:h-[60px] md:w-[60px]"
+            style={{ border: "1px solid rgba(255,255,255,0.12)" }}
+            aria-label="Next"
+          >
+            <ChevronRight className="h-5 w-5 md:h-7 md:w-7" />
+          </button>
+        </>
+      )}
+
+      {slides.length > 1 && (
+        <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
           {slides.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentIndex(i)}
-              className={`h-2 rounded-full transition-all ${
-                i === currentIndex
-                  ? "w-6 bg-accent-brand"
-                  : "w-2 bg-white/40 hover:bg-white/60"
-              }`}
+              onClick={() => goTo(i)}
+              className="rounded-full transition-all duration-300"
+              style={{
+                height: "8px",
+                width: i === currentIndex ? "28px" : "8px",
+                backgroundColor:
+                  i === currentIndex
+                    ? "var(--color-accent-brand, #e11d48)"
+                    : "rgba(255,255,255,0.35)",
+              }}
               aria-label={`Slide ${i + 1}`}
             />
           ))}
