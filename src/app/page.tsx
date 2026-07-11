@@ -2,9 +2,8 @@ import { Suspense } from "react";
 import { getPopular, getByGenre, getTrending, GENRE_MAP } from "@/lib/tmdb";
 import { ContentGrid } from "@/components/content/content-grid";
 import { SkeletonGrid } from "@/components/content/skeleton-grid";
-import { SkeletonHero } from "@/components/content/skeleton-hero";
 import { GenreFilter } from "@/components/content/genre-filter";
-import { HeroBackdrops } from "@/components/content/hero-backdrops";
+import { HeroSlider } from "@/components/content/hero-slider";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 
@@ -39,24 +38,10 @@ async function PopularSeries({ genreId, title, locale }: { genreId?: number; tit
 }
 
 async function HeroSection({ locale }: { locale: string }) {
-  const dict = await getDictionary(locale);
   const trending = await getTrending("all", 1, locale);
   const shuffled = [...trending].sort(() => Math.random() - 0.5);
-  const backdrops = shuffled
-    .map((m) => m.backdropUrl)
-    .filter((u): u is string => u !== null)
-    .slice(0, 12);
 
-  return (
-    <HeroBackdrops backdrops={backdrops}>
-      <h1 className="font-display text-5xl font-black uppercase tracking-tight text-white md:text-7xl">
-        {dict["home.title"]}
-      </h1>
-      <p className="mt-4 max-w-2xl text-lg text-text-secondary">
-        {dict["home.subtitle"]}
-      </p>
-    </HeroBackdrops>
-  );
+  return <HeroSlider items={shuffled} />;
 }
 
 export default async function HomePage({ searchParams }: Props) {
@@ -67,7 +52,7 @@ export default async function HomePage({ searchParams }: Props) {
 
   return (
     <main className="mx-auto max-w-7xl space-y-12 px-4 py-8">
-      <Suspense fallback={<SkeletonHero />}>
+      <Suspense fallback={<div className="min-h-[400px] rounded-xl bg-surface md:min-h-[500px]" />}>
         <HeroSection locale={locale} />
       </Suspense>
 

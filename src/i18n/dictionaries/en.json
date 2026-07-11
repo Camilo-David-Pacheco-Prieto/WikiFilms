@@ -13,6 +13,9 @@
   "nav.searchPlaceholder": "Search movies or series...",
   "nav.comingSoon": "Coming Soon",
 
+  "hero.trending": "Trending",
+  "hero.watchNow": "Watch now",
+
   "home.title": "WikiFilms",
   "home.subtitle": "Your personal movie encyclopedia. Explore the most popular movies and series, discover details, and find your next favorite story.",
   "home.filterByGenre": "Filter by genre",

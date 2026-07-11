@@ -66,6 +66,7 @@ function mapMovieToResult(movie: TMDBMovie): ContentResult {
       : null,
     rating: movie.vote_average,
     genres: movie.genres?.map((g) => g.name) ?? [],
+    overview: movie.overview ?? "",
   };
 }
 
@@ -83,6 +84,7 @@ function mapSeriesToResult(series: TMDBSeries): ContentResult {
       : null,
     rating: series.vote_average,
     genres: series.genres?.map((g) => g.name) ?? [],
+    overview: series.overview ?? "",
   };
 }
 

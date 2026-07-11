@@ -61,6 +61,7 @@ export interface ContentResult {
   backdropUrl: string | null;
   rating: number;
   genres: string[];
+  overview: string;
 }
 
 export interface SearchResult {
