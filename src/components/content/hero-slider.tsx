@@ -57,13 +57,13 @@ export function HeroSlider({ items }: HeroSliderProps) {
           ) : (
             <div className="h-full w-full bg-surface" />
           )}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, #09090b 0%, #09090b 65%, transparent 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(0,0,0,.88) 0%, rgba(0,0,0,.72) 45%, rgba(0,0,0,.35) 70%, rgba(0,0,0,0) 100%)" }} />
         </div>
       ))}
 
       <div className="relative z-10 flex h-full items-center">
         <div className="mx-auto flex w-full max-w-7xl px-2 md:px-12">
-          <div className="w-full px-3 py-5 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
+          <div className="w-full px-3 py-5 md:max-w-[560px] md:p-14 lg:max-w-[560px] lg:p-16">
             <span className="inline-block w-fit rounded-[4px] bg-accent-brand/20 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wider text-accent-brand md:rounded-[10px] md:px-3.5 md:py-2 md:text-sm">
               #{currentIndex + 1} · {t("hero.trending")}
             </span>
@@ -81,8 +81,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
             )}
 
             {current.overview && (
-              <p className="mt-1.5 font-display text-[7px] leading-snug text-white line-clamp-3 md:mt-2 md:text-base lg:text-[18px] lg:leading-[1.7] lg:line-clamp-3"
-                 style={{ textShadow: "0 0 6px rgba(0,0,0,0.25)" }}>
+              <p className="mt-1.5 text-[7px] leading-snug text-gray-200 line-clamp-3 md:mt-2 md:text-base md:leading-[1.7] lg:text-base lg:leading-[1.7] lg:line-clamp-3">
                 {current.overview}
               </p>
             )}
