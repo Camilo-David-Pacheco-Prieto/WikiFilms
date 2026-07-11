@@ -63,30 +63,30 @@ export function HeroSlider({ items }: HeroSliderProps) {
 
       <div className="relative z-10 flex h-full items-center">
         <div className="mx-auto flex w-full max-w-7xl px-6 md:px-12">
-          <div className="w-full space-y-4 p-7 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
+          <div className="w-full p-7 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
             <span className="inline-block w-fit rounded-[10px] bg-accent-brand/20 px-3.5 py-2 text-sm font-bold uppercase tracking-wider text-accent-brand">
               {t("hero.trending")}
             </span>
 
-            <h2 className="font-display text-[34px] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white line-clamp-2 md:text-[48px]">
+            <h2 className="mt-4 font-display text-[34px] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white line-clamp-2 md:text-[48px]">
               {current.title}
             </h2>
 
             {current.genres.length > 0 && (
-              <p className="text-xs text-white/60 md:text-sm">
+              <p className="mt-2 text-xs text-white/60 md:text-sm">
                 {current.genres.join(" · ")}
               </p>
             )}
 
             {current.overview && (
-              <p className="text-[15px] leading-relaxed text-white line-clamp-3 md:text-base lg:text-[18px] lg:leading-[1.7]">
+              <p className="mt-2 text-[15px] leading-relaxed text-white line-clamp-3 md:text-base lg:text-[18px] lg:leading-[1.7]">
                 {current.overview}
               </p>
             )}
 
             <Link
               href={`/${current.type}/${current.id}`}
-              className="inline-flex h-10 items-center gap-2 rounded-[12px] bg-gradient-to-r from-accent-brand to-accent-hover px-5 text-sm font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30"
+              className="mt-3 inline-flex h-10 items-center gap-2 rounded-[12px] bg-gradient-to-r from-accent-brand to-accent-hover px-5 text-sm font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30"
             >
               <Play className="h-4 w-4 fill-current" />
               {t("hero.viewInfo")}
