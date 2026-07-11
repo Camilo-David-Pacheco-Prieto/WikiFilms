@@ -3,31 +3,54 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id: reviewId } = await params;
+    const url = new URL(req.url);
+    const sort = url.searchParams.get("sort") || "new";
+
+    const orderBy =
+      sort === "old" ? { createdAt: "asc" as const } : { createdAt: "desc" as const };
 
     const comments = await prisma.reviewComment.findMany({
       where: { reviewId },
       include: {
         user: { select: { id: true, name: true } },
         parent: { select: { user: { select: { name: true } } } },
+        reactions: { select: { userId: true, type: true } },
+        _count: { select: { reactions: true } },
       },
-      orderBy: { createdAt: "asc" },
+      orderBy,
     });
 
-    const mapped = comments.map((c) => ({
-      id: c.id,
-      comment: c.comment,
-      createdAt: c.createdAt,
-      parentId: c.parentId,
-      userId: c.userId,
-      reviewId: c.reviewId,
-      user: c.user,
-      parentUser: c.parent?.user?.name ?? null,
-    }));
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    const mapped = comments.map((c) => {
+      const likes = c.reactions.filter((r) => r.type === "LIKE").length;
+      const dislikes = c.reactions.filter((r) => r.type === "DISLIKE").length;
+      const myReaction = userId
+        ? (c.reactions.find((r) => r.userId === userId)?.type ?? null)
+        : null;
+
+      return {
+        id: c.id,
+        comment: c.comment,
+        createdAt: c.createdAt,
+        editedAt: c.editedAt,
+        deletedAt: c.deletedAt,
+        parentId: c.parentId,
+        userId: c.userId,
+        reviewId: c.reviewId,
+        user: c.user,
+        parentUser: c.parent?.user?.name ?? null,
+        likes,
+        dislikes,
+        myReaction,
+      };
+    });
 
     return NextResponse.json(mapped);
   } catch (e) {
@@ -53,7 +76,7 @@ export async function POST(
       return NextResponse.json({ error: "Comment is required" }, { status: 400 });
     }
 
-    if (comment.length > 500) {
+    if (comment.length > 2000) {
       return NextResponse.json({ error: "Comment too long" }, { status: 400 });
     }
 
@@ -113,6 +136,11 @@ export async function POST(
       ...created,
       user: { id: session.user.id, name: session.user.name },
       parentUser: null,
+      likes: 0,
+      dislikes: 0,
+      myReaction: null,
+      editedAt: null,
+      deletedAt: null,
     });
   } catch (e) {
     console.error("POST comment error:", e);

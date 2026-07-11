@@ -18,6 +18,8 @@ const iconMap: Record<string, string> = {
   DISLIKE: "👎",
   COMMENT: "💬",
   REPLY: "💬",
+  COMMENT_LIKE: "👍",
+  COMMENT_DISLIKE: "👎",
 };
 
 function timeAgo(dateStr: string): string {
@@ -59,6 +61,8 @@ export default async function NotificationsPage() {
     DISLIKE: dict["notifications.disliked"],
     COMMENT: dict["notifications.commented"],
     REPLY: dict["notifications.replied"],
+    COMMENT_LIKE: dict["notifications.commentLiked"],
+    COMMENT_DISLIKE: dict["notifications.commentDisliked"],
   };
 
   return (

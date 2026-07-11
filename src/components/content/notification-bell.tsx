@@ -33,6 +33,8 @@ const iconMap: Record<string, string> = {
   DISLIKE: "👎",
   COMMENT: "💬",
   REPLY: "💬",
+  COMMENT_LIKE: "👍",
+  COMMENT_DISLIKE: "👎",
 };
 
 const textKeyMap: Record<string, string> = {
@@ -40,6 +42,8 @@ const textKeyMap: Record<string, string> = {
   DISLIKE: "notifications.disliked",
   COMMENT: "notifications.commented",
   REPLY: "notifications.replied",
+  COMMENT_LIKE: "notifications.commentLiked",
+  COMMENT_DISLIKE: "notifications.commentDisliked",
 };
 
 export function NotificationBell({ userId }: { userId: string }) {
