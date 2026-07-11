@@ -62,6 +62,9 @@ NEXTAUTH_URL=http://localhost:3000
 | /watchlist | Mi lista | Requiere sesion |
 | /notifications | Historial de notificaciones | Requiere sesion |
 | /admin/users | CRUD usuarios | Requiere ADMIN |
+| /api/reviews/[id]/comments/[commentId] | Editar/eliminar comentario | Requiere sesion + dueno |
+| /api/reviews/[id]/comments/[commentId]/reactions | Like/dislike comentario | Requiere sesion |
+| /api/notifications/stream | SSE notificaciones tiempo real | Requiere sesion |
 | /coming-soon | Proximas funcionalidades | Publica |
 
 ## Funcionalidades
@@ -70,12 +73,13 @@ NEXTAUTH_URL=http://localhost:3000
 - **Autenticacion** — Registro/login con username/password, bcrypt, sesiones via NextAuth
 - **Resenas** — Calificacion 1-10, comentario opcional, CRUD completo
 - **Reacciones** — Like/dislike con toggle on/off
-- **Comentarios anidados** — Respuestas con hilos, profundidad ilimitada, colapso tras 3 niveles
-- **Notificaciones** — Campana con badge, polling 30s, marcado como leidas, historial en /notifications
+- **Comentarios anidados** — Respuestas con hilos, profundidad ilimitada, colapso tras 3 niveles, edicion y eliminacion, reacciones 👍👎, sort (nuevos/antiguos/populares)
+- **Notificaciones** — Campana con badge, SSE en tiempo real, pendingReads evita race conditions, historial en /notifications
 - **Watchlist** — Marcar peliculas como vistas o por ver
 - **Favoritos** — Agregar/quitar favoritos
 - **Panel Admin** — CRUD de usuarios (solo ADMIN)
 - **Proveedores de streaming** — Por region (Colombia, Mexico, Argentina, etc.)
+- **TMDB LATAM** — Contenido en espanol latino (es-MX) con region Colombia (CO), trailers priorizan espanol
 
 ## Documentacion
 

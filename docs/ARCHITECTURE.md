@@ -9,18 +9,21 @@ src/
    login/page.tsx
    register/page.tsx
   admin/users/            # Panel admin
-  api/                    # API endpoints (Route Handlers)
-   auth/[...nextauth]/
-   auth/register/
-   auth/update/
-   favorites/
-   favorites/check/
-   notifications/
-   notifications/read-all/
-   reviews/
-   reviews/[id]/comments/
-   reviews/[id]/reactions/
-   watchlist/
+   api/                    # API endpoints (Route Handlers)
+    auth/[...nextauth]/
+    auth/register/
+    auth/update/
+    favorites/
+    favorites/check/
+    notifications/
+    notifications/read-all/
+    notifications/stream/   # SSE endpoint para notificaciones en tiempo real
+    reviews/
+    reviews/[id]/comments/
+    reviews/[id]/comments/[commentId]/          # PATCH editar, DELETE eliminar
+    reviews/[id]/comments/[commentId]/reactions/ # POST toggle like/dislike
+    reviews/[id]/reactions/
+    watchlist/
   dashboard/
   movie/[id]/
   tv/[id]/
@@ -34,13 +37,13 @@ src/
   page.tsx               # Home
  components/
   auth/                  # Formularios de login/registro
-  content/               # Componentes de contenido
-   content-card.tsx
-   content-grid.tsx
-   detail-hero.tsx
-   navbar.tsx
-   review-section.tsx    # Resenas + reacciones + comentarios anidados
-   notification-bell.tsx # Campana de notificaciones con dropdown
+   content/               # Componentes de contenido
+    content-card.tsx
+    content-grid.tsx
+    detail-hero.tsx
+    navbar.tsx
+    review-section.tsx    # Resenas + reacciones + comentarios anidados con edit/delete/reactions/sort
+    notification-bell.tsx # Campana de notificaciones con dropdown + SSE cliente
   ui/                    # Componentes shadcn/ui base
  lib/
   auth.ts                # Configuracion NextAuth (handlers + adapter)
@@ -63,6 +66,12 @@ Los endpoints siguen el patron:
 - Try-catch con NextResponse.json(error, status: 500)
 - Prisma queries directas (sin incluir en create para evitar transacciones en Neon HTTP)
 
+### SSE (Server-Sent Events)
+- Endpoint `/api/notifications/stream` usa `ReadableStream` para emitir eventos en tiempo real
+- Vercel Hobby Edge Functions tienen timeout de 10s → el cliente reconecta cada ~9.5s
+- Eventos: `notification` (nueva notif), `ping` (keep-alive cada 9s), `sync` (re-sync de no leidas cada 6s)
+- Cliente `notification-bell.tsx`: `EventSource` con `pendingReads` Set para evitar race conditions al mergear notificaciones nuevas durante una operacion de marcado como leida
+
 ### Manejo de errores Neon HTTP
 Prisma 7 con adapter Neon HTTP no soporta transacciones. Por eso:
 - No se usa include en create queries (se hace un segundo query separado)
@@ -72,7 +81,7 @@ Prisma 7 con adapter Neon HTTP no soporta transacciones. Por eso:
 ### Base de Datos
 - Vercel Postgres (Neon) via @prisma/adapter-neon
 - Migraciones via prisma migrate deploy en build
-- Tablas principales: User, Review, ReviewReaction, ReviewComment, Notification, Favorite, WatchlistEntry
+- Tablas principales: User, Review, ReviewReaction, ReviewComment (con editedAt/deletedAt), CommentReaction (likes/dislikes en comentarios), Notification, Favorite, WatchlistEntry
 
 ### Autenticacion
 - NextAuth v5 con estrategia Credentials

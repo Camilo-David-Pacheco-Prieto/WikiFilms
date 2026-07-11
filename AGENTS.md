@@ -71,15 +71,35 @@ src/
 │   │       ├── actions.ts           # Server Actions CRUD
 │   │       └── page.tsx            # Panel admin (solo ADMIN)
 │   ├── api/
-│   │   └── auth/
-│   │       ├── [...nextauth]/route.ts  # NextAuth handler
-│   │       └── register/route.ts         # API de registro
+│   │   ├── auth/
+│   │   │   ├── [...nextauth]/route.ts    # NextAuth handler
+│   │   │   ├── register/route.ts          # API de registro
+│   │   │   └── update/route.ts            # Actualizar perfil
+│   │   ├── favorites/
+│   │   │   ├── route.ts                  # CRUD favoritos
+│   │   │   └── check/route.ts            # Verificar si es favorito
+│   │   ├── notifications/
+│   │   │   ├── route.ts                  # Listar notificaciones
+│   │   │   ├── read-all/route.ts         # Marcar todas leidas
+│   │   │   └── stream/route.ts           # SSE en tiempo real
+│   │   ├── reviews/
+│   │   │   ├── route.ts                  # CRUD resenas
+│   │   │   ├── [id]/reactions/route.ts   # Like/dislike resena
+│   │   │   └── [id]/comments/
+│   │   │       ├── route.ts              # GET listar + POST crear
+│   │   │       ├── [commentId]/route.ts  # PATCH editar, DELETE eliminar
+│   │   │       └── [commentId]/reactions/route.ts # Like/dislike comentario
+│   │   └── watchlist/route.ts            # CRUD watchlist
 │   ├── dashboard/page.tsx               # Perfil de usuario
 │   ├── movie/[id]/page.tsx              # Detalle película + SEO
 │   ├── tv/[id]/page.tsx                   # Detalle serie + SEO
 │   ├── search/
 │   │   ├── page.tsx                      # Búsqueda server
 │   │   └── search-form.tsx               # Formulario client-side
+│   ├── settings/page.tsx                 # Configuración usuario
+│   ├── watchlist/page.tsx                # Watchlist personal
+│   ├── notifications/page.tsx            # Historial de notificaciones
+│   ├── coming-soon/page.tsx              # Próximas funcionalidades
 │   ├── globals.css                        # Variables CSS + estilos base
 │   ├── layout.tsx                        # Layout raíz + fuentes + Navbar
 │   └── page.tsx                           # Home (populares)
@@ -88,22 +108,24 @@ src/
 │   │   ├── login-form.tsx              # Form login
 │   │   └── register-form.tsx             # Form register
 │   ├── content/
-│   │   ├── content-card.tsx                # Card para grid (hover reveal)
-│   │   ├── content-grid.tsx                  # Grid responsivo
-│   │   ├── detail-hero.tsx                 # Hero Marvel-style (backdrop + poster + info)
-│   │   └── navbar.tsx                      # Navbar con sesión
+│   │   ├── content-card.tsx               # Card para grid (hover reveal)
+│   │   ├── content-grid.tsx               # Grid responsivo
+│   │   ├── detail-hero.tsx                # Hero Marvel-style (backdrop + poster + info)
+│   │   ├── navbar.tsx                     # Navbar con sesión
+│   │   ├── review-section.tsx             # Resenas + reacciones + comentarios anidados con edit/delete/reactions/sort
+│   │   └── notification-bell.tsx          # Campana de notificaciones con SSE cliente + pendingReads
 │   └── ui/
 │       ├── badge.tsx (shadcn)
 │       ├── button.tsx (shadcn)
 │       └── card.tsx (shadcn)
 ├── lib/
 │   ├── auth.ts              # NextAuth config + handlers
-│   ├── prisma.ts            # Cliente Prisma singleton
-│   ├── tmdb.ts            # Servicio TMDB con caching
-│   └── utils.ts            # Utilidades (shadcn)
+│   ├── prisma.ts            # Cliente Prisma singleton con adapter Neon
+│   ├── tmdb.ts              # Servicio TMDB con caching + localeToTMDBlang("es")="es-MX" + region CO
+│   └── utils.ts             # Utilidades (shadcn)
 ├── types/
-│   └── tmdb.ts                    # Tipos TMDB
-└── middleware.ts                    # Protección de rutas
+│   └── tmdb.ts              # Tipos TMDB (incluye iso_639_1 en TMDBVideoResponse)
+└── middleware.ts             # Protección de rutas
 ```
 
 ---
@@ -133,6 +155,12 @@ src/
 - Middleware protege rutas `/dashboard` y `/admin`
 - Server Actions verifican rol ADMIN antes de operaciones
 - Variables de entorno en `.env.local` y Vercel
+
+### TMDB LATAM
+- `localeToTMDBlang("es")` → `"es-MX"` (español latino, no español de España)
+- `localeToTMDBRegion("es")` → `"CO"` (Colombia como región base)
+- Trailers priorizan `iso_639_1 === "es"` sobre inglés/otros
+- Proveedores de streaming filtrados por región (CO, MX, AR)
 
 ### Performance
 - TMDB cacheado 1 hora (`next: { revalidate: 3600 }`)
@@ -198,19 +226,21 @@ También se puede ejecutar en Vercel como build command:
 
 ### Fase 3 — Polishing & Features
 - [ ] PWA (manifest.json + service worker)
-- [ ] Lista de favoritos del usuario (relación User <-> Content en DB)
 - [ ] Modo oscuro/claro toggle
 - [ ] Paginación en resultados de búsqueda
 - [ ] Filtro por género en home
 - [ ] Skeletons de carga para mejorar UX
 - [ ] Página 404 personalizada
 - [ ] Tests unitarios (Vitest) + E2E (Playwright)
+- [ ] Scroll suave entre secciones en detalle
+- [ ] Avatar/subir foto de perfil
+- [ ] Ranking de usuarios por actividad
 
 ### Fase 4 — Escalabilidad
 - [ ] Rate limiting server-side para proteger TMDB
 - [ ] Redis cache para popular/trending
 - [ ] Webhooks TMDB para contenido nuevo
-- [ ] Panel admin con analytics
+- [ ] Panel admin con analytics (graficos, metricas)
 - [ ] CI/CD con GitHub Actions
 
 ---
