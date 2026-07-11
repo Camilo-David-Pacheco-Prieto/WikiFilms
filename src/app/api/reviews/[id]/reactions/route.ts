@@ -48,16 +48,24 @@ export async function POST(
     }
 
     if (review.userId !== session.user.id) {
-      prisma.notification.create({
-        data: {
-          userId: review.userId,
-          actorId: session.user.id,
-          type,
-          reviewId: review.id,
-          contentId: review.contentId,
-          contentType: contentType ?? null,
-        },
-      }).catch((e) => console.error("Failed to create notification:", e));
+      for (let attempt = 0; attempt <= 1; attempt++) {
+        try {
+          await prisma.notification.create({
+            data: {
+              userId: review.userId,
+              actorId: session.user.id,
+              type,
+              reviewId: review.id,
+              contentId: review.contentId,
+              contentType: contentType ?? null,
+            },
+          });
+          break;
+        } catch (e) {
+          if (attempt < 1) continue;
+          console.error("Failed to create notification:", e);
+        }
+      }
     }
 
     return NextResponse.json({ action, type });

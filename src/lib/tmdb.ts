@@ -18,17 +18,23 @@ const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280";
 const LOGO_BASE_URL = "https://image.tmdb.org/t/p/w92";
 
 function localeToTMDBlang(locale?: string): string {
-  return locale === "es" ? "es-ES" : "en-US";
+  return locale === "es" ? "es-MX" : "en-US";
+}
+
+function localeToTMDBRegion(locale?: string): string {
+  return locale === "es" ? "CO" : "US";
 }
 
 async function fetchFromTMDB<T>(
   endpoint: string,
   params?: Record<string, string>,
   lang?: string,
+  region?: string,
 ): Promise<T> {
   const url = new URL(`${BASE_URL}${endpoint}`);
   url.searchParams.set("api_key", TMDB_API_KEY ?? "");
-  url.searchParams.set("language", lang ?? "es-ES");
+  url.searchParams.set("language", lang ?? "es-MX");
+  if (region) url.searchParams.set("region", region);
   if (params) {
     Object.entries(params).forEach(([key, value]) =>
       url.searchParams.set(key, value),
@@ -89,6 +95,7 @@ export async function getPopular(
     `/${type}/popular`,
     { page: String(page) },
     localeToTMDBlang(locale),
+    localeToTMDBRegion(locale),
   );
 
   return data.results.map((item: any) =>
@@ -108,7 +115,7 @@ export async function searchContent(
   const data = await fetchFromTMDB<TMDBPaginatedResponse<any>>(`/search/${searchType}`, {
     query,
     page: String(page),
-  }, localeToTMDBlang(locale));
+  }, localeToTMDBlang(locale), localeToTMDBRegion(locale));
 
   const results = data.results
     .filter((item: any) => item.media_type !== "person")
@@ -126,11 +133,15 @@ function extractTrailerKey(videos: { results: TMDBVideoResponse[] } | undefined)
   if (!videos?.results) return undefined;
   const ys = videos.results.filter((v) => v.site === "YouTube");
   const priority = (v: TMDBVideoResponse): number => {
-    if (v.official && v.type === "Trailer") return 0;
-    if (v.type === "Trailer") return 1;
-    if (v.official && v.type === "Teaser") return 2;
-    if (v.type === "Teaser") return 3;
-    return 4;
+    let score = 0;
+    if (v.type === "Trailer") score += 0;
+    else if (v.type === "Teaser") score += 10;
+    else score += 20;
+    if (!v.official) score += 5;
+    if (v.iso_639_1 === "es") score -= 3;
+    else if (v.iso_639_1 === "en") score += 1;
+    else score += 2;
+    return score;
   };
   ys.sort((a, b) => priority(a) - priority(b));
   return ys[0]?.key;
@@ -191,14 +202,14 @@ function mapSeriesToDetail(series: TMDBSeries): ContentDetail {
 export async function getMovieDetail(id: number, locale?: string): Promise<ContentDetail> {
   const movie = await fetchFromTMDB<TMDBMovie>(`/movie/${id}`, {
     append_to_response: "credits,videos",
-  }, localeToTMDBlang(locale));
+  }, localeToTMDBlang(locale), localeToTMDBRegion(locale));
   return mapMovieToDetail(movie);
 }
 
 export async function getSeriesDetail(id: number, locale?: string): Promise<ContentDetail> {
   const series = await fetchFromTMDB<TMDBSeries>(`/tv/${id}`, {
     append_to_response: "credits,videos",
-  }, localeToTMDBlang(locale));
+  }, localeToTMDBlang(locale), localeToTMDBRegion(locale));
   return mapSeriesToDetail(series);
 }
 
@@ -212,6 +223,7 @@ export async function getByGenre(
     `/discover/${type}`,
     { with_genres: String(genreId), page: String(page) },
     localeToTMDBlang(locale),
+    localeToTMDBRegion(locale),
   );
 
   return data.results.map(type === "movie" ? mapMovieToResult : (item: any) => mapSeriesToResult(item as TMDBSeries));
@@ -226,6 +238,7 @@ export async function getWatchProviders(
     `/${type}/${id}/watch/providers`,
     undefined,
     localeToTMDBlang(locale),
+    localeToTMDBRegion(locale),
   );
 }
 
@@ -238,6 +251,7 @@ export async function getTrending(
     `/trending/${type}/week`,
     { page: String(page) },
     localeToTMDBlang(locale),
+    localeToTMDBRegion(locale),
   );
   return data.results.map((item: any) =>
     item.media_type === "tv" || item.media_type === undefined && type === "tv"

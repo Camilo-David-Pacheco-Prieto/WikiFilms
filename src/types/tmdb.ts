@@ -5,6 +5,7 @@ export interface TMDBVideoResponse {
   type: string;
   official: boolean;
   id: string;
+  iso_639_1?: string;
   published_at?: string;
   size?: number;
 }

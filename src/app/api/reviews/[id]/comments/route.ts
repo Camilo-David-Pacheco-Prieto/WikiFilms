@@ -69,17 +69,27 @@ export async function POST(
     const contentId = review.contentId;
     const notifContentType = contentType ?? null;
 
+    async function createNotif(data: Parameters<typeof prisma.notification.create>[0]["data"], retries = 1) {
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          await prisma.notification.create({ data });
+          return;
+        } catch (e) {
+          if (attempt < retries) continue;
+          console.error("Failed to create notification:", e);
+        }
+      }
+    }
+
     if (review.userId !== session.user.id) {
-      prisma.notification.create({
-        data: {
-          userId: review.userId,
-          actorId: session.user.id,
-          type: "COMMENT",
-          reviewId: review.id,
-          contentId,
-          contentType: notifContentType,
-        },
-      }).catch((e) => console.error("Failed to create notification:", e));
+      await createNotif({
+        userId: review.userId,
+        actorId: session.user.id,
+        type: "COMMENT",
+        reviewId: review.id,
+        contentId,
+        contentType: notifContentType,
+      });
     }
 
     if (parentId) {
@@ -88,16 +98,14 @@ export async function POST(
         select: { userId: true },
       });
       if (parentComment && parentComment.userId !== session.user.id && parentComment.userId !== review.userId) {
-        prisma.notification.create({
-          data: {
-            userId: parentComment.userId,
-            actorId: session.user.id,
-            type: "REPLY",
-            reviewId: review.id,
-            contentId,
-            contentType: notifContentType,
-          },
-        }).catch((e) => console.error("Failed to create reply notification:", e));
+        await createNotif({
+          userId: parentComment.userId,
+          actorId: session.user.id,
+          type: "REPLY",
+          reviewId: review.id,
+          contentId,
+          contentType: notifContentType,
+        });
       }
     }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import { useTranslate } from "@/i18n/language-provider";
@@ -49,23 +49,45 @@ export function NotificationBell({ userId }: { userId: string }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const fetchNotifications = useCallback(() => {
-    fetch("/api/notifications")
-      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
-      .then((data: { notifications: Notification[]; unreadCount: number }) => {
-        setNotifications(data.notifications);
-        setUnreadCount(data.unreadCount);
-      })
-      .catch(() => {});
-  }, []);
+  const sseRef = useRef<EventSource | null>(null);
+  const pendingReads = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    fetchNotifications();
-    pollingRef.current = setInterval(fetchNotifications, 30000);
-    return () => { if (pollingRef.current) clearInterval(pollingRef.current); };
-  }, [fetchNotifications]);
+    function connect() {
+      if (sseRef.current) sseRef.current.close();
+      const es = new EventSource("/api/notifications/stream");
+      sseRef.current = es;
+
+      es.onmessage = (e) => {
+        try {
+          const data = JSON.parse(e.data) as { notifications: Notification[]; unreadCount: number };
+          // Merge: keep locally optimised reads for notifications still pending
+          setNotifications((prev) => {
+            const pending = pendingReads.current;
+            const serverMap = new Map(data.notifications.map((n) => [n.id, n]));
+            for (const local of prev) {
+              if (pending.has(local.id) && local.read) {
+                const server = serverMap.get(local.id);
+                if (server) serverMap.set(local.id, { ...server, read: true });
+              }
+            }
+            return [...serverMap.values()];
+          });
+          setUnreadCount(data.unreadCount);
+        } catch {}
+      };
+
+      es.onerror = () => {
+        es.close();
+        sseRef.current = null;
+        // Reconnect after 1s
+        setTimeout(connect, 1000);
+      };
+    }
+
+    connect();
+    return () => { if (sseRef.current) sseRef.current.close(); };
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -79,6 +101,7 @@ export function NotificationBell({ userId }: { userId: string }) {
   }, [open]);
 
   async function markAsRead(id: string) {
+    pendingReads.current.add(id);
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
     );
@@ -101,11 +124,15 @@ export function NotificationBell({ userId }: { userId: string }) {
         prev.map((n) => (n.id === id ? { ...n, read: false } : n)),
       );
       setUnreadCount((prev) => prev + 1);
+    } finally {
+      pendingReads.current.delete(id);
     }
   }
 
   async function markAllRead() {
     const prevNotifications = notifications;
+    const ids = notifications.filter((n) => !n.read).map((n) => n.id);
+    ids.forEach((id) => pendingReads.current.add(id));
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
     try {
@@ -118,6 +145,8 @@ export function NotificationBell({ userId }: { userId: string }) {
       console.error("markAllRead network error:", e);
       setNotifications(prevNotifications);
       setUnreadCount(prevNotifications.filter((n) => !n.read).length);
+    } finally {
+      ids.forEach((id) => pendingReads.current.delete(id));
     }
   }
 
