@@ -19,6 +19,7 @@ export interface TMDBMovie {
   backdrop_path: string | null;
   vote_average: number;
   genres: { id: number; name: string }[];
+  genre_ids?: number[];
   credits?: {
     cast: { name: string }[];
     crew: { job: string; name: string }[];
@@ -35,6 +36,7 @@ export interface TMDBSeries {
   backdrop_path: string | null;
   vote_average: number;
   genres: { id: number; name: string }[];
+  genre_ids?: number[];
   number_of_seasons: number;
   credits?: {
     cast: { name: string }[];

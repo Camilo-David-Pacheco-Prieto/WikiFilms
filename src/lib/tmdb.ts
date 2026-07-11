@@ -52,7 +52,35 @@ async function fetchFromTMDB<T>(
   return res.json() as Promise<T>;
 }
 
-function mapMovieToResult(movie: TMDBMovie): ContentResult {
+const GENRE_ID_TO_NAME_ES: Record<number, string> = {
+  28: "Acción", 12: "Aventura", 16: "Animación", 35: "Comedia",
+  80: "Crimen", 99: "Documental", 18: "Drama", 10751: "Familia",
+  14: "Fantasía", 36: "Historia", 27: "Terror", 10402: "Música",
+  9648: "Misterio", 10749: "Romance", 878: "Ciencia ficción",
+  10770: "Película de TV", 53: "Suspenso", 10752: "Bélica", 37: "Western",
+};
+const GENRE_ID_TO_NAME_EN: Record<number, string> = {
+  28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
+  80: "Crime", 99: "Documentary", 18: "Drama", 10751: "Family",
+  14: "Fantasy", 36: "History", 27: "Horror", 10402: "Music",
+  9648: "Mystery", 10749: "Romance", 878: "Science Fiction",
+  10770: "TV Movie", 53: "Thriller", 10752: "War", 37: "Western",
+};
+
+function resolveGenres(
+  genres: { id: number; name: string }[] | undefined,
+  genreIds: number[] | undefined,
+  locale?: string,
+): string[] {
+  if (genres && genres.length > 0) return genres.map((g) => g.name);
+  if (genreIds && genreIds.length > 0) {
+    const map = locale?.startsWith("es") ? GENRE_ID_TO_NAME_ES : GENRE_ID_TO_NAME_EN;
+    return genreIds.map((id) => map[id]).filter(Boolean) as string[];
+  }
+  return [];
+}
+
+function mapMovieToResult(movie: TMDBMovie, locale?: string): ContentResult {
   return {
     id: movie.id,
     title: movie.title,
@@ -65,12 +93,12 @@ function mapMovieToResult(movie: TMDBMovie): ContentResult {
       ? `${BACKDROP_BASE_URL}${movie.backdrop_path}`
       : null,
     rating: movie.vote_average,
-    genres: movie.genres?.map((g) => g.name) ?? [],
+    genres: resolveGenres(movie.genres, movie.genre_ids, locale),
     overview: movie.overview ?? "",
   };
 }
 
-function mapSeriesToResult(series: TMDBSeries): ContentResult {
+function mapSeriesToResult(series: TMDBSeries, locale?: string): ContentResult {
   return {
     id: series.id,
     title: series.name,
@@ -83,7 +111,7 @@ function mapSeriesToResult(series: TMDBSeries): ContentResult {
       ? `${BACKDROP_BASE_URL}${series.backdrop_path}`
       : null,
     rating: series.vote_average,
-    genres: series.genres?.map((g) => g.name) ?? [],
+    genres: resolveGenres(series.genres, series.genre_ids, locale),
     overview: series.overview ?? "",
   };
 }
@@ -102,8 +130,8 @@ export async function getPopular(
 
   return data.results.map((item: any) =>
     type === "movie"
-      ? mapMovieToResult(item as TMDBMovie)
-      : mapSeriesToResult(item as TMDBSeries),
+      ? mapMovieToResult(item as TMDBMovie, locale)
+      : mapSeriesToResult(item as TMDBSeries, locale),
   );
 }
 
@@ -123,9 +151,9 @@ export async function searchContent(
     .filter((item: any) => item.media_type !== "person")
     .map((item: any) => {
       if (item.media_type === "tv" || type === "tv") {
-        return mapSeriesToResult(item as TMDBSeries);
+        return mapSeriesToResult(item as TMDBSeries, locale);
       }
-      return mapMovieToResult(item as TMDBMovie);
+      return mapMovieToResult(item as TMDBMovie, locale);
     });
 
   return { results, totalPages: data.total_pages };
@@ -228,7 +256,11 @@ export async function getByGenre(
     localeToTMDBRegion(locale),
   );
 
-  return data.results.map(type === "movie" ? mapMovieToResult : (item: any) => mapSeriesToResult(item as TMDBSeries));
+  return data.results.map((item: any) =>
+    type === "movie"
+      ? mapMovieToResult(item as TMDBMovie, locale)
+      : mapSeriesToResult(item as TMDBSeries, locale),
+  );
 }
 
 export async function getWatchProviders(
@@ -257,8 +289,8 @@ export async function getTrending(
   );
   return data.results.map((item: any) =>
     item.media_type === "tv" || item.media_type === undefined && type === "tv"
-      ? mapSeriesToResult(item as TMDBSeries)
-      : mapMovieToResult(item as TMDBMovie),
+      ? mapSeriesToResult(item as TMDBSeries, locale)
+      : mapMovieToResult(item as TMDBMovie, locale),
   );
 }
 
@@ -276,8 +308,8 @@ export async function getRecommendations(
     );
     return data.results.map((item: any) =>
       type === "movie"
-        ? mapMovieToResult(item as TMDBMovie)
-        : mapSeriesToResult(item as TMDBSeries),
+        ? mapMovieToResult(item as TMDBMovie, locale)
+        : mapSeriesToResult(item as TMDBSeries, locale),
     );
   } catch {
     return [];
