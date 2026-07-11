@@ -57,38 +57,38 @@ export function HeroSlider({ items }: HeroSliderProps) {
           ) : (
             <div className="h-full w-full bg-surface" />
           )}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, #09090b 0%, #09090b 65%, transparent 100%)" }} />
+          <div className="absolute inset-0 md:hidden" style={{ background: "linear-gradient(90deg, #09090b 0%, #09090b 65%, transparent 100%)" }} />
         </div>
       ))}
 
       <div className="relative z-10 flex h-full items-center">
-        <div className="mx-auto flex w-full max-w-7xl px-4 md:px-12">
-          <div className="w-full p-4 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
-            <span className="inline-block w-fit rounded-[6px] bg-accent-brand/20 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-accent-brand md:rounded-[10px] md:px-3.5 md:py-2 md:text-sm">
+        <div className="mx-auto flex w-full max-w-7xl px-2 md:px-12">
+          <div className="w-full px-3 py-2.5 md:max-w-[600px] md:p-14 lg:max-w-[700px] lg:p-16">
+            <span className="inline-block w-fit rounded-[4px] bg-accent-brand/20 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wider text-accent-brand md:rounded-[10px] md:px-3.5 md:py-2 md:text-sm">
               #{currentIndex + 1} · {t("hero.trending")}
             </span>
 
-            <h2 className="mt-2 font-display text-[16px] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white line-clamp-1 md:mt-4 md:text-[48px] md:line-clamp-2">
+            <h2 className="mt-1.5 font-display text-[14px] font-black uppercase leading-[1] tracking-[-0.03em] text-white line-clamp-1 md:mt-4 md:text-[48px] md:line-clamp-2">
               {current.title}
             </h2>
 
             {current.genres.length > 0 && (
-              <p className="mt-1 text-[8px] text-white/60 md:mt-2 md:text-sm">
+              <p className="mt-0.5 text-[7px] text-white/60 md:mt-2 md:text-sm">
                 {current.genres.join(" · ")}
               </p>
             )}
 
             {current.overview && (
-              <p className="mt-1 text-[10px] leading-relaxed text-white line-clamp-1 md:mt-2 md:text-base lg:text-[18px] lg:leading-[1.7] lg:line-clamp-3">
+              <p className="mt-0.5 text-[8px] leading-snug text-white line-clamp-1 md:mt-2 md:text-base lg:text-[18px] lg:leading-[1.7] lg:line-clamp-3">
                 {current.overview}
               </p>
             )}
 
             <Link
               href={`/${current.type}/${current.id}`}
-              className="mt-1.5 inline-flex h-6 items-center gap-1 rounded-[7px] bg-gradient-to-r from-accent-brand to-accent-hover px-3 text-[9px] font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30 md:mt-3 md:h-10 md:gap-2 md:rounded-[12px] md:px-5 md:text-sm"
+              className="mt-1 inline-flex h-5 items-center gap-1 rounded-[5px] bg-gradient-to-r from-accent-brand to-accent-hover px-2 text-[8px] font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30 md:mt-3 md:h-10 md:gap-2 md:rounded-[12px] md:px-5 md:text-sm"
             >
-              <Play className="h-2.5 w-2.5 fill-current md:h-4 md:w-4" />
+              <Play className="h-2 w-2 fill-current md:h-4 md:w-4" />
               {t("hero.viewInfo")}
             </Link>
           </div>
@@ -99,19 +99,17 @@ export function HeroSlider({ items }: HeroSliderProps) {
         <>
           <button
             onClick={prev}
-            className="absolute left-2 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60 md:left-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
-            style={{ border: "1px solid rgba(255,255,255,0.12)" }}
+            className="absolute left-0.5 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition-all hover:bg-black/40 md:left-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
             aria-label="Previous"
           >
-            <ChevronLeft className="h-3.5 w-3.5 md:h-7 md:w-7" />
+            <ChevronLeft className="h-3 w-3 md:h-7 md:w-7" />
           </button>
           <button
             onClick={next}
-            className="absolute right-2 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60 md:right-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
-            style={{ border: "1px solid rgba(255,255,255,0.12)" }}
+            className="absolute right-0.5 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition-all hover:bg-black/40 md:right-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
             aria-label="Next"
           >
-            <ChevronRight className="h-3.5 w-3.5 md:h-7 md:w-7" />
+            <ChevronRight className="h-3 w-3 md:h-7 md:w-7" />
           </button>
         </>
       )}
