@@ -57,7 +57,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
           ) : (
             <div className="h-full w-full bg-surface" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/95 to-transparent" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, #09090b 0%, #09090b 65%, transparent 100%)" }} />
         </div>
       ))}
 
@@ -99,19 +99,19 @@ export function HeroSlider({ items }: HeroSliderProps) {
         <>
           <button
             onClick={prev}
-            className="absolute left-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md transition-all hover:bg-black/70 md:left-6 md:flex md:h-[60px] md:w-[60px]"
+            className="absolute left-2 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60 md:left-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
             style={{ border: "1px solid rgba(255,255,255,0.12)" }}
             aria-label="Previous"
           >
-            <ChevronLeft className="h-5 w-5 md:h-7 md:w-7" />
+            <ChevronLeft className="h-3.5 w-3.5 md:h-7 md:w-7" />
           </button>
           <button
             onClick={next}
-            className="absolute right-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md transition-all hover:bg-black/70 md:right-6 md:flex md:h-[60px] md:w-[60px]"
+            className="absolute right-2 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60 md:right-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
             style={{ border: "1px solid rgba(255,255,255,0.12)" }}
             aria-label="Next"
           >
-            <ChevronRight className="h-5 w-5 md:h-7 md:w-7" />
+            <ChevronRight className="h-3.5 w-3.5 md:h-7 md:w-7" />
           </button>
         </>
       )}
