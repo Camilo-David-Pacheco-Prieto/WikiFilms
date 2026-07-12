@@ -62,9 +62,17 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  if (pathname.startsWith("/games") || pathname.startsWith("/game")) {
+    const token = getToken(request);
+    const payload = token ? await verifyToken(token) : null;
+    if (!payload) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/auth/:path*"],
+  matcher: ["/admin/:path*", "/api/auth/:path*", "/games/:path*", "/game/:path*"],
 };
