@@ -1,12 +1,11 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useTranslate } from "@/i18n/language-provider";
 import type { IGDBGameDetail } from "@/types/igdb";
 import { IGDB_IMAGE_BASE, IGDB_COVER_SIZE, IGDB_SCREENSHOT_SIZE } from "@/types/igdb";
 import { Play } from "lucide-react";
-import { useState } from "react";
 
 interface GameDetailHeroProps {
   game: IGDBGameDetail;
@@ -19,6 +18,8 @@ function igdbUrl(size: string, imageId: string) {
 export function GameDetailHero({ game }: GameDetailHeroProps) {
   const t = useTranslate();
   const [showTrailer, setShowTrailer] = useState(false);
+  const [backdropError, setBackdropError] = useState(false);
+  const [posterError, setPosterError] = useState(false);
 
   const backdropUrl = game.screenshots?.[0]
     ? igdbUrl(IGDB_SCREENSHOT_SIZE, game.screenshots[0].image_id)
@@ -50,15 +51,13 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
   return (
     <>
       <section className="relative overflow-hidden">
-        {backdropUrl && (
+        {backdropUrl && !backdropError && (
           <div className="absolute inset-0">
-            <Image
+            <img
               src={backdropUrl}
               alt=""
-              fill
-              className="object-cover"
-              sizes="100vw"
-              priority
+              className="h-full w-full object-cover"
+              onError={() => setBackdropError(true)}
             />
           </div>
         )}
@@ -66,15 +65,13 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-transparent" />
 
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:flex-row md:items-end md:gap-10 md:py-14 lg:px-12">
-          {posterUrl && (
+          {posterUrl && !posterError && (
             <div className="relative mx-auto aspect-[2/3] w-40 shrink-0 overflow-hidden rounded-xl shadow-2xl md:mx-0 md:w-56 lg:w-64">
-              <Image
+              <img
                 src={posterUrl}
                 alt={game.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 10rem, 16rem"
-                priority
+                className="absolute inset-0 h-full w-full object-cover"
+                onError={() => setPosterError(true)}
               />
             </div>
           )}

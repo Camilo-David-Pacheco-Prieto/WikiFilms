@@ -3,7 +3,6 @@ import { GameDetailHero } from "@/components/content/game-detail-hero";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 import { IGDB_IMAGE_BASE, IGDB_SCREENSHOT_SIZE } from "@/types/igdb";
-import Image from "next/image";
 import type { Metadata } from "next";
 
 interface Props {
@@ -78,12 +77,10 @@ export default async function GameDetailPage({ params }: Props) {
                   key={i}
                   className="relative aspect-video overflow-hidden rounded-lg"
                 >
-                  <Image
+                  <img
                     src={igdbUrl(IGDB_SCREENSHOT_SIZE, s.image_id)}
                     alt=""
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
               ))}
@@ -102,12 +99,10 @@ export default async function GameDetailPage({ params }: Props) {
                   key={i}
                   className="relative aspect-video overflow-hidden rounded-lg"
                 >
-                  <Image
+                  <img
                     src={igdbUrl("screenshot_huge", a.image_id)}
                     alt=""
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
               ))}
