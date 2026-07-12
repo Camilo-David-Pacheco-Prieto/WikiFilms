@@ -52,7 +52,7 @@ export interface TMDBPaginatedResponse<T> {
   total_results: number;
 }
 
-export type MediaType = "movie" | "tv";
+export type MediaType = "movie" | "tv" | "game";
 
 export interface ContentResult {
   id: number;

@@ -56,6 +56,13 @@ export function NavbarClient({ user }: NavbarClientProps) {
           {user && (
             <>
               <Link
+                href="/games"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+              >
+                {t("nav.games")}
+              </Link>
+              <Link
                 href="/watchlist"
                 onClick={() => setOpen(false)}
                 className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
