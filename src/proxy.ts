@@ -19,7 +19,7 @@ function getToken(request: NextRequest): string | undefined {
 
 async function verifyToken(token: string) {
   try {
-    const { payload } = await jose.jwtVerify(token, secret);
+    const { payload } = await jose.jwtDecrypt(token, secret);
     return payload as { username?: string; role?: string };
   } catch {
     return null;
