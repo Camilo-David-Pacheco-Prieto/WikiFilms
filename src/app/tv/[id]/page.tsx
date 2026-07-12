@@ -92,7 +92,7 @@ export default async function SeriesPage({ params }: Props) {
         </div>
       </section>
 
-      <ReviewSection contentId={series.id} contentType="tv" />
+      <ReviewSection contentId={series.id} contentType="tv" contentTitle={series.title} />
 
       <section className="mx-auto max-w-7xl px-4 py-16">
         <ContentGrid title={dict["content.recommendations"]} items={recommendations} />

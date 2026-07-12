@@ -13,6 +13,7 @@ interface Notification {
   commentId: string | null;
   contentId: number | null;
   contentType: string | null;
+  contentTitle: string | null;
   message: string | null;
   read: boolean;
   createdAt: string;
@@ -219,6 +220,7 @@ export function NotificationBell({ userId }: { userId: string }) {
                       </p>
                       <p className="text-xs text-text-secondary">
                         {t(textKeyMap[n.type] ?? "notifications.commented")}
+                        {n.contentTitle && <span className="text-text-secondary/70"> &mdash; {n.contentTitle}</span>}
                       </p>
                       {n.message && (
                         <p className="mt-0.5 truncate text-[10px] text-text-secondary/40">

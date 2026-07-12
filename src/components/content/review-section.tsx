@@ -40,11 +40,12 @@ interface CommentNode extends ReviewComment {
 interface ReviewSectionProps {
   contentId: number;
   contentType: "movie" | "tv" | "game";
+  contentTitle?: string;
 }
 
 type SortBy = "new" | "old" | "top";
 
-function CommentSection({ reviewId, contentType }: { reviewId: string; contentType: string }) {
+function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: string; contentType: string; contentTitle?: string }) {
   const { data: session } = useSession();
   const t = useTranslate();
   const { locale } = useLanguage();
@@ -139,7 +140,7 @@ function CommentSection({ reviewId, contentType }: { reviewId: string; contentTy
       const res = await fetch(`/api/reviews/${reviewId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comment: text.trim(), contentType, parentId: replyingTo || undefined }),
+        body: JSON.stringify({ comment: text.trim(), contentType, contentTitle, parentId: replyingTo || undefined }),
       });
       if (res.ok) {
         const data: ReviewComment = await res.json();
@@ -265,7 +266,7 @@ function CommentSection({ reviewId, contentType }: { reviewId: string; contentTy
       const res = await fetch(`/api/reviews/${reviewId}/comments/${commentId}/reactions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, contentType }),
+        body: JSON.stringify({ type, contentType, contentTitle }),
       });
       if (!res.ok) revert();
     } catch {
@@ -513,7 +514,7 @@ function CommentSection({ reviewId, contentType }: { reviewId: string; contentTy
   );
 }
 
-export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
+export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSectionProps) {
   const { data: session } = useSession();
   const t = useTranslate();
   const { locale } = useLanguage();
@@ -610,7 +611,7 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
       const res = await fetch(`/api/reviews/${reviewId}/reactions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, contentType }),
+        body: JSON.stringify({ type, contentType, contentTitle }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -789,7 +790,7 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
                 </div>
 
                 {expandedComments.has(review.id) && (
-                  <CommentSection reviewId={review.id} contentType={contentType} />
+                  <CommentSection reviewId={review.id} contentType={contentType} contentTitle={contentTitle} />
                 )}
               </div>
             ))

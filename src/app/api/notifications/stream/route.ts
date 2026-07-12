@@ -10,6 +10,7 @@ interface SSENotification {
   reviewId: string | null;
   contentId: number | null;
   contentType: string | null;
+  contentTitle: string | null;
   read: boolean;
   createdAt: Date;
 }
@@ -42,6 +43,7 @@ async function fetchData(userId: string) {
     reviewId: n.reviewId,
     contentId: n.contentId,
     contentType: n.contentType,
+    contentTitle: n.contentTitle,
     read: n.read,
     createdAt: n.createdAt,
   }));

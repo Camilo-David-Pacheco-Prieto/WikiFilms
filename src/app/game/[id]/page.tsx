@@ -32,7 +32,7 @@ export default async function GameDetailPage({ params }: Props) {
     return (
       <main className="mx-auto max-w-7xl px-4 py-16 text-center">
         <h1 className="font-display text-3xl font-bold text-white">
-          {dict["content.notFoundMovie"]}
+          {dict["content.notFoundGame"] ?? "Game not found"}
         </h1>
       </main>
     );
@@ -63,7 +63,7 @@ export default async function GameDetailPage({ params }: Props) {
         </div>
       </section>
 
-      <ReviewSection contentId={game.id} contentType="game" />
+      <ReviewSection contentId={game.id} contentType="game" contentTitle={game.name} />
 
       <div className="mx-auto max-w-7xl space-y-12 px-4 py-12 lg:px-12">
         {game.summary && (

@@ -71,7 +71,7 @@ export async function POST(
 
     const { id: reviewId } = await params;
 
-    const { comment, contentType, parentId } = await req.json();
+    const { comment, contentType, contentTitle, parentId } = await req.json();
     if (!comment || typeof comment !== "string" || comment.trim().length === 0) {
       return NextResponse.json({ error: "Comment is required" }, { status: 400 });
     }
@@ -115,6 +115,7 @@ export async function POST(
         commentId: created.id,
         contentId,
         contentType: notifContentType,
+        contentTitle: contentTitle ?? null,
         message: msg,
       });
     }
@@ -133,6 +134,7 @@ export async function POST(
           commentId: created.id,
           contentId,
           contentType: notifContentType,
+          contentTitle: contentTitle ?? null,
           message: msg,
         });
       }

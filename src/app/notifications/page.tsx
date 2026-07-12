@@ -22,16 +22,16 @@ const iconMap: Record<string, string> = {
   COMMENT_DISLIKE: "👎",
 };
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, dict: Record<string, string>): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return "justo ahora";
+  if (seconds < 60) return dict["notifications.justNow"];
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `hace ${minutes} min`;
+  if (minutes < 60) return dict["notifications.minutesAgo"].replace("{n}", String(minutes));
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `hace ${hours} h`;
+  if (hours < 24) return dict["notifications.hoursAgo"].replace("{n}", String(hours));
   const days = Math.floor(hours / 24);
-  return `hace ${days} d`;
+  return dict["notifications.daysAgo"].replace("{n}", String(days));
 }
 
 export default async function NotificationsPage() {
@@ -112,6 +112,7 @@ export default async function NotificationsPage() {
                     </p>
                     <p className="text-xs text-text-secondary">
                       {textKeyMap[n.type] ?? dict["notifications.commented"]}
+                      {n.contentTitle && <span className="text-text-secondary/70"> &mdash; {n.contentTitle}</span>}
                     </p>
                     {n.message && (
                       <p className="mt-0.5 truncate text-[10px] text-text-secondary/40">
@@ -119,7 +120,7 @@ export default async function NotificationsPage() {
                       </p>
                     )}
                     <p className="text-xs text-text-secondary/50">
-                      {timeAgo(n.createdAt.toISOString())}
+                      {timeAgo(n.createdAt.toISOString(), dict)}
                     </p>
                   </div>
                   {!n.read && (

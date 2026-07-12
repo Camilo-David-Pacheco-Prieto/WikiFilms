@@ -62,71 +62,76 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 ## Estructura del Proyecto
 
 ```
-src/
+├── prisma/
+│   └── schema.prisma                    # Esquema DB: Favorite/WatchlistItem/Review con @@unique([userId, contentId, type])
+├── src/
 ├── app/
-│   ├── (auth)/                     # Grupo de rutas de autenticación
-│   │   ├── login/page.tsx           # Login page
-│   │   └── register/page.tsx        # Register page
+│   ├── (auth)/                          # Grupo de rutas de autenticación
+│   │   ├── login/page.tsx               # Login page
+│   │   └── register/page.tsx            # Register page
 │   ├── admin/
 │   │   └── users/
-│   │       ├── actions.ts           # Server Actions CRUD
-│   │       └── page.tsx            # Panel admin (solo ADMIN)
+│   │       ├── actions.ts               # Server Actions CRUD
+│   │       └── page.tsx                 # Panel admin (solo ADMIN)
 │   ├── api/
 │   │   ├── auth/
-│   │   │   ├── [...nextauth]/route.ts    # NextAuth handler
-│   │   │   ├── register/route.ts          # API de registro
-│   │   │   └── update/route.ts            # Actualizar perfil
+│   │   │   ├── [...nextauth]/route.ts   # NextAuth handler
+│   │   │   ├── register/route.ts        # API de registro
+│   │   │   └── update/route.ts          # Actualizar perfil
 │   │   ├── favorites/
-│   │   │   ├── route.ts                  # CRUD favoritos
-│   │   │   └── check/route.ts            # Verificar si es favorito
+│   │   │   ├── route.ts                 # CRUD favoritos (userId_contentId_type)
+│   │   │   └── check/route.ts           # Verificar favorito por contentId+type
 │   │   ├── notifications/
-│   │   │   ├── route.ts                  # Listar notificaciones
-│   │   │   ├── read-all/route.ts         # Marcar todas leidas
-│   │   │   └── stream/route.ts           # SSE en tiempo real
+│   │   │   ├── route.ts                 # Listar notificaciones
+│   │   │   ├── read-all/route.ts        # Marcar todas leidas
+│   │   │   └── stream/route.ts          # SSE en tiempo real
 │   │   ├── reviews/
-│   │   │   ├── route.ts                  # CRUD resenas
-│   │   │   ├── [id]/reactions/route.ts   # Like/dislike resena
+│   │   │   ├── route.ts                 # CRUD resenas (con contentType)
+│   │   │   ├── [id]/reactions/route.ts  # Like/dislike resena
 │   │   │   └── [id]/comments/
-│   │   │       ├── route.ts              # GET listar + POST crear
-│   │   │       ├── [commentId]/route.ts  # PATCH editar, DELETE eliminar
+│   │   │       ├── route.ts             # GET listar + POST crear
+│   │   │       ├── [commentId]/route.ts # PATCH editar, DELETE eliminar
 │   │   │       └── [commentId]/reactions/route.ts # Like/dislike comentario
 │   │   ├── games/
-│   │   │   ├── [id]/route.ts             # API detalle juego (IGDB)
-│   │   │   ├── popular/route.ts          # API juegos populares
-│   │   │   ├── search/route.ts           # API búsqueda juegos
-│   │   │   └── upcoming/route.ts         # API próximos lanzamientos
-│   │   └── watchlist/route.ts            # CRUD watchlist
-│   ├── dashboard/page.tsx               # Perfil de usuario
-│   ├── game/[id]/page.tsx               # Detalle juego (hero + summary + storyline + screenshots + artworks + videos)
+│   │   │   ├── [id]/route.ts            # API detalle juego (IGDB)
+│   │   │   ├── popular/route.ts         # API juegos populares
+│   │   │   ├── search/route.ts          # API búsqueda juegos
+│   │   │   └── upcoming/route.ts        # API próximos lanzamientos
+│   │   └── watchlist/route.ts           # CRUD watchlist (userId_contentId_type)
+│   ├── dashboard/page.tsx               # Perfil + favoritos con tabs Movies/Series | Games
+│   ├── game/[id]/page.tsx               # Detalle juego (hero trailer + summary + storyline + screenshots + artworks + videos + fav + watchlist + reviews)
 │   ├── games/page.tsx                   # Home juegos (hero slider + populares + próximos)
 │   ├── movie/[id]/page.tsx              # Detalle película + SEO
-│   ├── tv/[id]/page.tsx                   # Detalle serie + SEO
+│   ├── tv/[id]/page.tsx                 # Detalle serie + SEO
 │   ├── search/
-│   │   ├── page.tsx                      # Búsqueda server
-│   │   └── search-form.tsx               # Formulario client-side
-│   ├── settings/page.tsx                 # Configuración usuario
-│   ├── watchlist/page.tsx                # Watchlist personal
-│   ├── notifications/page.tsx            # Historial de notificaciones
-│   ├── coming-soon/page.tsx              # Próximas funcionalidades
-│   ├── globals.css                        # Variables CSS + estilos base
-│   ├── layout.tsx                        # Layout raíz + fuentes + Navbar
-│   └── page.tsx                           # Home (populares)
+│   │   ├── page.tsx                     # Búsqueda server (TMDB + IGDB según type)
+│   │   └── search-form.tsx              # Formulario client-side con filtro Movies/Series/Games
+│   ├── settings/page.tsx                # Configuración usuario
+│   ├── watchlist/page.tsx               # Watchlist personal con tabs Movies/Series | Games
+│   ├── notifications/page.tsx           # Historial de notificaciones
+│   ├── coming-soon/page.tsx             # Próximas funcionalidades
+│   ├── globals.css                      # Variables CSS + estilos base
+│   ├── layout.tsx                       # Layout raíz + fuentes + Navbar
+│   └── page.tsx                         # Home (populares, sin shuffle)
 ├── components/
 │   ├── auth/
-│   │   ├── login-form.tsx                # Form login
-│   │   └── register-form.tsx             # Form register
+│   │   ├── login-form.tsx               # Form login
+│   │   └── register-form.tsx            # Form register
 │   ├── content/
-│   │   ├── content-card.tsx               # Card para grid (hover/tap reveal)
-│   │   ├── content-grid.tsx               # Grid responsivo
-│   │   ├── detail-hero.tsx                # Hero Marvel-style (backdrop + poster + info)
-│   │   ├── game-detail-hero.tsx           # Hero detalle juego (backdrop, poster, rating, tráiler modal)
-│   │   ├── hero-slider.tsx                # Slider hero con tendencias, overlay multi-stop, responsive premium
-│   │   ├── navbar.tsx                     # Navbar con sesión
-│   │   ├── review-section.tsx             # Resenas + reacciones + comentarios anidados con edit/delete/reactions/sort
-│   │   ├── notification-bell.tsx          # Campana de notificaciones con SSE cliente + pendingReads
-│   │   ├── skeleton-card.tsx              # Skeleton para card loading
-│   │   ├── skeleton-grid.tsx              # Skeleton para grid loading
-│   │   └── skeleton-hero.tsx              # Skeleton para hero loading
+│   │   ├── content-card.tsx             # Card grid: mobile badge top-right + titulo oculto, desktop slide-up
+│   │   ├── content-grid.tsx             # Grid responsivo
+│   │   ├── detail-hero.tsx              # Hero movies/series (backdrop + poster + info + trailer fondo)
+│   │   ├── game-detail-hero.tsx         # Hero juegos (backdrop + trailer fondo + poster + rating + lang=en)
+│   │   ├── hero-slider.tsx              # Slider hero con tendencias
+│   │   ├── navbar.tsx                   # Navbar con sesión
+│   │   ├── review-section.tsx           # Reseñas con contentType (movie|tv|game)
+│   │   ├── favorite-button.tsx          # Star icon, type movie|tv|game
+│   │   ├── watchlist-button.tsx         # Labels condicionales: game→Jugado, movie/tv→Visto
+│   │   ├── search-bar.tsx               # Navbar search, detecta sección juegos
+│   │   ├── notification-bell.tsx        # Campana de notificaciones SSE
+│   │   ├── skeleton-card.tsx            # Skeleton card loading
+│   │   ├── skeleton-grid.tsx            # Skeleton grid loading
+│   │   └── skeleton-hero.tsx            # Skeleton hero loading
 │   └── ui/
 │       ├── badge.tsx (shadcn)
 │       ├── button.tsx (shadcn)
@@ -203,9 +208,57 @@ src/
   - `getTrendingGames(limit)` — tendencias (altos votos + screenshots)
   - `getGameById(id)` — detalle completo (storyline, companies, artworks, videos)
 - **Proxy.ts** protege `/games/*` y `/game/*` con sesión (usa `getToken` de `next-auth/jwt`)
-- **i18n**: 11 keys (`games.popular`, `games.upcoming`, `game.summary`, `game.storyline`, `game.screenshots`, `game.artworks`, `game.videos`, `game.platforms`, `game.developedBy`, `game.publishedBy`, `nav.games`)
+- **i18n**: 11+ keys (`games.popular`, `games.upcoming`, `game.summary`, `game.storyline`, `game.screenshots`, `game.artworks`, `game.videos`, `game.platforms`, `game.developedBy`, `game.publishedBy`, `nav.games`)
 - **Navbar**: link "Juegos" visible solo para usuarios autenticados
 - **`MediaType`** en `types/tmdb.ts` incluye `"game"`
+- **Trailer de fondo**: `game-detail-hero.tsx` reproduce el primer video de YouTube autoplay+muted+loop como fondo del hero (oculto en mobile), con overlay `bg-black/50` + mismo gradiente bottom-to-top que movies
+- **Traducción al español**: `lang="en"` en título, plataformas, géneros, compañías, summary, storyline y videos — el navegador Chrome/Edge detecta el inglés y ofrece traducir automáticamente. IGDB no provee summaries localizados. No se usa DeepL ni APIs externas.
+- **`game_localizations`**: endpoint de IGDB existe pero solo expone `name` y `region` (no `summary` ni `storyline`)
+
+### Search — Búsqueda unificada
+- **Navbar** (`search-bar.tsx`): detecta ruta actual via `usePathname()`. Si está en `/games` o `/game/*`, pasa `type=game` al search y cambia placeholder a "Buscar juegos..."
+- **Search page** (`search/page.tsx`): cuando `type=game`, llama `searchGames()` de IGDB en vez de TMDB. Misma grid `ContentGrid` porque `GameResult` es compatible con `ContentResult`
+- **Search form** (`search-form.tsx`): tres filtros: "Películas" | "Series" | "Juegos". Al activar "Juegos", la búsqueda va a IGDB
+- **Sin paginación** para juegos (IGDB no expone total de páginas fácilmente)
+
+### Favorites + Watchlist — Type discriminator
+- **Backend unificado**: una sola tabla `Favorite`, `WatchlistItem` y `Review` para movies/tv/game
+- **Unique constraint**: `@@unique([userId, contentId, type])` — permite que movie id=123 y game id=123 coexistan sin colisión
+- **API routes**: todas usan `userId_contentId_type` como composite key
+  - `favorites/check?contentId=X&type=Y`
+  - `watchlist?contentId=X&type=Y` (GET, POST, DELETE)
+  - `reviews?contentId=X&contentType=Y` (GET, POST)
+- **Prisma migration**: `prisma db push --accept-data-loss` para aplicar cambios de unique constraints
+
+### Favorites — Star icon
+- `favorite-button.tsx`: usa `Star` de lucide-react en vez de `Heart`
+- Colores: `fill-yellow-400` cuando activo, `text-yellow-400/50` cuando inactivo
+- Borde: `border-yellow-400` en hover/activo
+
+### Watchlist — Labels condicionales
+- `watchlist-button.tsx`: si `type === "game"` usa labels "Jugado"/"Por jugar"/"Agregar a lista" con icono `Gamepad2`
+- Si `type === "movie" | "tv"` usa labels "Visto"/"Por ver"/"Mi lista" con icono `Eye` (comportamiento original)
+- `watchlist/page.tsx`: tabs "Películas/Series" | "Juegos". Tab juegos muestra headers "Jugados ({count})" / "Por jugar ({count})"
+- `dashboard/page.tsx`: mismos tabs en favoritos
+- Links a `/game/{id}` cuando `type === "game"`
+
+### Mobile — ContentCard premium
+- **Overlay sutil**: `from-black/40` (mitad de opacidad que desktop) para que se vea más la imagen
+- **Rating badge**: `text-[10px]`, posicionado `top-1.5 right-1.5`, semitransparente (`bg-black/60`), siempre visible
+- **Título**: oculto por defecto, aparece al hacer hover/tap via `group-hover:opacity-100` con `text-xs`
+- **Desktop intacto**: overlay `from-black/80`, título + año + rating en bottom, slide-up animation en hover
+
+### Game Detail — Features completas
+- `game/[id]/page.tsx` incluye `FavoriteButton`, `WatchlistButton` y `ReviewSection` con `type="game"` / `contentType="game"`
+- El `ReviewSection` se adapta automáticamente (mismo componente que movies/series)
+- Botones de favoritos y watchlist en el detalle
+
+### Notifications — Contenido referenciado
+- **`contentTitle`** (`String?`) agregado al modelo Notification — almacena el título del juego/película/serie asociado
+- Se envía desde `ReviewSection` (via `contentTitle` prop) → API routes → `prisma.notification.create`
+- Se muestra en `notification-bell.tsx` y `notifications/page.tsx` como "— {title}" tras el texto de acción
+- **timeAgo i18n**: corregido en ambas vistas (bell client-side + page server-side) para usar dictionary keys en vez de español hardcodeado
+- Fuentes de creación: `reactions/route.ts`, `comments/route.ts`, `comments/[commentId]/reactions/route.ts`
 
 ### Performance
 - TMDB cacheado 1 hora (`next: { revalidate: 3600 }`)

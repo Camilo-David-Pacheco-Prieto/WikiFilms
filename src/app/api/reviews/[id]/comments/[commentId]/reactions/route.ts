@@ -13,7 +13,7 @@ export async function POST(
     }
 
     const { commentId } = await params;
-    const { type, contentType } = await req.json();
+    const { type, contentType, contentTitle } = await req.json();
     if (type !== "LIKE" && type !== "DISLIKE") {
       return NextResponse.json({ error: "Invalid reaction type" }, { status: 400 });
     }
@@ -71,6 +71,7 @@ export async function POST(
               commentId: comment.id,
               contentId: parentReview?.contentId ?? null,
               contentType: contentType ?? null,
+              contentTitle: contentTitle ?? null,
               message: msg,
             },
           });

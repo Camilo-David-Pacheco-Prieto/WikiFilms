@@ -129,6 +129,7 @@
   "content.watchTrailer": "Watch trailer",
   "content.notFoundMovie": "Movie not found \u2014 WikiFilms",
   "content.notFoundSeries": "Series not found \u2014 WikiFilms",
+  "content.notFoundGame": "Game not found \u2014 WikiFilms",
 
   "search.title": "Search",
   "search.placeholder": "Search movies or series...",

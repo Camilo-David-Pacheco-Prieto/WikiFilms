@@ -39,6 +39,7 @@ export async function GET() {
       reviewId: n.reviewId,
       contentId: n.contentId,
       contentType: n.contentType,
+      contentTitle: n.contentTitle,
       read: n.read,
       createdAt: n.createdAt,
     }));

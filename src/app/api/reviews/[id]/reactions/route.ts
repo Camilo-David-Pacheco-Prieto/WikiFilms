@@ -12,7 +12,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { type, contentType } = await req.json();
+    const { type, contentType, contentTitle } = await req.json();
     if (type !== "LIKE" && type !== "DISLIKE") {
       return NextResponse.json({ error: "Invalid reaction type" }, { status: 400 });
     }
@@ -61,6 +61,7 @@ export async function POST(
               reviewId: review.id,
               contentId: review.contentId,
               contentType: contentType ?? null,
+              contentTitle: contentTitle ?? null,
               message: msg,
             },
           });
