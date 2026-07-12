@@ -9,6 +9,7 @@ export interface IGDBGameResult {
   total_rating_count?: number;
   slug: string;
   genres?: { id: number; name: string }[];
+  screenshots?: { image_id: string }[];
   summary?: string;
 }
 
