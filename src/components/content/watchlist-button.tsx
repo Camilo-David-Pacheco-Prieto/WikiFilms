@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { List, Eye, Clock } from "lucide-react";
+import { List, Eye, Clock, Gamepad2 } from "lucide-react";
 import { useTranslate } from "@/i18n/language-provider";
 
 type WatchStatus = "WATCHED" | "PLAN_TO_WATCH";
@@ -25,6 +25,7 @@ export function WatchlistButton({
   const [currentStatus, setCurrentStatus] = useState<WatchStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const isGame = type === "game";
 
   useEffect(() => {
     if (!session?.user) return;
@@ -74,12 +75,16 @@ export function WatchlistButton({
 
   if (!session?.user) return null;
 
-  const icon = currentStatus === "WATCHED" ? Eye : currentStatus === "PLAN_TO_WATCH" ? Clock : List;
+  const watchedIcon = isGame ? Gamepad2 : Eye;
+  const WatchedIcon = watchedIcon;
+
+  const icon = currentStatus === "WATCHED" ? WatchedIcon : currentStatus === "PLAN_TO_WATCH" ? Clock : List;
+  const Icon = icon;
   const label = currentStatus === "WATCHED"
-    ? t("watchlistButton.watched")
+    ? isGame ? t("watchlistButton.played") : t("watchlistButton.watched")
     : currentStatus === "PLAN_TO_WATCH"
-      ? t("watchlistButton.planToWatch")
-      : t("watchlistButton.add");
+      ? isGame ? t("watchlistButton.planToPlay") : t("watchlistButton.planToWatch")
+      : isGame ? t("watchlistButton.addGame") : t("watchlistButton.add");
 
   return (
     <div className="relative">
@@ -91,7 +96,7 @@ export function WatchlistButton({
       >
         {label}
       </button>
-          {open && (
+        {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div className="absolute left-0 top-full z-20 mt-1 w-44 rounded-md border border-border-subtle bg-surface py-1 shadow-lg">
@@ -101,12 +106,12 @@ export function WatchlistButton({
               className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white"
             >
               {currentStatus === "WATCHED" ? (
-                <Eye className="h-4 w-4 text-green-400" />
+                <WatchedIcon className="h-4 w-4 text-green-400" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <WatchedIcon className="h-4 w-4" />
               )}
               {currentStatus === "WATCHED" && <span className="text-green-400">✓ </span>}
-              {t("watchlistButton.markWatched")}
+              {isGame ? t("watchlistButton.markPlayed") : t("watchlistButton.markWatched")}
             </button>
             <button
               onClick={() => setStatus("PLAN_TO_WATCH")}
@@ -119,7 +124,7 @@ export function WatchlistButton({
                 <Clock className="h-4 w-4" />
               )}
               {currentStatus === "PLAN_TO_WATCH" && <span className="text-yellow-400">✓ </span>}
-              {t("watchlistButton.markPlanToWatch")}
+              {isGame ? t("watchlistButton.markPlanToPlay") : t("watchlistButton.markPlanToWatch")}
             </button>
             {currentStatus && (
               <>

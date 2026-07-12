@@ -59,6 +59,8 @@
   "watchlist.emptyWatched": "You haven't marked anything as watched.",
   "watchlist.emptyPlanToWatch": "Nothing pending.",
   "watchlist.noImage": "No image",
+  "watchlist.played": "Played ({count})",
+  "watchlist.planToPlay": "Plan to play ({count})",
   "watchlist.tabMovies": "Movies/Series",
   "watchlist.tabGames": "Games",
 
@@ -201,6 +203,11 @@
   "watchlistButton.markWatched": "Mark as watched",
   "watchlistButton.markPlanToWatch": "Mark as plan to watch",
   "watchlistButton.remove": "Remove from my list",
+  "watchlistButton.played": "Played",
+  "watchlistButton.planToPlay": "Plan to play",
+  "watchlistButton.addGame": "Add to list",
+  "watchlistButton.markPlayed": "Mark as played",
+  "watchlistButton.markPlanToPlay": "Mark as plan to play",
 
   "favoriteButton.add": "Add to favorites",
   "favoriteButton.remove": "Remove from favorites",

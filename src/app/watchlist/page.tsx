@@ -114,13 +114,17 @@ async function WatchlistContent({ tab }: { tab: string }) {
       <div className="mt-8 space-y-6">
         <div>
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-green-400">
-            {dict["watchlist.watched"]?.replace("{count}", String(watched.length))}
+            {isGamesTab
+              ? dict["watchlist.played"]?.replace("{count}", String(watched.length))
+              : dict["watchlist.watched"]?.replace("{count}", String(watched.length))}
           </p>
           {renderGrid(watched, dict["watchlist.emptyWatched"])}
         </div>
         <div>
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-yellow-400">
-            {dict["watchlist.planToWatch"]?.replace("{count}", String(planToWatch.length))}
+            {isGamesTab
+              ? dict["watchlist.planToPlay"]?.replace("{count}", String(planToWatch.length))
+              : dict["watchlist.planToWatch"]?.replace("{count}", String(planToWatch.length))}
           </p>
           {renderGrid(planToWatch, dict["watchlist.emptyPlanToWatch"])}
         </div>

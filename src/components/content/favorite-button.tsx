@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Heart } from "lucide-react";
+import { Star } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslate } from "@/i18n/language-provider";
 
@@ -58,10 +58,10 @@ export function FavoriteButton({
       onClick={toggle}
       disabled={loading}
       data-favorited={favorited}
-      className="flex items-center gap-2 rounded-md border border-border-subtle px-4 py-2 text-sm font-medium transition-colors hover:border-accent-brand data-[favorited=true]:border-accent-brand data-[favorited=true]:bg-accent-brand/10 data-[favorited=true]:text-accent-brand text-text-secondary disabled:opacity-50"
+      className="flex items-center gap-2 rounded-md border border-border-subtle px-4 py-2 text-sm font-medium transition-colors hover:border-yellow-400 data-[favorited=true]:border-yellow-400 data-[favorited=true]:bg-yellow-400/10 data-[favorited=true]:text-yellow-400 text-text-secondary disabled:opacity-50"
     >
-      <Heart
-        className={`h-4 w-4 ${favorited ? "fill-accent-brand" : ""}`}
+      <Star
+        className={`h-4 w-4 ${favorited ? "fill-yellow-400" : "text-yellow-400/50"}`}
       />
       {favorited ? t("favoriteButton.remove") : t("favoriteButton.add")}
     </button>

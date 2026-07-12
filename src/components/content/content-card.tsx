@@ -41,8 +41,23 @@ export function ContentCard({ content }: ContentCardProps) {
             {t("content.noImage")}
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 transition-opacity duration-300 md:group-hover:opacity-100" />
-        <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-0 md:translate-y-full transition-transform duration-300 md:group-hover:translate-y-0">
+
+        <Badge
+          variant="secondary"
+          className="absolute right-1.5 top-1.5 z-10 bg-black/60 text-[10px] text-white border-0 md:hidden"
+        >
+          {content.rating.toFixed(1)}
+        </Badge>
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 md:from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 transition-opacity duration-300 md:group-hover:opacity-100" />
+
+        <div className="absolute bottom-0 left-0 right-0 p-2 md:hidden opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <p className="font-display text-xs font-bold uppercase leading-tight text-white drop-shadow-lg line-clamp-1">
+            {content.title}
+          </p>
+        </div>
+
+        <div className="absolute bottom-0 left-0 right-0 p-3 hidden md:block md:translate-y-full transition-transform duration-300 md:group-hover:translate-y-0">
           <p className="font-display text-lg font-bold uppercase leading-tight text-white">
             {content.title}
           </p>
