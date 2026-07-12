@@ -17,7 +17,9 @@ export function ContentCard({ content }: ContentCardProps) {
       ? `/movie/${content.id}`
       : content.type === "tv"
         ? `/tv/${content.id}`
-        : "#";
+        : content.type === "game"
+          ? `/game/${content.id}`
+          : "#";
 
   return (
     <Link

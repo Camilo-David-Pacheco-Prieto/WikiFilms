@@ -2,9 +2,9 @@
 
 ## Visión del Proyecto
 
-WikiFilms es una enciclopedia cinematográfica web. Consume la API de **TMDB (The Movie Database)** para mostrar información detallada de películas y series. Migración desde WikiPeliculasAPI (escritorio Java Swing) a una aplicación web moderna desplegada en Vercel.
+WikiFilms es una enciclopedia de entretenimiento web. Consume la API de **TMDB (The Movie Database)** para películas/series y **IGDB (Internet Game Database) via Twitch** para videojuegos. Migración desde WikiPeliculasAPI (escritorio Java Swing) a una aplicación web moderna desplegada en Vercel.
 
-**Objetivo final:** App responsive, accesible desde cualquier dispositivo (móvil, tablet, desktop), con autenticación de usuarios, panel admin y contenido siempre actualizado.
+**Objetivo final:** App responsive con catálogo unificado de películas, series y videojuegos, accesible desde cualquier dispositivo, con autenticación de usuarios, panel admin y contenido siempre actualizado.
 
 ---
 
@@ -22,6 +22,7 @@ WikiFilms es una enciclopedia cinematográfica web. Consume la API de **TMDB (Th
 | Paquetería | pnpm | 11.8.0 |
 | Fuentes | Oswald (display) + Inter (body) | Google Fonts |
 | Iconos | lucide-react | - |
+| IGDB / Twitch | API de videojuegos | v4 |
 
 ---
 
@@ -89,8 +90,15 @@ src/
 │   │   │       ├── route.ts              # GET listar + POST crear
 │   │   │       ├── [commentId]/route.ts  # PATCH editar, DELETE eliminar
 │   │   │       └── [commentId]/reactions/route.ts # Like/dislike comentario
+│   │   ├── games/
+│   │   │   ├── [id]/route.ts             # API detalle juego (IGDB)
+│   │   │   ├── popular/route.ts          # API juegos populares
+│   │   │   ├── search/route.ts           # API búsqueda juegos
+│   │   │   └── upcoming/route.ts         # API próximos lanzamientos
 │   │   └── watchlist/route.ts            # CRUD watchlist
 │   ├── dashboard/page.tsx               # Perfil de usuario
+│   ├── game/[id]/page.tsx               # Detalle juego (hero + summary + storyline + screenshots + artworks + videos)
+│   ├── games/page.tsx                   # Home juegos (hero slider + populares + próximos)
 │   ├── movie/[id]/page.tsx              # Detalle película + SEO
 │   ├── tv/[id]/page.tsx                   # Detalle serie + SEO
 │   ├── search/
@@ -105,28 +113,34 @@ src/
 │   └── page.tsx                           # Home (populares)
 ├── components/
 │   ├── auth/
-│   │   ├── login-form.tsx              # Form login
+│   │   ├── login-form.tsx                # Form login
 │   │   └── register-form.tsx             # Form register
 │   ├── content/
 │   │   ├── content-card.tsx               # Card para grid (hover/tap reveal)
 │   │   ├── content-grid.tsx               # Grid responsivo
 │   │   ├── detail-hero.tsx                # Hero Marvel-style (backdrop + poster + info)
+│   │   ├── game-detail-hero.tsx           # Hero detalle juego (backdrop, poster, rating, tráiler modal)
 │   │   ├── hero-slider.tsx                # Slider hero con tendencias, overlay multi-stop, responsive premium
 │   │   ├── navbar.tsx                     # Navbar con sesión
 │   │   ├── review-section.tsx             # Resenas + reacciones + comentarios anidados con edit/delete/reactions/sort
-│   │   └── notification-bell.tsx          # Campana de notificaciones con SSE cliente + pendingReads
+│   │   ├── notification-bell.tsx          # Campana de notificaciones con SSE cliente + pendingReads
+│   │   ├── skeleton-card.tsx              # Skeleton para card loading
+│   │   ├── skeleton-grid.tsx              # Skeleton para grid loading
+│   │   └── skeleton-hero.tsx              # Skeleton para hero loading
 │   └── ui/
 │       ├── badge.tsx (shadcn)
 │       ├── button.tsx (shadcn)
 │       └── card.tsx (shadcn)
 ├── lib/
 │   ├── auth.ts              # NextAuth config + handlers
+│   ├── igdb.ts              # Servicio IGDB con auth Twitch OAuth2 + token cache + endpoints
 │   ├── prisma.ts            # Cliente Prisma singleton con adapter Neon
 │   ├── tmdb.ts              # Servicio TMDB con caching + localeToTMDBlang("es")="es-MX" + region CO
 │   └── utils.ts             # Utilidades (shadcn)
 ├── types/
-│   └── tmdb.ts              # Tipos TMDB (incluye iso_639_1 en TMDBVideoResponse)
-└── middleware.ts             # Protección de rutas
+│   ├── igdb.ts              # Tipos IGDBGameResult, IGDBGameDetail, GameResult, constantes de imagen
+│   └── tmdb.ts              # Tipos TMDB (incluye iso_639_1 en TMDBVideoResponse, MediaType="game")
+└── proxy.ts                 # Reemplaza middleware.ts: rate limit + auth rutas admin/games + jwtDecrypt via getToken()
 ```
 
 ---
@@ -152,8 +166,13 @@ src/
 
 ### Seguridad
 - TMDB API key **nunca** llega al cliente (solo en servidor)
+- Twitch Client ID y Secret **nunca** llegan al cliente (solo en servidor)
 - Passwords hasheados con bcrypt (12 rounds)
-- Middleware protege rutas `/dashboard` y `/admin`
+- `proxy.ts` protege rutas:
+  - `/admin/*` — requiere sesión + rol ADMIN
+  - `/games/*`, `/game/*` — requiere sesión (cualquier rol)
+  - `/api/auth/*` — rate limiting (40 req/min por IP)
+- **Auth proxy**: usa `getToken` de `next-auth/jwt` (HKDF key derivation) en lugar de `jose.jwtDecrypt` manual
 - Server Actions verifican rol ADMIN antes de operaciones
 - Variables de entorno en `.env.local` y Vercel
 
@@ -163,8 +182,30 @@ src/
 - Trailers priorizan `iso_639_1 === "es"` sobre inglés/otros
 - Proveedores de streaming filtrados por región (CO, MX, AR)
 
+### IGDB — Videojuegos
+- **Fuente**: IGDB API v4 via Twitch OAuth2 `client_credentials`
+- **Auth**: Token en memoria (`cachedToken` + `tokenExpiresAt`), refresco automático
+- **Servicio**: `src/lib/igdb.ts` — `fetchFromIGDB<T>()`, token cache, mapeo a `GameResult`
+- **Tipos**: `src/types/igdb.ts` define `IGDBGameResult`, `IGDBGameDetail`, `GameResult`
+- **GameResult** es estructuralmente compatible con `ContentResult` (`type: "game"`) para reutilizar `ContentCard`, `ContentGrid` y `HeroSlider`
+- **Imágenes**: `https://images.igdb.com/igdb/image/upload/t_{size}/{image_id}.jpg`
+  - `IGDB_COVER_SIZE = "cover_big"` — 264x374
+  - `IGDB_SCREENSHOT_SIZE = "screenshot_huge"` — 1280x720
+- **RemotePatterns** en `next.config.ts`: `images.igdb.com`
+- **Endpoints IGDB usados**:
+  - `searchGames(query, limit)` — búsqueda
+  - `getPopularGames(limit, offset)` — más votados
+  - `getUpcomingGames(limit)` — próximos lanzamientos
+  - `getTrendingGames(limit)` — tendencias (altos votos + screenshots)
+  - `getGameById(id)` — detalle completo (storyline, companies, artworks, videos)
+- **Proxy.ts** protege `/games/*` y `/game/*` con sesión (usa `getToken` de `next-auth/jwt`)
+- **i18n**: 11 keys (`games.popular`, `games.upcoming`, `game.summary`, `game.storyline`, `game.screenshots`, `game.artworks`, `game.videos`, `game.platforms`, `game.developedBy`, `game.publishedBy`, `nav.games`)
+- **Navbar**: link "Juegos" visible solo para usuarios autenticados
+- **`MediaType`** en `types/tmdb.ts` incluye `"game"`
+
 ### Performance
 - TMDB cacheado 1 hora (`next: { revalidate: 3600 }`)
+- IGDB cacheado 1 hora (`next: { revalidate: 3600 }`)
 - next/image para pósters optimizados
 - Navbar con sesión usando `auth()` de NextAuth
 
@@ -190,6 +231,7 @@ pnpm prisma migrate deploy # Migrar DB producción (Vercel)
 1. Repositorio en GitHub/WikiPeliculas_Project
 2. Cuenta en Vercel (vercel.com)
 3. Cuenta en TMDB (api key ya configurada: `TMDB_API_KEY=2b4a72141...`)
+4. App registrada en [Twitch Developer Console](https://dev.twitch.tv/console) (Client ID + Secret)
 
 ### Pasos
 
@@ -208,6 +250,8 @@ TMDB_API_KEY=2b4a72141ca6729ae43afd155ad04ef0
 DATABASE_URL=<pegar desde Vercel Postgres>
 AUTH_SECRET=<generar con: openssl rand -base64 32>
 NEXTAUTH_URL=https://wiki-films-fawn.vercel.app
+TWITCH_CLIENT_ID=<de Twitch Developer Console>
+TWITCH_CLIENT_SECRET=<de Twitch Developer Console>
 ```
 
 #### 4. Migrar esquema
