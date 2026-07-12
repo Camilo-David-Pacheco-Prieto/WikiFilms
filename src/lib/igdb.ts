@@ -52,12 +52,12 @@ async function fetchFromIGDB<T>(
 
 function igdbCoverUrl(imageId: string | undefined): string | null {
   if (!imageId) return null;
-  return `${IGDB_IMAGE_BASE}/t/${IGDB_COVER_SIZE}/${imageId}.jpg`;
+  return `${IGDB_IMAGE_BASE}/t_${IGDB_COVER_SIZE}/${imageId}.jpg`;
 }
 
 function igdbScreenshotUrl(imageId: string | undefined): string | null {
   if (!imageId) return null;
-  return `${IGDB_IMAGE_BASE}/t/${IGDB_SCREENSHOT_SIZE}/${imageId}.jpg`;
+  return `${IGDB_IMAGE_BASE}/t_${IGDB_SCREENSHOT_SIZE}/${imageId}.jpg`;
 }
 
 function mapGameToResult(game: IGDBGameResult): GameResult {

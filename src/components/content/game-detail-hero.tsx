@@ -12,7 +12,7 @@ interface GameDetailHeroProps {
 }
 
 function igdbUrl(size: string, imageId: string) {
-  return `${IGDB_IMAGE_BASE}/t/${size}/${imageId}.jpg`;
+  return `${IGDB_IMAGE_BASE}/t_${size}/${imageId}.jpg`;
 }
 
 export function GameDetailHero({ game }: GameDetailHeroProps) {
