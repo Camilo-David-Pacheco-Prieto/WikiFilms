@@ -11,6 +11,7 @@
   "nav.closeMenu": "Close menu",
   "nav.language": "Language",
   "nav.searchPlaceholder": "Search movies or series...",
+  "nav.searchGamesPlaceholder": "Search games...",
   "nav.games": "Games",
   "nav.comingSoon": "Coming Soon",
 
@@ -132,6 +133,7 @@
   "search.emptyPrompt": "Search for your favorite movie or series",
   "search.filterMovies": "Movies",
   "search.filterSeries": "Series",
+  "search.filterGames": "Games",
 
   "reviews.heading": "Reviews",
   "reviews.placeholder": "Write your review (optional)",

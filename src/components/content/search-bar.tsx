@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import { useTranslate } from "@/i18n/language-provider";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,19 @@ import { Input } from "@/components/ui/input";
 export function SearchBar() {
   const [q, setQ] = useState("");
   const router = useRouter();
+  const pathname = usePathname();
   const t = useTranslate();
+
+  const isGamesSection = pathname.startsWith("/games") || pathname.startsWith("/game");
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const trimmed = q.trim();
     if (trimmed) {
-      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+      const params = new URLSearchParams();
+      params.set("q", trimmed);
+      if (isGamesSection) params.set("type", "game");
+      router.push(`/search?${params.toString()}`);
     }
   };
 
@@ -27,7 +33,7 @@ export function SearchBar() {
           type="text"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder={t("nav.searchPlaceholder")}
+          placeholder={t(isGamesSection ? "nav.searchGamesPlaceholder" : "nav.searchPlaceholder")}
           className="bg-muted/50 pl-10 text-sm"
         />
       </div>

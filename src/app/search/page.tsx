@@ -1,4 +1,5 @@
 import { searchContent } from "@/lib/tmdb";
+import { searchGames } from "@/lib/igdb";
 import { ContentGrid } from "@/components/content/content-grid";
 import { Pagination } from "@/components/content/pagination";
 import { SearchForm } from "./search-form";
@@ -13,6 +14,7 @@ interface Props {
 export default async function SearchPage({ searchParams }: Props) {
   const { q, type, page } = await searchParams;
   const mediaType = type === "tv" ? "tv" : type === "movie" ? "movie" : undefined;
+  const isGameSearch = type === "game";
   const currentPage = Math.max(1, Number(page) || 1);
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
@@ -23,15 +25,19 @@ export default async function SearchPage({ searchParams }: Props) {
   if (q) {
     const trimmed = q.trim();
     if (trimmed) {
-      const data = await searchContent(trimmed, mediaType as MediaType, currentPage, locale);
-      results = data.results;
-      totalPages = data.totalPages;
+      if (isGameSearch) {
+        results = await searchGames(trimmed);
+      } else {
+        const data = await searchContent(trimmed, mediaType as MediaType, currentPage, locale);
+        results = data.results;
+        totalPages = data.totalPages;
+      }
     }
   }
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
-      <SearchForm initialQuery={q ?? ""} initialType={mediaType ?? ""} />
+      <SearchForm initialQuery={q ?? ""} initialType={type ?? ""} />
 
       {q && results ? (
         results.length > 0 ? (
@@ -40,7 +46,7 @@ export default async function SearchPage({ searchParams }: Props) {
               title={dict["search.resultsFor"]?.replace("{q}", q)}
               items={results}
             />
-            <Pagination currentPage={currentPage} totalPages={totalPages} />
+            {!isGameSearch && <Pagination currentPage={currentPage} totalPages={totalPages} />}
           </>
         ) : (
           <div className="mt-16 text-center">

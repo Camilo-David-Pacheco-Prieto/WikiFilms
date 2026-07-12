@@ -75,6 +75,14 @@ export function SearchForm({
         >
           {t("search.filterSeries")}
         </button>
+        <button
+          type="button"
+          onClick={() => handleTypeChange("game")}
+          data-active={type === "game"}
+          className="rounded-md border border-border-subtle px-4 py-1.5 text-sm font-medium transition-colors data-[active=true]:border-accent-brand data-[active=true]:bg-accent-brand/10 data-[active=true]:text-accent-brand text-text-secondary hover:border-zinc-600"
+        >
+          {t("search.filterGames")}
+        </button>
       </div>
     </form>
   );
