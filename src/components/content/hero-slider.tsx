@@ -64,33 +64,33 @@ export function HeroSlider({ items }: HeroSliderProps) {
       <div className="relative z-10 flex h-full items-center">
         <div className="mx-auto flex w-full max-w-7xl px-2 md:px-12">
           <div className="w-full px-3 py-5 md:max-w-[560px] md:p-14 lg:max-w-[560px] lg:p-16">
-            <span className="inline-block w-fit rounded-[4px] bg-accent-brand/20 px-1.5 py-0.5 text-[6px] font-bold uppercase tracking-wider text-accent-brand md:rounded-[10px] md:px-3.5 md:py-2 md:text-sm">
+            <span className="inline-block w-fit rounded-[4px] bg-accent-brand/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-brand md:rounded-[10px] md:px-3.5 md:py-2 md:text-sm">
               #{currentIndex + 1} · {t("hero.trending")}
             </span>
 
-            <h2 className="mt-2 font-display text-[12px] font-black uppercase leading-[1] tracking-[-0.03em] text-white line-clamp-1 md:mt-6 md:text-[48px] md:line-clamp-2"
+            <h2 className="mt-3 font-display text-[18px] font-black uppercase leading-[1] tracking-[-0.03em] text-white line-clamp-1 md:mt-6 md:text-[48px] md:line-clamp-2"
                 style={{ textShadow: "0 0 6px rgba(0,0,0,0.25)" }}>
               {current.title}
             </h2>
 
             {current.genres.length > 0 && (
-              <p className="mt-2 text-[6px] text-white/60 md:mt-4 md:text-sm"
+              <p className="mt-2.5 text-[10px] text-white/60 md:mt-4 md:text-sm"
                  style={{ textShadow: "0 0 6px rgba(0,0,0,0.25)" }}>
                 {current.genres.join(" · ")}
               </p>
             )}
 
             {current.overview && (
-              <p className="mt-3 text-[6px] leading-snug text-gray-200 line-clamp-1 max-w-[80%] md:mt-4 md:max-w-none md:text-lg md:leading-[1.7] md:text-white lg:text-lg lg:leading-[1.7] lg:text-white lg:line-clamp-3">
+              <p className="mt-2.5 text-[12px] leading-snug text-gray-200 line-clamp-1 max-w-[85%] md:mt-4 md:max-w-none md:text-lg md:leading-[1.7] md:text-white lg:text-lg lg:leading-[1.7] lg:text-white lg:line-clamp-3">
                 {current.overview}
               </p>
             )}
 
             <Link
               href={`/${current.type}/${current.id}`}
-              className="mt-3.5 inline-flex h-4 items-center gap-1 rounded-[5px] bg-gradient-to-r from-accent-brand to-accent-hover px-2 text-[7px] font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30 md:mt-5 md:h-10 md:gap-2 md:rounded-[12px] md:px-5 md:text-sm"
+              className="mt-3.5 inline-flex h-6 items-center gap-1 rounded-[5px] bg-gradient-to-r from-accent-brand to-accent-hover px-2 text-[10px] font-bold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-brand/30 md:mt-5 md:h-10 md:gap-2 md:rounded-[12px] md:px-5 md:text-sm"
             >
-              <Play className="h-2 w-2 fill-current md:h-4 md:w-4" />
+              <Play className="h-3 w-3 fill-current md:h-4 md:w-4" />
               {t("hero.viewInfo")}
             </Link>
           </div>
