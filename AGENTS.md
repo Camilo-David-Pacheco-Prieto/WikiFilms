@@ -108,9 +108,10 @@ src/
 │   │   ├── login-form.tsx              # Form login
 │   │   └── register-form.tsx             # Form register
 │   ├── content/
-│   │   ├── content-card.tsx               # Card para grid (hover reveal)
+│   │   ├── content-card.tsx               # Card para grid (hover/tap reveal)
 │   │   ├── content-grid.tsx               # Grid responsivo
 │   │   ├── detail-hero.tsx                # Hero Marvel-style (backdrop + poster + info)
+│   │   ├── hero-slider.tsx                # Slider hero con tendencias, overlay multi-stop, responsive premium
 │   │   ├── navbar.tsx                     # Navbar con sesión
 │   │   ├── review-section.tsx             # Resenas + reacciones + comentarios anidados con edit/delete/reactions/sort
 │   │   └── notification-bell.tsx          # Campana de notificaciones con SSE cliente + pendingReads

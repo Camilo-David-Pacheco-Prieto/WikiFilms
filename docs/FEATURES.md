@@ -136,3 +136,82 @@ Al cargar la pagina, un `useEffect` detecta el hash, hace `scrollIntoView` sobre
 ## Historial de Notificaciones (`/notifications`)
 
 Pagina servidor que lista las ultimas 50 notificaciones del usuario autenticado, ordenadas por fecha descendente. Incluye nombre del actor (resuelto via consulta a tabla User), icono segun tipo, estado leido/no leido, y enlace directo al contenido.
+
+---
+
+## Hero Slider (`hero-slider.tsx`)
+
+Slider principal en la home con las 6 tendencias TMDB mas populares. Diseno premium tipo streaming.
+
+### Comportamiento
+
+| Aspecto | Mobile (<768px) | Desktop (md+) | Desktop (lg+) |
+|---------|----------------|---------------|---------------|
+| Altura | `h-[180px]` | `h-[500px]` | `h-[460px]` |
+| Border radius | `rounded-2xl` | `rounded-2xl` + sombra | `rounded-3xl` |
+| Auto-rotacion | 8s | 8s | 8s |
+
+### Overlay Gradiente
+
+`linear-gradient(90deg, rgba(0,0,0,.88) 0%, rgba(0,0,0,.72) 45%, rgba(0,0,0,.35) 70%, rgba(0,0,0,0) 100%)`
+
+Multi-stop con opacidad decreciente: la zona izquierda (texto) tiene fondo oscuro solido, la zona derecha deja ver la imagen limpiamente. Visible en todos los tamanos.
+
+### Contenido (mobile)
+
+| Elemento | Tamano | Gap |
+|----------|--------|-----|
+| Badge (trending #n) | `text-[10px]` | — |
+| Titulo | `text-[18px]` Oswald black | `mt-3` |
+| Generos | `text-[10px]` | `mt-2.5` |
+| Sinopsis | `text-[12px] line-clamp-2 max-w-[85%]` | `mt-2.5` |
+| Boton Ver ahora | `h-6 text-[10px]` | `mt-3.5` |
+
+### Contenido (desktop)
+
+| Elemento | Tamano | Gap |
+|----------|--------|-----|
+| Badge | `text-sm` | — |
+| Titulo | `text-[48px]` Oswald black | `md:mt-6` |
+| Generos | `text-sm` | `md:mt-4` |
+| Sinopsis | `text-lg leading-[1.7]` | `md:mt-4` |
+| Boton Ver ahora | `h-10 text-sm` | `md:mt-5` |
+
+El contenedor de texto tiene `max-w-[560px]` en md+ y `max-w-none` en desktop para la sinopsis.
+
+### Navegacion
+
+| Elemento | Mobile | Desktop |
+|----------|--------|---------|
+| Flechas | `h-6 w-6` en `left-0.5`/`right-0.5`, `bg-black/20` | `h-[60px] w-[60px]` en `left-6`/`right-6`, `bg-black/55 backdrop-blur-md` |
+| Dots indicadores | `bottom-1`, 4px, acento en activo | `md:bottom-6` |
+| Auto-rotacion | 8s | 8s |
+
+### textShadow
+
+Titulo y generos llevan `textShadow: "0 0 6px rgba(0,0,0,0.25)"` como glow sutil que separa del fondo sin entintar.
+
+---
+
+## Content Card (`content-card.tsx`)
+
+Card individual para el grid de posters (populares, trending, busqueda, recomendaciones).
+
+### Comportamiento hover/tap
+
+| Estado | Mobile | Desktop |
+|--------|--------|---------|
+| Default | Titulo oculto (`translate-y-full`), gradiente oculto (`opacity-0`) | Igual |
+| Hover/Tap | `group-hover` activa titulo y gradiente via `:hover` al tocar | `group-hover` al pasar el mouse |
+| Transicion | `transition-transform duration-300` | Igual |
+
+- `aspect-[2/3]` para relacion poster estandar
+- `hover:scale-[1.03]` efecto de zoom sutil
+- Badge con rating y ano al pie de la card
+- Overlay `bg-gradient-to-t from-black/80 via-transparent to-transparent` solo en hover
+
+### Grid (`content-grid.tsx`)
+
+- `grid-cols-2` mobile hasta `xl:grid-cols-6` en desktop
+- `gap-4` entre cards
+- Titulo de seccion con enlace "Ver todos"

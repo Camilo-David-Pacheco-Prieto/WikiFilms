@@ -69,6 +69,8 @@ NEXTAUTH_URL=http://localhost:3000
 
 ## Funcionalidades
 
+- **Hero Slider Premium** — Slider de tendencias con auto-rotacion, overlay multi-stop, diseno responsive mobile/desktop, flechas glass y dots indicadores
+- **Content Cards con tap reveal** — Posters en grid, titulo oculto por defecto, aparece al hover/tap
 - **TMDB API** — Catalogo completo de peliculas y series con posters, sinopsis, elenco y proveedores de streaming
 - **Autenticacion** — Registro/login con username/password, bcrypt, sesiones via NextAuth
 - **Resenas** — Calificacion 1-10, comentario opcional, CRUD completo
