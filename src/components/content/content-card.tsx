@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { useTranslate } from "@/i18n/language-provider";
@@ -12,6 +12,7 @@ interface ContentCardProps {
 
 export function ContentCard({ content }: ContentCardProps) {
   const t = useTranslate();
+  const [imgError, setImgError] = useState(false);
   const href =
     content.type === "movie"
       ? `/movie/${content.id}`
@@ -27,14 +28,13 @@ export function ContentCard({ content }: ContentCardProps) {
       className="group relative block overflow-hidden rounded-lg transition-transform duration-300 hover:scale-[1.03]"
     >
       <div className="relative aspect-[2/3] w-full">
-        {content.posterUrl ? (
-          <Image
+        {content.posterUrl && !imgError ? (
+          <img
             src={content.posterUrl}
             alt={content.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
+            className="absolute inset-0 h-full w-full object-cover"
             loading="lazy"
+            onError={() => setImgError(true)}
           />
         ) : (
           <div className="flex h-full items-center justify-center bg-surface text-text-secondary text-sm">

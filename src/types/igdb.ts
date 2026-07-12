@@ -41,4 +41,4 @@ export interface GameResult {
 
 export const IGDB_IMAGE_BASE = "https://images.igdb.com/igdb/image/upload";
 export const IGDB_COVER_SIZE = "cover_big";
-export const IGDB_SCREENSHOT_SIZE = "screenshot_huge";
+export const IGDB_SCREENSHOT_SIZE = "screenshot_big";

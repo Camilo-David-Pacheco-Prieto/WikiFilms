@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { useTranslate } from "@/i18n/language-provider";
@@ -14,8 +13,13 @@ interface HeroSliderProps {
 export function HeroSlider({ items }: HeroSliderProps) {
   const t = useTranslate();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
   const slides = items.slice(0, 6);
   const current = slides[currentIndex];
+
+  const onImgError = useCallback((id: number) => {
+    setImgErrors((prev) => ({ ...prev, [id]: true }));
+  }, []);
 
   useEffect(() => {
     if (slides.length < 2) return;
@@ -45,14 +49,12 @@ export function HeroSlider({ items }: HeroSliderProps) {
           className="absolute inset-0 transition-opacity duration-1000"
           style={{ opacity: i === currentIndex ? 1 : 0 }}
         >
-          {item.backdropUrl ? (
-            <Image
+          {item.backdropUrl && !imgErrors[item.id] ? (
+            <img
               src={item.backdropUrl}
               alt=""
-              fill
-              className="object-cover"
-              sizes="100vw"
-              priority={i === 0}
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={() => onImgError(item.id)}
             />
           ) : (
             <div className="h-full w-full bg-surface" />
