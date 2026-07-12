@@ -190,7 +190,11 @@ src/
 - **GameResult** es estructuralmente compatible con `ContentResult` (`type: "game"`) para reutilizar `ContentCard`, `ContentGrid` y `HeroSlider`
 - **Imágenes**: `https://images.igdb.com/igdb/image/upload/t_{size}/{image_id}.jpg`
   - `IGDB_COVER_SIZE = "cover_big"` — 264x374
-  - `IGDB_SCREENSHOT_SIZE = "screenshot_huge"` — 1280x720
+  - `IGDB_SCREENSHOT_SIZE = "screenshot_big"` — 889x500
+  - **Importante**: el prefijo es `t_SIZE` con underscore, NO `t/SIZE`
+- **Carga de imágenes**: `<img>` nativo en vez de `next/image` (bypass a optimización de Vercel)
+  - `onError` con fallback visual para cuando una imagen falla
+  - `ContentCard`, `HeroSlider`, `game-detail-hero` y `game/[id]` todos usan `<img>` nativo
 - **RemotePatterns** en `next.config.ts`: `images.igdb.com`
 - **Endpoints IGDB usados**:
   - `searchGames(query, limit)` — búsqueda
@@ -206,7 +210,7 @@ src/
 ### Performance
 - TMDB cacheado 1 hora (`next: { revalidate: 3600 }`)
 - IGDB cacheado 1 hora (`next: { revalidate: 3600 }`)
-- next/image para pósters optimizados
+- next/image para pósters TMDB; `<img>` nativo para IGDB (evita 404 de Vercel)
 - Navbar con sesión usando `auth()` de NextAuth
 
 ---
