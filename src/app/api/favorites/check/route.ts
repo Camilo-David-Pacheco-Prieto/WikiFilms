@@ -10,16 +10,18 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const contentId = searchParams.get("contentId");
+  const type = searchParams.get("type");
 
-  if (!contentId) {
-    return NextResponse.json({ error: "Falta contentId" }, { status: 400 });
+  if (!contentId || !type) {
+    return NextResponse.json({ error: "Falta contentId o type" }, { status: 400 });
   }
 
   const fav = await prisma.favorite.findUnique({
     where: {
-      userId_contentId: {
+      userId_contentId_type: {
         userId: session.user.id,
         contentId: Number(contentId),
+        type,
       },
     },
   });

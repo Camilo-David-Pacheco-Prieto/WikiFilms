@@ -14,6 +14,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: dict["dashboard.title"] };
 }
 
+interface Props {
+  searchParams: Promise<{ tab?: string }>;
+}
+
 async function ProfileSection() {
   const session = await auth();
   const user = session!.user;
@@ -55,27 +59,55 @@ async function ProfileSection() {
   );
 }
 
-async function FavoritesList() {
+async function FavoritesList({ tab }: { tab: string }) {
   const session = await auth();
   const user = session!.user;
-  const favorites = await prisma.favorite.findMany({
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+  const isGamesTab = tab === "games";
+
+  const allFavorites = await prisma.favorite.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
   });
-  const locale = await getServerLocale();
-  const dict = await getDictionary(locale);
+
+  const favorites = allFavorites.filter((item) => isGamesTab ? item.type === "game" : item.type !== "game");
+
+  function itemHref(item: { type: string; contentId: number }): string {
+    if (item.type === "movie") return `/movie/${item.contentId}`;
+    if (item.type === "tv") return `/tv/${item.contentId}`;
+    return `/game/${item.contentId}`;
+  }
 
   return (
     <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
       <h2 className="font-display text-2xl font-bold uppercase text-white">
         {dict["dashboard.favorites"]}
       </h2>
+
+      <div className="mt-4 flex gap-2 border-b border-border-subtle">
+        <Link
+          href="/dashboard"
+          data-active={!isGamesTab}
+          className="px-4 py-2 text-sm font-medium transition-colors data-[active=true]:border-b-2 data-[active=true]:border-accent-brand data-[active=true]:text-accent-brand text-text-secondary hover:text-white"
+        >
+          {dict["watchlist.tabMovies"]}
+        </Link>
+        <Link
+          href="/dashboard?tab=games"
+          data-active={isGamesTab}
+          className="px-4 py-2 text-sm font-medium transition-colors data-[active=true]:border-b-2 data-[active=true]:border-accent-brand data-[active=true]:text-accent-brand text-text-secondary hover:text-white"
+        >
+          {dict["watchlist.tabGames"]}
+        </Link>
+      </div>
+
       {favorites.length > 0 ? (
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
           {favorites.map((fav) => (
             <Link
               key={fav.id}
-              href={fav.type === "movie" ? `/movie/${fav.contentId}` : `/tv/${fav.contentId}`}
+              href={itemHref(fav)}
               className="group relative overflow-hidden rounded-lg"
             >
               {fav.posterUrl ? (
@@ -124,9 +156,11 @@ function FavoritesSkeleton() {
   );
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }: Props) {
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  const { tab } = await searchParams;
 
   return (
     <main className="mx-auto max-w-2xl space-y-8 px-4 py-16">
@@ -134,7 +168,7 @@ export default async function DashboardPage() {
         <ProfileSection />
       </Suspense>
       <Suspense fallback={<FavoritesSkeleton />}>
-        <FavoritesList />
+        <FavoritesList tab={tab ?? "movies"} />
       </Suspense>
     </main>
   );

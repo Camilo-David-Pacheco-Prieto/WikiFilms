@@ -39,7 +39,7 @@ interface CommentNode extends ReviewComment {
 
 interface ReviewSectionProps {
   contentId: number;
-  contentType: "movie" | "tv";
+  contentType: "movie" | "tv" | "game";
 }
 
 type SortBy = "new" | "old" | "top";
@@ -529,7 +529,7 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
   const [highlightId, setHighlightId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/reviews?contentId=${contentId}`)
+    fetch(`/api/reviews?contentId=${contentId}&contentType=${contentType}`)
       .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then((data: Review[]) => {
         setReviews(data);
@@ -579,7 +579,7 @@ export function ReviewSection({ contentId, contentType }: ReviewSectionProps) {
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contentId, rating, comment: comment || null }),
+        body: JSON.stringify({ contentId, contentType, rating, comment: comment || null }),
       });
       if (res.ok) {
         const data = await res.json();

@@ -82,6 +82,7 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
         {video && <div className="absolute inset-0 bg-black/50" />}
 
         <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-base via-base/50 to-transparent" />
 
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:flex-row md:items-end md:gap-10 md:py-14 lg:px-12">
           {posterUrl && !posterError && (

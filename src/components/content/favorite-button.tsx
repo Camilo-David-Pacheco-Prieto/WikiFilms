@@ -9,7 +9,7 @@ interface FavoriteButtonProps {
   contentId: number;
   title: string;
   posterUrl: string | null;
-  type: "movie" | "tv";
+  type: "movie" | "tv" | "game";
 }
 
 export function FavoriteButton({
@@ -25,13 +25,13 @@ export function FavoriteButton({
 
   useEffect(() => {
     if (!session?.user) return;
-    fetch(`/api/favorites/check?contentId=${contentId}`)
+    fetch(`/api/favorites/check?contentId=${contentId}&type=${type}`)
       .then((res) => res.json())
       .then((data: { favorited: boolean }) => {
         setFavorited(data.favorited);
       })
       .catch(() => {});
-  }, [session, contentId]);
+  }, [session, contentId, type]);
 
   async function toggle() {
     if (!session?.user) return;

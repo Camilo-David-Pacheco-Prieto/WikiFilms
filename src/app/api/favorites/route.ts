@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     ) {
       await prisma.favorite.delete({
         where: {
-          userId_contentId: { userId: session.user.id, contentId },
+          userId_contentId_type: { userId: session.user.id, contentId, type },
         },
       });
       return NextResponse.json({ favorited: false });
@@ -62,15 +62,15 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { contentId } = await req.json();
+  const { contentId, type } = await req.json();
 
-  if (typeof contentId !== "number") {
+  if (typeof contentId !== "number" || !type) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   await prisma.favorite.delete({
     where: {
-      userId_contentId: { userId: session.user.id, contentId },
+      userId_contentId_type: { userId: session.user.id, contentId, type },
     },
   });
 

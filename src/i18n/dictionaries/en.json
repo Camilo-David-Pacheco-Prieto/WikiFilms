@@ -59,6 +59,8 @@
   "watchlist.emptyWatched": "You haven't marked anything as watched.",
   "watchlist.emptyPlanToWatch": "Nothing pending.",
   "watchlist.noImage": "No image",
+  "watchlist.tabMovies": "Movies/Series",
+  "watchlist.tabGames": "Games",
 
   "auth.loginTitle": "Sign in \u2014 WikiFilms",
   "auth.loginHeading": "Sign in",

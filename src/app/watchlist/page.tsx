@@ -14,10 +14,19 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: dict["watchlist.title"] };
 }
 
-async function WatchlistContent() {
+interface Props {
+  searchParams: Promise<{ tab?: string }>;
+}
+
+async function WatchlistContent({ tab }: { tab: string }) {
   const session = await auth();
   const user = session!.user;
-  const [watched, planToWatch] = await Promise.all([
+  const locale = await getServerLocale();
+  const dict = await getDictionary(locale);
+
+  const isGamesTab = tab === "games";
+
+  const [allWatched, allPlanToWatch] = await Promise.all([
     prisma.watchlistItem.findMany({
       where: { userId: user.id, status: "WATCHED" },
       orderBy: { updatedAt: "desc" },
@@ -27,8 +36,15 @@ async function WatchlistContent() {
       orderBy: { updatedAt: "desc" },
     }),
   ]);
-  const locale = await getServerLocale();
-  const dict = await getDictionary(locale);
+
+  const watched = allWatched.filter((item) => isGamesTab ? item.type === "game" : item.type !== "game");
+  const planToWatch = allPlanToWatch.filter((item) => isGamesTab ? item.type === "game" : item.type !== "game");
+
+  function itemHref(item: { type: string; contentId: number }): string {
+    if (item.type === "movie") return `/movie/${item.contentId}`;
+    if (item.type === "tv") return `/tv/${item.contentId}`;
+    return `/game/${item.contentId}`;
+  }
 
   function renderGrid(
     items: { id: string; contentId: number; type: string; title: string; posterUrl: string | null }[],
@@ -42,7 +58,7 @@ async function WatchlistContent() {
         {items.map((item) => (
           <Link
             key={item.id}
-            href={item.type === "movie" ? `/movie/${item.contentId}` : `/tv/${item.contentId}`}
+            href={itemHref(item)}
             className="group relative overflow-hidden rounded-lg"
           >
             {item.posterUrl ? (
@@ -77,6 +93,24 @@ async function WatchlistContent() {
       <h1 className="font-display text-3xl font-bold uppercase text-white">
         {dict["watchlist.heading"]}
       </h1>
+
+      <div className="mt-6 flex gap-2 border-b border-border-subtle">
+        <Link
+          href="/watchlist"
+          data-active={!isGamesTab}
+          className="px-4 py-2 text-sm font-medium transition-colors data-[active=true]:border-b-2 data-[active=true]:border-accent-brand data-[active=true]:text-accent-brand text-text-secondary hover:text-white"
+        >
+          {dict["watchlist.tabMovies"]}
+        </Link>
+        <Link
+          href="/watchlist?tab=games"
+          data-active={isGamesTab}
+          className="px-4 py-2 text-sm font-medium transition-colors data-[active=true]:border-b-2 data-[active=true]:border-accent-brand data-[active=true]:text-accent-brand text-text-secondary hover:text-white"
+        >
+          {dict["watchlist.tabGames"]}
+        </Link>
+      </div>
+
       <div className="mt-8 space-y-6">
         <div>
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-green-400">
@@ -121,14 +155,16 @@ function WatchlistSkeleton() {
   );
 }
 
-export default async function WatchlistPage() {
+export default async function WatchlistPage({ searchParams }: Props) {
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  const { tab } = await searchParams;
 
   return (
     <main className="mx-auto max-w-2xl space-y-8 px-4 py-16">
       <Suspense fallback={<WatchlistSkeleton />}>
-        <WatchlistContent />
+        <WatchlistContent tab={tab ?? "movies"} />
       </Suspense>
     </main>
   );

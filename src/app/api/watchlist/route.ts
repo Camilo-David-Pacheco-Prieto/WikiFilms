@@ -11,13 +11,15 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
   const contentId = searchParams.get("contentId");
+  const type = searchParams.get("type");
 
-  if (contentId) {
+  if (contentId && type) {
     const item = await prisma.watchlistItem.findUnique({
       where: {
-        userId_contentId: {
+        userId_contentId_type: {
           userId: session.user.id,
           contentId: Number(contentId),
+          type,
         },
       },
     });
@@ -55,7 +57,7 @@ export async function POST(req: Request) {
 
   const item = await prisma.watchlistItem.upsert({
     where: {
-      userId_contentId: { userId: session.user.id, contentId },
+      userId_contentId_type: { userId: session.user.id, contentId, type },
     },
     update: { status, title, posterUrl, type },
     create: {
@@ -79,16 +81,18 @@ export async function DELETE(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const contentId = searchParams.get("contentId");
+  const type = searchParams.get("type");
 
-  if (!contentId) {
-    return NextResponse.json({ error: "Falta contentId" }, { status: 400 });
+  if (!contentId || !type) {
+    return NextResponse.json({ error: "Falta contentId o type" }, { status: 400 });
   }
 
   await prisma.watchlistItem.delete({
     where: {
-      userId_contentId: {
+      userId_contentId_type: {
         userId: session.user.id,
         contentId: Number(contentId),
+        type,
       },
     },
   });

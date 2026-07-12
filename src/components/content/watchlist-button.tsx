@@ -11,7 +11,7 @@ interface WatchlistButtonProps {
   contentId: number;
   title: string;
   posterUrl: string | null;
-  type: "movie" | "tv";
+  type: "movie" | "tv" | "game";
 }
 
 export function WatchlistButton({
@@ -28,13 +28,13 @@ export function WatchlistButton({
 
   useEffect(() => {
     if (!session?.user) return;
-    fetch(`/api/watchlist?contentId=${contentId}`)
+    fetch(`/api/watchlist?contentId=${contentId}&type=${type}`)
       .then((res) => res.json())
       .then((data: { status: WatchStatus } | null) => {
         if (data) setCurrentStatus(data.status);
       })
       .catch(() => {});
-  }, [session, contentId]);
+  }, [session, contentId, type]);
 
   const setStatus = useCallback(
     async (status: WatchStatus) => {
@@ -62,7 +62,7 @@ export function WatchlistButton({
   const remove = useCallback(async () => {
     setLoading(true);
     try {
-      await fetch(`/api/watchlist?contentId=${contentId}`, { method: "DELETE" });
+      await fetch(`/api/watchlist?contentId=${contentId}&type=${type}`, { method: "DELETE" });
       setCurrentStatus(null);
     } catch {
       // silent
@@ -70,7 +70,7 @@ export function WatchlistButton({
       setLoading(false);
       setOpen(false);
     }
-  }, [contentId]);
+  }, [contentId, type]);
 
   if (!session?.user) return null;
 

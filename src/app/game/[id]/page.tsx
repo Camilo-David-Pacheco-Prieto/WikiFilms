@@ -1,8 +1,11 @@
 import { getGameById } from "@/lib/igdb";
 import { GameDetailHero } from "@/components/content/game-detail-hero";
+import { FavoriteButton } from "@/components/content/favorite-button";
+import { WatchlistButton } from "@/components/content/watchlist-button";
+import { ReviewSection } from "@/components/content/review-section";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
-import { IGDB_IMAGE_BASE, IGDB_SCREENSHOT_SIZE } from "@/types/igdb";
+import { IGDB_IMAGE_BASE, IGDB_COVER_SIZE, IGDB_SCREENSHOT_SIZE } from "@/types/igdb";
 import type { Metadata } from "next";
 
 interface Props {
@@ -42,6 +45,25 @@ export default async function GameDetailPage({ params }: Props) {
   return (
     <main>
       <GameDetailHero game={game} />
+
+      <section className="mx-auto max-w-7xl px-4 py-8">
+        <div className="flex flex-wrap gap-3">
+          <FavoriteButton
+            contentId={game.id}
+            title={game.name}
+            posterUrl={game.cover?.image_id ? `${IGDB_IMAGE_BASE}/t_${IGDB_COVER_SIZE}/${game.cover.image_id}.jpg` : null}
+            type="game"
+          />
+          <WatchlistButton
+            contentId={game.id}
+            title={game.name}
+            posterUrl={game.cover?.image_id ? `${IGDB_IMAGE_BASE}/t_${IGDB_COVER_SIZE}/${game.cover.image_id}.jpg` : null}
+            type="game"
+          />
+        </div>
+      </section>
+
+      <ReviewSection contentId={game.id} contentType="game" />
 
       <div className="mx-auto max-w-7xl space-y-12 px-4 py-12 lg:px-12">
         {game.summary && (

@@ -59,6 +59,8 @@
   "watchlist.emptyWatched": "No has marcado nada como visto.",
   "watchlist.emptyPlanToWatch": "No tienes nada pendiente.",
   "watchlist.noImage": "Sin imagen",
+  "watchlist.tabMovies": "Películas/Series",
+  "watchlist.tabGames": "Juegos",
 
   "auth.loginTitle": "Iniciar sesion \u2014 WikiFilms",
   "auth.loginHeading": "Iniciar sesion",

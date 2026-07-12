@@ -6,15 +6,16 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const contentId = searchParams.get("contentId");
+    const contentType = searchParams.get("contentType");
 
-    if (!contentId) {
-      return NextResponse.json({ error: "Missing contentId" }, { status: 400 });
+    if (!contentId || !contentType) {
+      return NextResponse.json({ error: "Missing contentId or contentType" }, { status: 400 });
     }
 
     const session = await auth();
 
     const reviews = await prisma.review.findMany({
-      where: { contentId: Number(contentId) },
+      where: { contentId: Number(contentId), contentType },
       include: {
         user: { select: { id: true, name: true } },
         _count: { select: { comments: true, reactions: true } },
@@ -72,9 +73,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { contentId, rating, comment } = await req.json();
+    const { contentId, contentType, rating, comment } = await req.json();
 
-    if (!contentId || !rating || rating < 1 || rating > 10) {
+    if (!contentId || !contentType || !rating || rating < 1 || rating > 10) {
       return NextResponse.json({ error: "Invalid data" }, { status: 400 });
     }
 
@@ -84,10 +85,10 @@ export async function POST(req: Request) {
 
     const review = await prisma.review.upsert({
       where: {
-        userId_contentId: { userId: session.user.id, contentId },
+        userId_contentId_contentType: { userId: session.user.id, contentId, contentType },
       },
       update: { rating, comment },
-      create: { userId: session.user.id, contentId, rating, comment },
+      create: { userId: session.user.id, contentId, contentType, rating, comment },
     });
 
     return NextResponse.json(review);
