@@ -49,7 +49,7 @@ export default async function GameDetailPage({ params }: Props) {
             <h2 className="mb-4 font-display text-2xl font-bold uppercase text-white">
               {dict["game.summary"]}
             </h2>
-            <p className="max-w-3xl leading-relaxed text-text-secondary">
+            <p lang="en" className="max-w-3xl leading-relaxed text-text-secondary">
               {game.summary}
             </p>
           </section>
@@ -60,7 +60,7 @@ export default async function GameDetailPage({ params }: Props) {
             <h2 className="mb-4 font-display text-2xl font-bold uppercase text-white">
               {dict["game.storyline"]}
             </h2>
-            <p className="max-w-3xl leading-relaxed text-text-secondary">
+            <p lang="en" className="max-w-3xl leading-relaxed text-text-secondary">
               {game.storyline}
             </p>
           </section>
