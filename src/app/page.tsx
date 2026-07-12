@@ -40,9 +40,8 @@ async function PopularSeries({ genreId, title, locale }: { genreId?: number; tit
 
 async function HeroSection({ locale }: { locale: string }) {
   const trending = await getTrending("all", 1, locale);
-  const shuffled = [...trending].sort(() => Math.random() - 0.5);
 
-  return <HeroSlider items={shuffled} />;
+  return <HeroSlider items={trending} />;
 }
 
 export default async function HomePage({ searchParams }: Props) {

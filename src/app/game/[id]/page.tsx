@@ -128,7 +128,7 @@ export default async function GameDetailPage({ params }: Props) {
                     />
                   </div>
                   {v.name && (
-                    <p className="mt-2 text-sm text-text-secondary">{v.name}</p>
+                    <p lang="en" className="mt-2 text-sm text-text-secondary">{v.name}</p>
                   )}
                 </div>
               ))}

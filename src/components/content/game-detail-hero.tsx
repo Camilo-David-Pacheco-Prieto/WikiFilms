@@ -62,6 +62,25 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
           </div>
         )}
 
+        {video && (
+          <div className="absolute inset-0 overflow-hidden hidden md:block">
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${video.video_id}?autoplay=1&mute=1&loop=1&playlist=${video.video_id}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`}
+              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              style={{
+                width: "177.78vh",
+                height: "56.25vw",
+                minWidth: "100%",
+                minHeight: "100%",
+              }}
+              allow="autoplay"
+              title=""
+            />
+          </div>
+        )}
+
+        {video && <div className="absolute inset-0 bg-black/50" />}
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-transparent" />
 
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:flex-row md:items-end md:gap-10 md:py-14 lg:px-12">
@@ -77,7 +96,7 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
           )}
 
           <div className="flex flex-col gap-3 text-center md:text-left">
-            <h1 className="font-display text-3xl font-black uppercase tracking-tight text-white md:text-[42px] lg:text-[52px]">
+            <h1 lang="en" className="font-display text-3xl font-black uppercase tracking-tight text-white md:text-[42px] lg:text-[52px]">
               {game.name}
             </h1>
 
@@ -97,6 +116,7 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
                   {game.platforms.map((p) => (
                     <span
                       key={p.id}
+                      lang="en"
                       className="rounded-md border border-border-subtle bg-surface/60 px-2 py-0.5 text-xs text-text-secondary"
                     >
                       {p.abbreviation || p.name}
@@ -107,20 +127,20 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
             </div>
 
             {game.genres && game.genres.length > 0 && (
-              <p className="text-sm text-white/60">
+              <p lang="en" className="text-sm text-white/60">
                 {game.genres.map((g) => g.name).join(" · ")}
               </p>
             )}
 
             {developers.length > 0 && (
               <p className="text-xs text-text-secondary">
-                {t("game.developedBy")} <span className="text-white">{developers.join(", ")}</span>
+                {t("game.developedBy")} <span lang="en" className="text-white">{developers.join(", ")}</span>
               </p>
             )}
 
             {publishers.length > 0 && (
               <p className="text-xs text-text-secondary">
-                {t("game.publishedBy")} <span className="text-white">{publishers.join(", ")}</span>
+                {t("game.publishedBy")} <span lang="en" className="text-white">{publishers.join(", ")}</span>
               </p>
             )}
 
@@ -149,7 +169,7 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
             onClick={(e) => e.stopPropagation()}
           >
             <iframe
-              src={`https://www.youtube.com/embed/${video.video_id}?autoplay=1`}
+              src={`https://www.youtube-nocookie.com/embed/${video.video_id}?autoplay=1`}
               title={video.name}
               className="h-full w-full"
               allow="autoplay; encrypted-media"
