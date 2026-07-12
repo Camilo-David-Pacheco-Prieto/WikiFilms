@@ -1,30 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import * as jose from "jose";
-
-const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
+import { getToken } from "next-auth/jwt";
 
 // Warning: in-memory Map does not persist across serverless instances.
 // For production on Vercel, replace with Vercel KV or Upstash Redis rate limiting.
 const rateLimit = new Map<string, { count: number; reset: number }>();
 const MAX_REQUESTS = 40;
 const WINDOW_MS = 60_000;
-
-function getToken(request: NextRequest): string | undefined {
-  return (
-    request.cookies.get("__Secure-next-auth.session-token")?.value ??
-    request.cookies.get("next-auth.session-token")?.value
-  );
-}
-
-async function verifyToken(token: string) {
-  try {
-    const { payload } = await jose.jwtDecrypt(token, secret);
-    return payload as { username?: string; role?: string };
-  } catch {
-    return null;
-  }
-}
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -54,18 +36,18 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  const isSecure = request.nextUrl.protocol === "https:";
+
   if (pathname.startsWith("/admin")) {
-    const token = getToken(request);
-    const payload = token ? await verifyToken(token) : null;
-    if (!payload || payload.role !== "ADMIN") {
+    const token = await getToken({ req: request, secret: process.env.AUTH_SECRET, secureCookie: isSecure });
+    if (!token || token.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
   if (pathname.startsWith("/games") || pathname.startsWith("/game")) {
-    const token = getToken(request);
-    const payload = token ? await verifyToken(token) : null;
-    if (!payload) {
+    const token = await getToken({ req: request, secret: process.env.AUTH_SECRET, secureCookie: isSecure });
+    if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
