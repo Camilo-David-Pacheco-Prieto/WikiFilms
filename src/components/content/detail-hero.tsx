@@ -77,7 +77,7 @@ export function DetailHero({ content }: DetailHeroProps) {
             </div>
           </div>
 
-          <div className="flex flex-1 flex-col justify-center space-y-6">
+          <div className="flex flex-1 flex-col justify-start space-y-6">
             <div>
               <h1 className="font-display text-2xl font-black uppercase leading-tight text-white md:text-5xl">
                 {content.title}

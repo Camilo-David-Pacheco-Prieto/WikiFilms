@@ -84,7 +84,7 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-base via-base/80 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-base via-base/50 to-transparent" />
 
-        <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:flex-row md:items-end md:gap-10 md:py-14 lg:px-12">
+        <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:flex-row md:items-start md:gap-10 md:py-14 lg:px-12">
           {posterUrl && !posterError && (
             <div className="relative mx-auto aspect-[2/3] w-40 shrink-0 overflow-hidden rounded-xl shadow-2xl md:mx-0 md:w-56 lg:w-64">
               <img
