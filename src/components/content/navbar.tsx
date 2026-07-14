@@ -24,7 +24,7 @@ export default async function Navbar() {
             <img
               src="/images/logo-oficial-wikifilms.png"
               alt="WikiFilms"
-              className="h-10 w-auto"
+              className="h-8 md:h-10 w-auto"
             />
           </Link>
 
