@@ -42,12 +42,9 @@ export function ContentCard({ content }: ContentCardProps) {
           </div>
         )}
 
-        <Badge
-          variant="secondary"
-          className="absolute right-1.5 top-1.5 z-10 bg-black/60 text-[10px] text-white border-0 md:hidden"
-        >
-          {content.rating.toFixed(1)}
-        </Badge>
+        <span className="absolute bottom-1.5 left-1.5 z-10 md:hidden flex items-center gap-0.5 text-white/70 text-[11px] font-medium drop-shadow-lg">
+          ★ {content.rating.toFixed(1)}
+        </span>
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 md:from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 transition-opacity duration-300 md:group-hover:opacity-100" />
 
