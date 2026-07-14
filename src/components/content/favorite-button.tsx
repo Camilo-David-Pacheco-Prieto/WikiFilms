@@ -42,8 +42,9 @@ export function FavoriteButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contentId, title, posterUrl, type }),
       });
+      if (!res.ok) throw new Error();
       const data = await res.json();
-      setFavorited(data.favorited);
+      setFavorited(data.favorited ?? false);
     } catch {
       // silent
     } finally {

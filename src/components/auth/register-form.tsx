@@ -36,10 +36,9 @@ export function RegisterForm() {
         body: JSON.stringify({ name, email, username, password }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        setError(data.error);
+        const body = await res.json().catch(() => ({}));
+        setError(body.error ?? t("auth.serverError"));
         setLoading(false);
         return;
       }

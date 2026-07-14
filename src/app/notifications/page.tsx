@@ -23,7 +23,9 @@ const iconMap: Record<string, string> = {
 };
 
 function timeAgo(dateStr: string, dict: Record<string, string>): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return "";
+  const diff = Date.now() - date.getTime();
   const seconds = Math.floor(diff / 1000);
   if (seconds < 60) return dict["notifications.justNow"];
   const minutes = Math.floor(seconds / 60);

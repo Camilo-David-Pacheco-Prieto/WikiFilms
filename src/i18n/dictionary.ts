@@ -13,5 +13,10 @@ export async function getDictionary(locale: string): Promise<Dict> {
   if (!dictionaries.has(key)) {
     dictionaries.set(key, load(key));
   }
-  return dictionaries.get(key)!;
+  const dict = await dictionaries.get(key)!;
+  return new Proxy(dict, {
+    get(target, prop: string) {
+      return target[prop] ?? prop;
+    },
+  });
 }

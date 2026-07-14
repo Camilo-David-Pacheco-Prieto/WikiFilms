@@ -14,7 +14,7 @@ interface UserDropdownProps {
 export function UserDropdown({ name, role }: UserDropdownProps) {
   const [open, setOpen] = useState(false);
   const t = useTranslate();
-  const initials = name
+  const initials = (name ?? "")
     .split(" ")
     .map((n) => n[0])
     .join("")

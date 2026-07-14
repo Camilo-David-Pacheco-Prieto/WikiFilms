@@ -20,7 +20,8 @@ interface Props {
 
 async function WatchlistContent({ tab }: { tab: string }) {
   const session = await auth();
-  const user = session!.user;
+  if (!session?.user) redirect("/login");
+  const user = session.user;
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
 

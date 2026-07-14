@@ -1,8 +1,10 @@
 import type { IGDBGameDetail, IGDBGameResult, GameResult } from "@/types/igdb";
 import { IGDB_IMAGE_BASE, IGDB_COVER_SIZE, IGDB_SCREENSHOT_SIZE } from "@/types/igdb";
 
-const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID!;
-const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET!;
+if (!process.env.TWITCH_CLIENT_ID) throw new Error("Missing TWITCH_CLIENT_ID");
+if (!process.env.TWITCH_CLIENT_SECRET) throw new Error("Missing TWITCH_CLIENT_SECRET");
+const TWITCH_CLIENT_ID: string = process.env.TWITCH_CLIENT_ID;
+const TWITCH_CLIENT_SECRET: string = process.env.TWITCH_CLIENT_SECRET;
 const IGDB_API = "https://api.igdb.com/v4";
 const TWITCH_TOKEN_URL = "https://id.twitch.tv/oauth2/token";
 

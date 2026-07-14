@@ -63,8 +63,8 @@ export function WatchlistButton({
   const remove = useCallback(async () => {
     setLoading(true);
     try {
-      await fetch(`/api/watchlist?contentId=${contentId}&type=${type}`, { method: "DELETE" });
-      setCurrentStatus(null);
+      const res = await fetch(`/api/watchlist?contentId=${contentId}&type=${type}`, { method: "DELETE" });
+      if (res.ok) setCurrentStatus(null);
     } catch {
       // silent
     } finally {

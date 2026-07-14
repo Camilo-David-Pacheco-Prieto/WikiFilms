@@ -67,11 +67,11 @@ export function NotificationBell({ userId }: { userId: string }) {
 
       es.onmessage = (e) => {
         try {
-          const data = JSON.parse(e.data) as { notifications: Notification[]; unreadCount: number };
-          // Merge: keep locally optimised reads for notifications still pending
+          const data = JSON.parse(e.data) as { notifications?: Notification[]; unreadCount?: number };
+          if (!data?.notifications) return;
           setNotifications((prev) => {
             const pending = pendingReads.current;
-            const serverMap = new Map(data.notifications.map((n) => [n.id, n]));
+            const serverMap = new Map(data.notifications!.map((n) => [n.id, n]));
             for (const local of prev) {
               if (pending.has(local.id) && local.read) {
                 const server = serverMap.get(local.id);
@@ -80,7 +80,9 @@ export function NotificationBell({ userId }: { userId: string }) {
             }
             return [...serverMap.values()];
           });
-          setUnreadCount(data.unreadCount);
+          if (typeof data.unreadCount === "number") {
+            setUnreadCount(data.unreadCount);
+          }
         } catch {}
       };
 

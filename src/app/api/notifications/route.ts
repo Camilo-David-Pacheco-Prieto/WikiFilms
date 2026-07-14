@@ -37,6 +37,7 @@ export async function GET() {
       actorName: actorMap.get(n.actorId) ?? "Unknown",
       type: n.type,
       reviewId: n.reviewId,
+      commentId: n.commentId,
       contentId: n.contentId,
       contentType: n.contentType,
       contentTitle: n.contentTitle,

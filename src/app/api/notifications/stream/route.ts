@@ -8,6 +8,7 @@ interface SSENotification {
   actorName: string;
   type: string;
   reviewId: string | null;
+  commentId: string | null;
   contentId: number | null;
   contentType: string | null;
   contentTitle: string | null;
@@ -41,6 +42,7 @@ async function fetchData(userId: string) {
     actorName: actorMap.get(n.actorId) ?? "Unknown",
     type: n.type,
     reviewId: n.reviewId,
+    commentId: n.commentId,
     contentId: n.contentId,
     contentType: n.contentType,
     contentTitle: n.contentTitle,

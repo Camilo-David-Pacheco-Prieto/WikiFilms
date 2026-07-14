@@ -20,7 +20,8 @@ interface Props {
 
 async function ProfileSection() {
   const session = await auth();
-  const user = session!.user;
+  if (!session?.user) redirect("/login");
+  const user = session.user;
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
 
@@ -61,7 +62,8 @@ async function ProfileSection() {
 
 async function FavoritesList({ tab }: { tab: string }) {
   const session = await auth();
-  const user = session!.user;
+  if (!session?.user) redirect("/login");
+  const user = session.user;
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
   const isGamesTab = tab === "games";

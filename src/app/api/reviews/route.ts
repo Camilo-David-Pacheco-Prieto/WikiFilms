@@ -12,10 +12,15 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Missing contentId or contentType" }, { status: 400 });
     }
 
+    const numId = Number(contentId);
+    if (isNaN(numId)) {
+      return NextResponse.json({ error: "Invalid contentId" }, { status: 400 });
+    }
+
     const session = await auth();
 
     const reviews = await prisma.review.findMany({
-      where: { contentId: Number(contentId), contentType },
+      where: { contentId: numId, contentType },
       include: {
         user: { select: { id: true, name: true } },
         _count: { select: { comments: true, reactions: true } },
@@ -75,7 +80,7 @@ export async function POST(req: Request) {
 
     const { contentId, contentType, rating, comment } = await req.json();
 
-    if (!contentId || !contentType || !rating || rating < 1 || rating > 10) {
+    if (!contentId || typeof contentId !== "number" || !contentType || !rating || rating < 1 || rating > 10) {
       return NextResponse.json({ error: "Invalid data" }, { status: 400 });
     }
 

@@ -171,7 +171,7 @@ export function GameDetailHero({ game }: GameDetailHeroProps) {
           >
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${video.video_id}?autoplay=1`}
-              title={video.name}
+              title={video.name ?? ""}
               className="h-full w-full"
               allow="autoplay; encrypted-media"
               allowFullScreen
