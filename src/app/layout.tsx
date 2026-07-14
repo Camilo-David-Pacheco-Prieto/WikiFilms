@@ -23,6 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: dict["home.title"],
     description: dict["home.subtitle"],
+    icons: { icon: "/images/logo-oficial-wikifilms.png" },
   };
 }
 

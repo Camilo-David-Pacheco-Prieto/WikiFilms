@@ -13,13 +13,12 @@ export default async function Footer() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="relative grid grid-cols-2 gap-6 md:gap-8 lg:grid-cols-3">
           <div className="col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded bg-accent-brand text-xs font-bold text-white">
-                W
-              </div>
-              <span className="font-display text-base font-bold uppercase tracking-wider text-white">
-                {dict["footer.brand"]}
-              </span>
+            <div className="flex items-center">
+              <img
+                src="/images/logo-oficial-wikifilms.png"
+                alt="WikiFilms"
+                className="h-7 w-auto"
+              />
             </div>
             <p className="mt-2 text-xs leading-relaxed text-text-secondary md:text-sm">
               {dict["footer.description"]}
@@ -96,6 +95,11 @@ export default async function Footer() {
 
         <div className="relative mt-10 pt-6 text-center text-[10px] text-text-secondary md:text-xs">
           <div className="absolute -top-px left-1/2 h-px w-16 -translate-x-1/2 bg-accent-brand/50" />
+          <img
+            src="/images/logo-tipo-x-men-footer.png"
+            alt="WikiFilms"
+            className="mx-auto mb-4 h-8 w-auto opacity-60"
+          />
           <p>
             {dict["footer.developedBy"]}
             <span className="font-medium text-white">{dict["footer.developerName"]}</span>
