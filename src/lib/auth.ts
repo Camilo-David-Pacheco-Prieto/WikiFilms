@@ -77,7 +77,19 @@ const config: NextAuthConfig = {
       session.user.id = token.sub!;
       (session.user as any).username = (token as any).username;
       (session.user as any).role = (token as any).role;
-      (session.user as any).avatarUrl = (token as any).avatarUrl;
+      try {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { avatarUrl: true },
+        });
+        const raw = dbUser?.avatarUrl;
+        (session.user as any).avatarUrl =
+          raw && !raw.startsWith("/api/blob")
+            ? `/api/blob?pathname=${encodeURIComponent(raw)}`
+            : raw;
+      } catch {
+        (session.user as any).avatarUrl = (token as any).avatarUrl;
+      }
       return session;
     },
   },

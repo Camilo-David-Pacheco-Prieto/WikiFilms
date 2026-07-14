@@ -97,6 +97,8 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │   │   │   ├── popular/route.ts         # API juegos populares
 │   │   │   ├── search/route.ts          # API búsqueda juegos
 │   │   │   └── upcoming/route.ts        # API próximos lanzamientos
+│   │   ├── blob/route.ts                # Proxy blobs privados (get + auth)
+│   │   ├── upload-avatar/route.ts       # Upload avatar a Vercel Blob (private)
 │   │   └── watchlist/route.ts           # CRUD watchlist (userId_contentId_type)
 │   ├── dashboard/page.tsx               # Perfil + favoritos con tabs Movies/Series | Games
 │   ├── game/[id]/page.tsx               # Detalle juego (hero trailer + summary + storyline + screenshots + artworks + videos + fav + watchlist + reviews)
@@ -116,7 +118,8 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 ├── components/
 │   ├── auth/
 │   │   ├── login-form.tsx               # Form login
-│   │   └── register-form.tsx            # Form register
+│   │   ├── register-form.tsx            # Form register
+│   │   └── settings-form.tsx            # Avatar upload + editar perfil
 │   ├── content/
 │   │   ├── content-card.tsx             # Card grid: mobile badge top-right + titulo oculto, desktop slide-up
 │   │   ├── content-grid.tsx             # Grid responsivo
@@ -260,6 +263,15 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 - **timeAgo i18n**: corregido en ambas vistas (bell client-side + page server-side) para usar dictionary keys en vez de español hardcodeado
 - Fuentes de creación: `reactions/route.ts`, `comments/route.ts`, `comments/[commentId]/reactions/route.ts`
 
+### Avatar Upload — Vercel Blob privado
+- **Storage**: Vercel Blob Store configurado como **privado** (no público)
+- **Upload**: `api/upload-avatar/route.ts` — valida sesión, tipo imagen, tamaño ≤2MB. Convierte `File` a `Buffer`, sube con `put(pathname, buffer, { access: "private", contentType })`. Guarda `blob.pathname` en `User.avatarUrl`
+- **Proxy**: `api/blob/route.ts` — endpoint GET que recibe `?pathname=...`, valida sesión, ejecuta `get(pathname, { access: "private" })`, devuelve stream con `Cache-Control: private, no-cache`
+- **Session flow**: `lib/auth.ts` JWT callback transforma pathname a `/api/blob?pathname=...` en sign-in. Session callback re-lee `avatarUrl` de la DB en cada request para mantener frescura
+- **Upload client**: `settings-form.tsx` — avatar `size-24` clickeable con overlay hover (cámara) + spinner (uploading). Usa `useSession().update()` después del upload para forzar refresh del JWT. Muestra error real de la API
+- **Display**: `user-dropdown.tsx` — `<AvatarImage src={avatarUrl} />` recibe la proxy URL desde la session. Si es null, muestra `<AvatarFallback>` con iniciales
+- **Env var requerida**: `BLOB_READ_WRITE_TOKEN` en Vercel Dashboard → Environment Variables
+
 ### Performance
 - TMDB cacheado 1 hora (`next: { revalidate: 3600 }`)
 - IGDB cacheado 1 hora (`next: { revalidate: 3600 }`)
@@ -309,6 +321,7 @@ AUTH_SECRET=<generar con: openssl rand -base64 32>
 NEXTAUTH_URL=https://wiki-films-fawn.vercel.app
 TWITCH_CLIENT_ID=<de Twitch Developer Console>
 TWITCH_CLIENT_SECRET=<de Twitch Developer Console>
+BLOB_READ_WRITE_TOKEN=<de Vercel Dashboard → Storage → Blob → Settings>
 ```
 
 #### 4. Migrar esquema
@@ -335,7 +348,7 @@ También se puede ejecutar en Vercel como build command:
 - [ ] Página 404 personalizada
 - [ ] Tests unitarios (Vitest) + E2E (Playwright)
 - [ ] Scroll suave entre secciones en detalle
-- [ ] Avatar/subir foto de perfil
+- [x] Avatar/subir foto de perfil
 - [ ] Ranking de usuarios por actividad
 
 ### Fase 4 — Escalabilidad

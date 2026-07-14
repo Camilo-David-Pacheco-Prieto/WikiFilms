@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useTranslate } from "@/i18n/language-provider";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Camera, Loader2 } from "lucide-react";
@@ -18,6 +19,7 @@ interface SettingsFormProps {
 
 export function SettingsForm({ user }: SettingsFormProps) {
   const router = useRouter();
+  const { update } = useSession();
   const t = useTranslate();
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
@@ -71,6 +73,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
       setAvatarUrl(data.avatarUrl);
       setSuccess(t("auth.savedSuccess"));
       setTimeout(() => setSuccess(""), 3000);
+      await update();
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error al subir la imagen");
