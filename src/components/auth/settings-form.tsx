@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslate } from "@/i18n/language-provider";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Camera, Loader2 } from "lucide-react";
 
 interface SettingsFormProps {
   user: {
@@ -130,26 +131,35 @@ export function SettingsForm({ user }: SettingsFormProps) {
         </div>
       )}
 
-      <div className="flex items-center gap-4">
-        <Avatar className="size-16">
-          {avatarUrl ? (
-            <AvatarImage src={avatarUrl} alt={user.name} />
+      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+        <label className="group relative cursor-pointer">
+          <Avatar className="size-24">
+            {avatarUrl ? (
+              <AvatarImage src={avatarUrl} alt={user.name} className="object-cover" />
+            ) : (
+              <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
+            )}
+          </Avatar>
+          {avatarUploading ? (
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60">
+              <Loader2 className="size-6 animate-spin text-white" />
+            </div>
           ) : (
-            <AvatarFallback className="text-lg">{initials}</AvatarFallback>
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 transition-all group-hover:bg-black/50">
+              <Camera className="size-6 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+            </div>
           )}
-        </Avatar>
-        <div>
-          <label className="cursor-pointer rounded-md bg-accent-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50">
-            {avatarUploading ? "Subiendo..." : "Subir foto"}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarUpload}
-              disabled={avatarUploading}
-              className="hidden"
-            />
-          </label>
-          <p className="mt-1 text-xs text-text-secondary/50">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarUpload}
+            disabled={avatarUploading}
+            className="hidden"
+          />
+        </label>
+        <div className="flex flex-col items-center gap-1 sm:items-start sm:pt-2">
+          <p className="text-sm font-medium text-text-primary">Foto de perfil</p>
+          <p className="text-xs text-text-secondary/50">
             PNG o JPG. Máximo 2MB.
           </p>
         </div>

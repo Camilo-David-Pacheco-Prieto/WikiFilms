@@ -43,6 +43,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ avatarUrl: blob.url });
   } catch (e) {
     console.error("Upload avatar error:", e);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    const message = e instanceof Error ? e.message : "Internal error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
