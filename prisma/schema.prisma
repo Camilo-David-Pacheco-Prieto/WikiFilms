@@ -29,6 +29,7 @@ model User {
   watchlistItems WatchlistItem[]
   reviews        Review[]
   reviewComments ReviewComment[]
+  avatarUrl      String?
   reviewReactions ReviewReaction[]
   commentReactions CommentReaction[]
   notifications  Notification[]

@@ -8,6 +8,7 @@ declare module "next-auth" {
   interface User {
     username: string;
     role: "USER" | "ADMIN";
+    avatarUrl?: string | null;
   }
 
   interface Session {
@@ -17,6 +18,7 @@ declare module "next-auth" {
       email: string;
       username: string;
       role: "USER" | "ADMIN";
+      avatarUrl?: string | null;
     };
   }
 }
@@ -53,6 +55,7 @@ const config: NextAuthConfig = {
           email: user.email,
           username: user.username,
           role: user.role,
+          avatarUrl: user.avatarUrl,
         };
       },
     }),
@@ -62,6 +65,7 @@ const config: NextAuthConfig = {
       if (user) {
         (token as any).username = user.username;
         (token as any).role = user.role;
+        (token as any).avatarUrl = user.avatarUrl;
       }
       return token;
     },
@@ -69,6 +73,7 @@ const config: NextAuthConfig = {
       session.user.id = token.sub!;
       (session.user as any).username = (token as any).username;
       (session.user as any).role = (token as any).role;
+      (session.user as any).avatarUrl = (token as any).avatarUrl;
       return session;
     },
   },

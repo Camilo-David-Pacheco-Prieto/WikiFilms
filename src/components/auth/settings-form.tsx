@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslate } from "@/i18n/language-provider";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface SettingsFormProps {
   user: {
@@ -10,6 +11,7 @@ interface SettingsFormProps {
     name: string;
     email: string;
     username: string;
+    avatarUrl?: string | null;
   };
 }
 
@@ -24,6 +26,58 @@ export function SettingsForm({ user }: SettingsFormProps) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl ?? null);
+
+  const initials = (user.name ?? "")
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Solo se permiten imágenes");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setError("La imagen no debe superar 2MB");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
+    setAvatarUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload-avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setAvatarUrl(data.avatarUrl);
+      setSuccess(t("auth.savedSuccess"));
+      setTimeout(() => setSuccess(""), 3000);
+      router.refresh();
+    } catch {
+      setError("Error al subir la imagen");
+      setTimeout(() => setError(""), 3000);
+    } finally {
+      setAvatarUploading(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -75,6 +129,33 @@ export function SettingsForm({ user }: SettingsFormProps) {
           {success}
         </div>
       )}
+
+      <div className="flex items-center gap-4">
+        <Avatar className="size-16">
+          {avatarUrl ? (
+            <AvatarImage src={avatarUrl} alt={user.name} />
+          ) : (
+            <AvatarFallback className="text-lg">{initials}</AvatarFallback>
+          )}
+        </Avatar>
+        <div>
+          <label className="cursor-pointer rounded-md bg-accent-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50">
+            {avatarUploading ? "Subiendo..." : "Subir foto"}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              disabled={avatarUploading}
+              className="hidden"
+            />
+          </label>
+          <p className="mt-1 text-xs text-text-secondary/50">
+            PNG o JPG. Máximo 2MB.
+          </p>
+        </div>
+      </div>
+
+      <hr className="border-border-subtle" />
 
       <div className="space-y-2">
         <label

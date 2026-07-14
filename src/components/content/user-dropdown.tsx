@@ -4,14 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useTranslate } from "@/i18n/language-provider";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface UserDropdownProps {
   name: string;
   role: string;
+  avatarUrl?: string | null;
 }
 
-export function UserDropdown({ name, role }: UserDropdownProps) {
+export function UserDropdown({ name, role, avatarUrl }: UserDropdownProps) {
   const [open, setOpen] = useState(false);
   const t = useTranslate();
   const initials = (name ?? "")
@@ -28,7 +29,11 @@ export function UserDropdown({ name, role }: UserDropdownProps) {
         className="flex items-center gap-2 rounded-md transition-colors hover:bg-muted/50"
       >
         <Avatar>
-          <AvatarFallback>{initials}</AvatarFallback>
+          {avatarUrl ? (
+            <AvatarImage src={avatarUrl} alt={name} />
+          ) : (
+            <AvatarFallback>{initials}</AvatarFallback>
+          )}
         </Avatar>
       </button>
       {open && (

@@ -13,7 +13,7 @@ export default async function Footer() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="relative grid grid-cols-2 gap-6 md:gap-8 lg:grid-cols-3">
           <div className="col-span-2 lg:col-span-1">
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-center md:text-xs">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-widest md:text-xs">
               WIKIFILMS 26™{" "}
               <span className="font-normal tracking-normal text-text-secondary">
                 un proyecto por y para el{" "}
@@ -67,7 +67,7 @@ export default async function Footer() {
                   href="/games"
                   className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
                 >
-                  {dict["footer.games"]}
+                  {dict["nav.games"]}
                 </Link>
               )}
               {session?.user ? (

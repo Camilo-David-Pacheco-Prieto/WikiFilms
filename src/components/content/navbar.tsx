@@ -56,7 +56,7 @@ export default async function Navbar() {
           {user && <NotificationBell userId={user.id} />}
 
           {user ? (
-            <UserDropdown name={user.name} role={user.role} />
+            <UserDropdown name={user.name} role={user.role} avatarUrl={(user as any).avatarUrl} />
           ) : (
             <Link
               href="/login"
