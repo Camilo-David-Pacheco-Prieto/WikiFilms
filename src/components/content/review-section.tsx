@@ -473,7 +473,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
             <button
               key={tab.key}
               onClick={() => setSortBy(tab.key)}
-              className={`text-[11px] font-medium transition-colors hover:text-white ${
+              className={`text-[11px] font-medium transition-colors hover:text-white active:scale-95 ${
                 sortBy === tab.key ? "text-accent-brand" : "text-text-secondary/60"
               }`}
             >
@@ -667,7 +667,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="rounded-lg border border-border-subtle bg-surface p-4 md:p-6">
-        <h2 className="font-display text-lg font-bold uppercase text-white md:text-xl">
+        <h2 className="font-display text-xl font-bold uppercase text-white md:text-2xl">
           {t("reviews.heading")}
         </h2>
 
@@ -681,7 +681,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
                   onClick={() => setRating(star)}
                   onMouseEnter={() => setHoveredStar(star)}
                   onMouseLeave={() => setHoveredStar(0)}
-                  className={`text-lg transition-all hover:scale-110 ${
+                  className={`text-lg transition-all hover:scale-110 active:scale-95 ${
                     star <= (hoveredStar || rating)
                       ? "text-yellow-400"
                       : "text-zinc-600"
@@ -733,7 +733,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
               <div
                 key={review.id}
                 id={"review-" + review.id}
-                className={"rounded-md bg-base p-4 transition-shadow " + (highlightId === review.id ? "ring-2 ring-accent-brand ring-offset-2 ring-offset-surface" : "")}
+                className={"rounded-md bg-base p-4 md:p-5 transition-shadow " + (highlightId === review.id ? "ring-2 ring-accent-brand ring-offset-2 ring-offset-surface" : "")}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-white">
@@ -761,7 +761,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
                   <button
                     onClick={(e) => toggleReaction(review.id, "LIKE", e)}
                     disabled={!session?.user}
-                    className={`flex items-center gap-1 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed ${
+                    className={`flex items-center gap-1 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed active:scale-90 ${
                       review.myReaction === "LIKE" ? "text-accent-brand" : ""
                     }`}
                   >
@@ -771,7 +771,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
                   <button
                     onClick={(e) => toggleReaction(review.id, "DISLIKE", e)}
                     disabled={!session?.user}
-                    className={`flex items-center gap-1 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed ${
+                    className={`flex items-center gap-1 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed active:scale-90 ${
                       review.myReaction === "DISLIKE" ? "text-red-500" : ""
                     }`}
                   >

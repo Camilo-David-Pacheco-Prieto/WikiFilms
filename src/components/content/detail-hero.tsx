@@ -77,18 +77,18 @@ export function DetailHero({ content }: DetailHeroProps) {
             </div>
           </div>
 
-          <div className="flex flex-1 flex-col justify-start space-y-6">
+          <div className="flex flex-1 flex-col justify-start space-y-8">
             <div>
               <h1 className="font-display text-2xl font-black uppercase leading-tight text-white md:text-5xl">
                 {content.title}
               </h1>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-secondary">
-                <span className="transition-colors hover:text-white">{content.year}</span>
+                <span className="transition-colors hover:text-white active:scale-95">{content.year}</span>
                 <span className="text-border-subtle">|</span>
                 {content.genres.map((genre) => (
                   <span
                     key={genre}
-                    className="transition-colors hover:text-accent-brand"
+                    className="transition-colors hover:text-accent-brand active:scale-95"
                   >
                     {genre}
                   </span>
@@ -96,7 +96,7 @@ export function DetailHero({ content }: DetailHeroProps) {
                 <span className="text-border-subtle">|</span>
                 <Badge
                   variant="secondary"
-                  className="bg-accent-brand/20 text-accent-brand font-bold transition-all hover:scale-110 hover:shadow-lg hover:shadow-accent-brand/20"
+                  className="bg-yellow-400/20 text-yellow-400 font-bold transition-all hover:scale-110 hover:shadow-lg hover:shadow-yellow-400/20 active:scale-95"
                 >
                   ★ {content.rating.toFixed(1)}
                 </Badge>
@@ -111,10 +111,10 @@ export function DetailHero({ content }: DetailHeroProps) {
 
             {content.director && (
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
+                <p className="text-xs font-semibold uppercase tracking-widest text-white/60">
                   {t("content.director")}
                 </p>
-                <p className="mt-1 font-display text-lg font-bold text-white transition-transform hover:translate-x-1">
+                <p className="mt-2 font-display text-lg font-bold text-white transition-transform hover:translate-x-1 active:translate-x-0.5">
                   {content.director}
                 </p>
               </div>
@@ -122,10 +122,10 @@ export function DetailHero({ content }: DetailHeroProps) {
 
             {content.overview && (
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
+                <p className="text-xs font-semibold uppercase tracking-widest text-white/60">
                   {t("content.synopsis")}
                 </p>
-                <p className="mt-1 leading-relaxed text-text-secondary">
+                <p className="mt-2 leading-relaxed text-text-secondary">
                   {content.overview}
                 </p>
               </div>
@@ -133,14 +133,14 @@ export function DetailHero({ content }: DetailHeroProps) {
 
             {content.cast.length > 0 && (
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
+                <p className="text-xs font-semibold uppercase tracking-widest text-white/60">
                   {t("content.cast")}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {content.cast.map((actor) => (
                     <span
                       key={actor}
-                      className="rounded-md bg-surface px-3 py-1 text-sm text-text-secondary transition-all hover:scale-105 hover:bg-accent-brand/20 hover:text-accent-brand"
+                      className="rounded-md bg-surface px-3 py-1 text-sm text-text-secondary transition-all hover:scale-105 hover:bg-accent-brand/20 hover:text-accent-brand active:scale-95"
                     >
                       {actor}
                     </span>
@@ -153,7 +153,7 @@ export function DetailHero({ content }: DetailHeroProps) {
               <div className="flex justify-end">
                 <button
                   onClick={() => setShowTrailer(true)}
-                  className="group flex items-center gap-2 rounded-md bg-accent-brand/20 px-4 py-2 text-sm font-medium text-accent-brand transition-all hover:scale-105 hover:bg-accent-brand hover:text-white hover:shadow-lg hover:shadow-accent-brand/30"
+                  className="group flex items-center gap-2 rounded-md bg-accent-brand/20 px-4 py-2 text-sm font-medium text-accent-brand transition-all hover:scale-105 hover:bg-accent-brand hover:text-white hover:shadow-lg hover:shadow-accent-brand/30 active:scale-95"
                 >
                   <svg
                     viewBox="0 0 24 24"

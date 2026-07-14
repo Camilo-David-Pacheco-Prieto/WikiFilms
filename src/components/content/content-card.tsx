@@ -25,7 +25,7 @@ export function ContentCard({ content }: ContentCardProps) {
   return (
     <Link
       href={href}
-      className="group relative block overflow-hidden rounded-lg transition-transform duration-300 hover:scale-[1.03]"
+      className="group relative block overflow-hidden rounded-lg transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98]"
     >
       <div className="relative aspect-[2/3] w-full">
         {content.posterUrl && !imgError ? (

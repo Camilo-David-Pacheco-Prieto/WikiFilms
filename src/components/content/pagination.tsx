@@ -27,7 +27,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
       <button
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="flex items-center gap-1 rounded-md border border-border-subtle px-4 py-3 text-sm text-text-secondary transition-colors hover:border-accent-brand hover:text-accent-brand disabled:opacity-30 disabled:cursor-not-allowed"
+        className="flex items-center gap-1 rounded-md border border-border-subtle px-4 py-3 text-sm text-text-secondary transition-colors hover:border-accent-brand hover:text-accent-brand disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
       >
         <ChevronLeft className="h-4 w-4" />
         {t("pagination.previous")}
@@ -43,7 +43,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
               key={page}
               onClick={() => goToPage(page)}
               data-active={page === currentPage}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-sm transition-colors data-[active=true]:bg-accent-brand data-[active=true]:text-white text-text-secondary hover:bg-zinc-800"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-sm transition-colors data-[active=true]:bg-accent-brand data-[active=true]:text-white text-text-secondary hover:bg-zinc-800 active:scale-95 active:bg-zinc-700"
             >
               {page}
             </button>
@@ -54,7 +54,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
       <button
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className="flex items-center gap-1 rounded-md border border-border-subtle px-4 py-3 text-sm text-text-secondary transition-colors hover:border-accent-brand hover:text-accent-brand disabled:opacity-30 disabled:cursor-not-allowed"
+        className="flex items-center gap-1 rounded-md border border-border-subtle px-4 py-3 text-sm text-text-secondary transition-colors hover:border-accent-brand hover:text-accent-brand disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
       >
         {t("pagination.next")}
         <ChevronRight className="h-4 w-4" />

@@ -75,7 +75,7 @@ export default async function MoviePage({ params }: Props) {
         <WatchProviders providers={watchProviders} detectedRegion={region} />
       )}
 
-      <section className="mx-auto max-w-7xl px-4 py-8">
+      <section className="mx-auto max-w-7xl px-4 py-8 md:py-12">
         <div className="flex flex-wrap gap-3">
           <FavoriteButton
             contentId={movie.id}

@@ -16,7 +16,7 @@ export default async function Footer() {
             <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest md:text-xs">
               WIKIFILMS 26™{" "}
               <span className="font-normal tracking-normal text-text-secondary">
-                un proyecto por el{" "}
+                un proyecto por y para el{" "}
               </span>
               <span className="text-accent-brand">CINE</span>
             </p>

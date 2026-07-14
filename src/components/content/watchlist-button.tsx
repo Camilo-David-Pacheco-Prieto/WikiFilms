@@ -92,7 +92,7 @@ export function WatchlistButton({
         onClick={() => setOpen(!open)}
         disabled={loading}
         data-active={!!currentStatus}
-        className="flex items-center gap-2 rounded-md border border-border-subtle px-4 py-2 text-sm font-medium transition-colors hover:border-accent-brand data-[active=true]:border-accent-brand data-[active=true]:bg-accent-brand/10 disabled:opacity-50 text-text-secondary"
+        className="flex items-center gap-2 rounded-md border border-border-subtle px-4 py-2 text-sm font-medium transition-colors hover:border-accent-brand data-[active=true]:border-accent-brand data-[active=true]:bg-accent-brand/10 disabled:opacity-50 text-text-secondary active:scale-95"
       >
         {label}
       </button>
@@ -103,7 +103,7 @@ export function WatchlistButton({
             <button
               onClick={() => setStatus("WATCHED")}
               disabled={currentStatus === "WATCHED"}
-              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white"
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white active:bg-zinc-700"
             >
               {currentStatus === "WATCHED" ? (
                 <WatchedIcon className="h-4 w-4 text-green-400" />
@@ -116,7 +116,7 @@ export function WatchlistButton({
             <button
               onClick={() => setStatus("PLAN_TO_WATCH")}
               disabled={currentStatus === "PLAN_TO_WATCH"}
-              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white"
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white active:bg-zinc-700"
             >
               {currentStatus === "PLAN_TO_WATCH" ? (
                 <Clock className="h-4 w-4 text-yellow-400" />
@@ -131,7 +131,7 @@ export function WatchlistButton({
                 <hr className="border-border-subtle" />
                 <button
                   onClick={remove}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white active:bg-zinc-700"
                 >
                   {t("watchlistButton.remove")}
                 </button>
