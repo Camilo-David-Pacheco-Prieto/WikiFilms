@@ -22,6 +22,7 @@ async function fetchData(userId: string) {
       where: { userId },
       orderBy: { createdAt: "desc" },
       take: 20,
+      select: { id: true, actorId: true, type: true, reviewId: true, commentId: true, contentId: true, contentType: true, contentTitle: true, read: true, createdAt: true },
     }),
     prisma.notification.count({
       where: { userId, read: false },

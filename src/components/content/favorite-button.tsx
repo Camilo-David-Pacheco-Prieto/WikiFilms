@@ -31,11 +31,13 @@ export function FavoriteButton({
         setFavorited(data.favorited);
       })
       .catch(() => {});
-  }, [session, contentId, type]);
+  }, [session?.user?.id, contentId, type]);
 
   async function toggle() {
     if (!session?.user) return;
     setLoading(true);
+    const prev = favorited;
+    setFavorited(!prev);
     try {
       const res = await fetch("/api/favorites", {
         method: "POST",
@@ -46,7 +48,7 @@ export function FavoriteButton({
       const data = await res.json();
       setFavorited(data.favorited ?? false);
     } catch {
-      // silent
+      setFavorited(prev);
     } finally {
       setLoading(false);
     }

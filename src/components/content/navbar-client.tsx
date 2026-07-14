@@ -42,14 +42,14 @@ export function NavbarClient({ user }: NavbarClientProps) {
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+            className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
           >
             {t("nav.home")}
           </Link>
           <Link
             href="/search"
             onClick={() => setOpen(false)}
-            className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+            className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
           >
             {t("nav.explore")}
           </Link>
@@ -58,35 +58,35 @@ export function NavbarClient({ user }: NavbarClientProps) {
               <Link
                 href="/games"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
               >
                 {t("nav.games")}
               </Link>
               <Link
                 href="/watchlist"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
               >
                 {t("nav.watchlist")}
               </Link>
               <Link
                 href="/coming-soon"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
               >
                 {t("nav.comingSoon")}
               </Link>
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
               >
                 {t("userDropdown.favorites")}
               </Link>
               <Link
                 href="/settings"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
               >
                 {t("userDropdown.settings")}
               </Link>

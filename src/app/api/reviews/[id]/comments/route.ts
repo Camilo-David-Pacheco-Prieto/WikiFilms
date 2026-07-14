@@ -52,7 +52,7 @@ export async function GET(
       };
     });
 
-    return NextResponse.json(mapped);
+    return NextResponse.json(mapped, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("GET comments error:", e);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

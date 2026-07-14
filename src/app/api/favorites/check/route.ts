@@ -30,9 +30,10 @@ export async function GET(req: Request) {
           type,
         },
       },
+      select: { id: true },
     });
 
-    return NextResponse.json({ favorited: !!fav });
+    return NextResponse.json({ favorited: !!fav }, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("GET favorites/check error:", e);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

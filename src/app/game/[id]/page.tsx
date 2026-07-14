@@ -102,6 +102,7 @@ export default async function GameDetailPage({ params }: Props) {
                   <img
                     src={igdbUrl(IGDB_SCREENSHOT_SIZE, s.image_id)}
                     alt=""
+                    loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
@@ -124,6 +125,7 @@ export default async function GameDetailPage({ params }: Props) {
                   <img
                     src={igdbUrl("screenshot_huge", a.image_id)}
                     alt=""
+                    loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>

@@ -15,7 +15,7 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(favorites);
+    return NextResponse.json(favorites, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("GET favorites error:", e);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

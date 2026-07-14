@@ -29,7 +29,7 @@ export async function GET(req: Request) {
           },
         },
       });
-      return NextResponse.json(item);
+      return NextResponse.json(item, { headers: { "Cache-Control": "no-store" } });
     }
 
     const where: Record<string, unknown> = { userId: session.user.id };
@@ -42,7 +42,7 @@ export async function GET(req: Request) {
       orderBy: { updatedAt: "desc" },
     });
 
-    return NextResponse.json(items);
+    return NextResponse.json(items, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("GET watchlist error:", e);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

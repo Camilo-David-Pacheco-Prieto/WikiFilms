@@ -35,7 +35,7 @@ export function WatchlistButton({
         if (data) setCurrentStatus(data.status);
       })
       .catch(() => {});
-  }, [session, contentId, type]);
+  }, [session?.user?.id, contentId, type]);
 
   const setStatus = useCallback(
     async (status: WatchStatus) => {

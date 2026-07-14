@@ -55,9 +55,12 @@ export function NotificationBell({ userId }: { userId: string }) {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const sseRef = useRef<EventSource | null>(null);
   const pendingReads = useRef<Set<string>>(new Set());
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     function connect() {
@@ -230,7 +233,7 @@ export function NotificationBell({ userId }: { userId: string }) {
                         </p>
                       )}
                       <p className="text-xs text-text-secondary/50">
-                        {timeAgo(n.createdAt, t)}
+                        {mounted ? timeAgo(n.createdAt, t) : ""}
                       </p>
                     </div>
                     <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent-brand" />

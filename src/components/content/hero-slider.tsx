@@ -45,7 +45,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
     <section className="relative h-[180px] overflow-hidden rounded-2xl md:h-[500px] md:rounded-2xl md:shadow-[0_20px_60px_rgba(0,0,0,0.45)] lg:h-[460px] lg:rounded-3xl">
       {slides.map((item, i) => (
         <div
-          key={item.id}
+          key={`${item.type}-${item.id}`}
           className="absolute inset-0 transition-opacity duration-1000"
           style={{ opacity: i === currentIndex ? 1 : 0 }}
         >
@@ -54,6 +54,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
               src={item.backdropUrl}
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
+              fetchPriority={i === currentIndex ? "high" : "low"}
               onError={() => onImgError(item.id)}
             />
           ) : (
@@ -103,14 +104,14 @@ export function HeroSlider({ items }: HeroSliderProps) {
         <>
           <button
             onClick={prev}
-            className="absolute left-0.5 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition-all hover:bg-black/40 md:left-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
+            className="absolute left-0.5 top-1/2 z-10 flex min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition-all hover:bg-black/40 md:left-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
             aria-label="Previous"
           >
             <ChevronLeft className="h-3 w-3 md:h-7 md:w-7" />
           </button>
           <button
             onClick={next}
-            className="absolute right-0.5 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition-all hover:bg-black/40 md:right-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
+            className="absolute right-0.5 top-1/2 z-10 flex min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition-all hover:bg-black/40 md:right-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
             aria-label="Next"
           >
             <ChevronRight className="h-3 w-3 md:h-7 md:w-7" />

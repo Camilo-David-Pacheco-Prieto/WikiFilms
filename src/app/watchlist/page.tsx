@@ -55,7 +55,7 @@ async function WatchlistContent({ tab }: { tab: string }) {
       return <p className="mt-4 text-text-secondary">{emptyMsg}</p>;
     }
     return (
-      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {items.map((item) => (
           <Link
             key={item.id}
@@ -141,7 +141,7 @@ function WatchlistSkeleton() {
       <div className="mt-8 space-y-6">
         <div>
           <div className="mb-2 h-4 w-40 animate-pulse rounded bg-zinc-800" />
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-zinc-800" />
             ))}
@@ -149,7 +149,7 @@ function WatchlistSkeleton() {
         </div>
         <div>
           <div className="mb-2 h-4 w-40 animate-pulse rounded bg-zinc-800" />
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-zinc-800" />
             ))}
@@ -167,7 +167,7 @@ export default async function WatchlistPage({ searchParams }: Props) {
   const { tab } = await searchParams;
 
   return (
-    <main className="mx-auto max-w-2xl space-y-8 px-4 py-16">
+    <main className="mx-auto max-w-7xl space-y-8 px-4 py-16">
       <Suspense fallback={<WatchlistSkeleton />}>
         <WatchlistContent tab={tab ?? "movies"} />
       </Suspense>

@@ -64,7 +64,7 @@ export async function GET(req: Request) {
       myReaction: r.reactions && r.reactions.length > 0 ? r.reactions[0].type : null,
     }));
 
-    return NextResponse.json(result);
+    return NextResponse.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("GET reviews error:", e);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

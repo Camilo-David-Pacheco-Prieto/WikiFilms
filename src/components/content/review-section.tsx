@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslate, useLanguage } from "@/i18n/language-provider";
 import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
@@ -463,7 +463,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
     { key: "top", label: t("reviews.sortTop") },
   ];
 
-  const tree = buildTree();
+  const tree = useMemo(() => buildTree(), [comments, sortBy]);
 
   return (
     <div className="mt-3 space-y-2 border-t border-border-subtle pt-3">

@@ -105,7 +105,7 @@ async function FavoritesList({ tab }: { tab: string }) {
       </div>
 
       {favorites.length > 0 ? (
-        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {favorites.map((fav) => (
             <Link
               key={fav.id}
@@ -165,7 +165,7 @@ export default async function DashboardPage({ searchParams }: Props) {
   const { tab } = await searchParams;
 
   return (
-    <main className="mx-auto max-w-2xl space-y-8 px-4 py-16">
+    <main className="mx-auto max-w-7xl space-y-8 px-4 py-16">
       <Suspense fallback={null}>
         <ProfileSection />
       </Suspense>

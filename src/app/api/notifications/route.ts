@@ -15,6 +15,7 @@ export async function GET() {
       where: { userId },
       orderBy: { createdAt: "desc" },
       take: 20,
+      select: { id: true, userId: true, actorId: true, type: true, reviewId: true, commentId: true, contentId: true, contentType: true, contentTitle: true, read: true, createdAt: true },
     });
 
     const unreadCount = await prisma.notification.count({
@@ -45,7 +46,7 @@ export async function GET() {
       createdAt: n.createdAt,
     }));
 
-    return NextResponse.json({ notifications: result, unreadCount });
+    return NextResponse.json({ notifications: result, unreadCount }, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("GET notifications error:", e);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
