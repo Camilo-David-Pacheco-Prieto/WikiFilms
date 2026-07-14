@@ -104,17 +104,17 @@ export function HeroSlider({ items }: HeroSliderProps) {
         <>
           <button
             onClick={prev}
-            className="absolute left-0.5 top-1/2 z-10 flex min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition-all hover:bg-black/40 md:left-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
+            className="absolute left-0.5 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md transition-all hover:bg-black/70 md:left-6 md:flex md:h-[60px] md:w-[60px]"
             aria-label="Previous"
           >
-            <ChevronLeft className="h-3 w-3 md:h-7 md:w-7" />
+            <ChevronLeft className="h-7 w-7" />
           </button>
           <button
             onClick={next}
-            className="absolute right-0.5 top-1/2 z-10 flex min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition-all hover:bg-black/40 md:right-6 md:h-[60px] md:w-[60px] md:bg-black/55 md:backdrop-blur-md md:hover:bg-black/70"
+            className="absolute right-0.5 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md transition-all hover:bg-black/70 md:right-6 md:flex md:h-[60px] md:w-[60px]"
             aria-label="Next"
           >
-            <ChevronRight className="h-3 w-3 md:h-7 md:w-7" />
+            <ChevronRight className="h-7 w-7" />
           </button>
         </>
       )}
