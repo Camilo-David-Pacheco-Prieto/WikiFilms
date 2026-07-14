@@ -30,17 +30,19 @@ export async function POST(req: Request) {
     const ext = file.name.split(".").pop() ?? "jpg";
     const filename = `avatars/${session.user.id}-${Date.now()}.${ext}`;
 
-    const blob = await put(filename, file, {
-      access: "public",
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const blob = await put(filename, buffer, {
+      access: "private",
       contentType: file.type,
     });
 
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { avatarUrl: blob.url },
+      data: { avatarUrl: blob.pathname },
     });
 
-    return NextResponse.json({ avatarUrl: blob.url });
+    const proxyUrl = `/api/blob?pathname=${encodeURIComponent(blob.pathname)}`;
+    return NextResponse.json({ avatarUrl: proxyUrl });
   } catch (e) {
     console.error("Upload avatar error:", e);
     const message = e instanceof Error ? e.message : "Internal error";

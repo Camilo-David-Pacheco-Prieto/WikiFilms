@@ -65,7 +65,11 @@ const config: NextAuthConfig = {
       if (user) {
         (token as any).username = user.username;
         (token as any).role = user.role;
-        (token as any).avatarUrl = user.avatarUrl;
+        const raw = user.avatarUrl;
+        (token as any).avatarUrl =
+          raw && !raw.startsWith("/api/blob")
+            ? `/api/blob?pathname=${encodeURIComponent(raw)}`
+            : raw;
       }
       return token;
     },

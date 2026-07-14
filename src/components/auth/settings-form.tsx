@@ -72,8 +72,8 @@ export function SettingsForm({ user }: SettingsFormProps) {
       setSuccess(t("auth.savedSuccess"));
       setTimeout(() => setSuccess(""), 3000);
       router.refresh();
-    } catch {
-      setError("Error al subir la imagen");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error al subir la imagen");
       setTimeout(() => setError(""), 3000);
     } finally {
       setAvatarUploading(false);
