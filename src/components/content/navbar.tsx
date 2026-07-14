@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, LogIn } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { NavbarClient } from "./navbar-client";
 import { UserDropdown } from "./user-dropdown";
@@ -60,9 +60,10 @@ export default async function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
+              className="flex items-center rounded-md p-2 text-text-secondary transition-colors hover:text-white md:bg-primary md:px-4 md:py-2.5 md:text-sm md:font-medium md:text-primary-foreground md:hover:bg-primary/80"
             >
-              {dict["nav.signIn"]}
+              <LogIn className="h-4 w-4" />
+              <span className="hidden md:inline">{dict["nav.signIn"]}</span>
             </Link>
           )}
 
