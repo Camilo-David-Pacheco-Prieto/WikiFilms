@@ -13,14 +13,10 @@ export default async function Footer() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="relative grid grid-cols-2 gap-6 md:gap-8 lg:grid-cols-3">
           <div className="col-span-2 lg:col-span-1">
-            <div className="flex items-center">
-              <img
-                src="/images/logo-oficial-wikifilms.png"
-                alt="WikiFilms"
-                className="h-9 w-auto"
-              />
-            </div>
-            <p className="mt-2 text-xs leading-relaxed text-text-secondary md:text-sm">
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-white/80 md:text-xs">
+              {dict["footer.brand"]}™
+            </p>
+            <p className="text-xs leading-relaxed text-text-secondary md:text-sm">
               {dict["footer.description"]}
             </p>
           </div>
