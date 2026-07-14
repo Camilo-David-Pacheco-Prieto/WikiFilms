@@ -17,7 +17,7 @@ export default async function Footer() {
               <img
                 src="/images/logo-oficial-wikifilms.png"
                 alt="WikiFilms"
-                className="h-7 w-auto"
+                className="h-9 w-auto"
               />
             </div>
             <p className="mt-2 text-xs leading-relaxed text-text-secondary md:text-sm">
