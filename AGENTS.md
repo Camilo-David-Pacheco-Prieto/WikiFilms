@@ -16,6 +16,7 @@ WikiFilms es una enciclopedia de entretenimiento web. Consume la API de **TMDB (
 | Lenguaje | TypeScript | 5.x strict |
 | Estilos | Tailwind CSS | 4.3.3 |
 | UI Kit | shadcn/ui (Base Nova) | 4.15.0 |
+| Rate Limiting | Upstash Redis + @upstash/ratelimit | 2.0.8 |
 | ORM | Prisma | 7.9.0 |
 | DB | Vercel Postgres (Neon) | via @prisma/adapter-neon |
 | Auth | NextAuth | 5.0.0-beta.32 |
@@ -144,6 +145,7 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │   ├── auth.ts              # NextAuth config + handlers
 │   ├── igdb.ts              # Servicio IGDB con auth Twitch OAuth2 + token cache + endpoints
 │   ├── prisma.ts            # Cliente Prisma singleton con adapter Neon
+│   ├── rate-limit.ts        # 3 tiers de rate limiting con Upstash Redis (strict/write/read)
 │   ├── tmdb.ts              # Servicio TMDB con caching + localeToTMDBlang("es")="es-MX" + region CO
 │   └── utils.ts             # Utilidades (shadcn)
 ├── types/
@@ -180,7 +182,11 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 - `proxy.ts` protege rutas:
   - `/admin/*` — requiere sesión + rol ADMIN
   - `/games/*`, `/game/*` — requiere sesión (cualquier rol)
-  - `/api/auth/*` — rate limiting (40 req/min por IP)
+  - `/api/*` — rate limiting con Upstash Redis (persiste entre instancias serverless)
+    - `/api/auth/register`, `/api/auth/update` → **5 req / 15 min** (strict)
+    - POST/PATCH/DELETE en otras rutas → **30 req / 1 min** (write)
+    - GET en otras rutas → **100 req / 1 min** (read)
+    - Bypass: `/api/auth/session`, `/api/auth/csrf`, `/api/auth/callback/*`, `/api/notifications/stream`
 - **Auth proxy**: usa `getToken` de `next-auth/jwt` (HKDF key derivation) en lugar de `jose.jwtDecrypt` manual
 - Server Actions verifican rol ADMIN antes de operaciones
 - Variables de entorno en `.env.local` y Vercel
@@ -288,7 +294,24 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 
 ---
 
-## Comandos Esenciales
+### Rate Limiting — Upstash Redis
+
+- **Propósito**: Reemplazar rate limiting in-memory (no persistía entre instancias serverless) por un enfoque distribuido con Redis
+- **Servicio**: Upstash Redis (HTTP/REST, ideal para Edge/Serverless)
+- **Paquetes**: `@upstash/redis` (1.38.0) + `@upstash/ratelimit` (2.0.8)
+- **Archivo**: `src/lib/rate-limit.ts` — 3 rate limiters exportados:
+
+| Limiter | Límite | Rutas |
+|---------|--------|-------|
+| `strictRateLimit` | 5 req / 15 min por IP | `/api/auth/register`, `/api/auth/update` |
+| `writeRateLimit` | 30 req / 1 min por IP | POST/PATCH/DELETE en favorites, watchlist, reviews, comments, reactions, blob, notifications |
+| `readRateLimit` | 100 req / 1 min por IP | GET en favorites, check, watchlist, reviews, comments, games/*, notifications |
+
+- **Middleware**: `src/proxy.ts` expandió su `matcher` de `/api/auth/:path*` a `/api/:path*` para cubrir todas las API routes
+- **Bypass**: `/api/auth/session`, `/api/auth/csrf`, `/api/auth/callback/*`, `/api/notifications/stream` (rutas internas o de conexión persistente)
+- **Conexión**: `Redis.fromEnv()` lee `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN` de env vars
+- **Analytics**: Habilitados (`analytics: true`) — visibles en dashboard de Upstash
+- **Env vars requeridas en Vercel**: Production + Preview (Development usa `.env.local`)\
 
 ```bash
 pnpm dev           # Iniciar servidor desarrollo (localhost:3000)
@@ -330,6 +353,8 @@ NEXTAUTH_URL=https://wiki-films-fawn.vercel.app
 TWITCH_CLIENT_ID=<de Twitch Developer Console>
 TWITCH_CLIENT_SECRET=<de Twitch Developer Console>
 BLOB_READ_WRITE_TOKEN=<de Vercel Dashboard → Storage → Blob → Settings>
+UPSTASH_REDIS_REST_URL=<de Upstash Console → Database → REST URL>
+UPSTASH_REDIS_REST_TOKEN=<de Upstash Console → Database → Token>
 ```
 
 #### 4. Migrar esquema
@@ -360,7 +385,7 @@ También se puede ejecutar en Vercel como build command:
 - [ ] Ranking de usuarios por actividad
 
 ### Fase 4 — Escalabilidad
-- [ ] Rate limiting server-side para proteger TMDB
+- [x] Rate limiting server-side con Upstash Redis (3 tiers: strict/write/read)
 - [ ] Redis cache para popular/trending
 - [ ] Webhooks TMDB para contenido nuevo
 - [ ] Panel admin con analytics (graficos, metricas)

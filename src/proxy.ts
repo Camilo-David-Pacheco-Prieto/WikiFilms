@@ -1,43 +1,55 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { strictRateLimit, writeRateLimit, readRateLimit } from "@/lib/rate-limit";
 
-// Warning: in-memory Map does not persist across serverless instances.
-// For production on Vercel, replace with Vercel KV or Upstash Redis rate limiting.
-const rateLimit = new Map<string, { count: number; reset: number }>();
-const MAX_REQUESTS = 40;
-const WINDOW_MS = 60_000;
+function getIp(request: NextRequest): string {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+}
 
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimit.get(ip);
-  if (!entry || now > entry.reset) {
-    rateLimit.set(ip, { count: 1, reset: now + WINDOW_MS });
-    return true;
-  }
-  entry.count++;
-  return entry.count <= MAX_REQUESTS;
+function rateLimitResponse() {
+  return NextResponse.json(
+    { error: "Too many requests. Please try again later." },
+    { status: 429, headers: { "Retry-After": "60" } },
+  );
 }
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/api/auth")) {
-    // Saltar rate limit para rutas internas de NextAuth (session, csrf, callback)
-    if (pathname === "/api/auth/session" || pathname === "/api/auth/csrf" || pathname.startsWith("/api/auth/callback")) {
+  // ── Rate limiting ──────────────────────────────────────
+  if (pathname.startsWith("/api/")) {
+    // Bypass: rutas internas de NextAuth y SSE
+    if (
+      pathname === "/api/auth/session" ||
+      pathname === "/api/auth/csrf" ||
+      pathname.startsWith("/api/auth/callback") ||
+      pathname === "/api/notifications/stream"
+    ) {
       return NextResponse.next();
     }
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 },
-      );
+
+    const ip = getIp(request);
+
+    // Strict: registro y actualización de perfil
+    if (pathname === "/api/auth/register" || pathname === "/api/auth/update") {
+      const { success } = await strictRateLimit.limit(ip);
+      if (!success) return rateLimitResponse();
+    }
+    // Write: mutaciones (POST, PATCH, DELETE)
+    else if (request.method !== "GET") {
+      const { success } = await writeRateLimit.limit(ip);
+      if (!success) return rateLimitResponse();
+    }
+    // Read: consultas GET
+    else {
+      const { success } = await readRateLimit.limit(ip);
+      if (!success) return rateLimitResponse();
     }
   }
 
+  // ── Auth guard: admin ──────────────────────────────────
   const isSecure = request.nextUrl.protocol === "https:";
-
   if (pathname.startsWith("/admin")) {
     const token = await getToken({ req: request, secret: process.env.AUTH_SECRET, secureCookie: isSecure });
     if (!token || token.role !== "ADMIN") {
@@ -45,6 +57,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // ── Auth guard: games ──────────────────────────────────
   if (pathname.startsWith("/games") || pathname.startsWith("/game")) {
     const token = await getToken({ req: request, secret: process.env.AUTH_SECRET, secureCookie: isSecure });
     if (!token) {
@@ -56,5 +69,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/auth/:path*", "/games/:path*", "/game/:path*"],
+  matcher: ["/admin/:path*", "/api/:path*", "/games/:path*", "/game/:path*"],
 };
