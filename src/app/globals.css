@@ -78,51 +78,52 @@
 }
 
 .light {
-  --color-base: #fafafa;
-  --color-surface: #ffffff;
-  --color-surface-glass: color-mix(in srgb, #ffffff 60%, transparent);
+  --color-base: #ffffff;
+  --color-surface: #f4f4f5;
+  --color-surface-glass: color-mix(in srgb, #f4f4f5 60%, transparent);
   --color-text-primary: #18181b;
   --color-text-secondary: #52525b;
-  --color-border-subtle: #e4e4e7;
+  --color-border-subtle: #d4d4d8;
   --color-accent-brand: #e11d48;
   --color-accent-hover: #be123c;
   --color-accent-soft: #fecdd3;
-  --color-background: #fafafa;
+  --color-background: #ffffff;
   --color-foreground: #18181b;
-  --color-card: #ffffff;
+  --color-card: #f4f4f5;
   --color-card-foreground: #18181b;
   --color-popover: #ffffff;
   --color-popover-foreground: #18181b;
   --color-primary: #e11d48;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #f4f4f5;
+  --color-secondary: #e4e4e7;
   --color-secondary-foreground: #18181b;
-  --color-muted: #f4f4f5;
+  --color-muted: #e4e4e7;
   --color-muted-foreground: #71717a;
   --color-accent: #e11d48;
   --color-accent-foreground: #ffffff;
   --color-destructive: #dc2626;
-  --color-border: #e4e4e7;
-  --color-input: #e4e4e7;
+  --color-border: #d4d4d8;
+  --color-input: #d4d4d8;
   --color-ring: #e11d48;
+  --shadow-poster: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 
-  --background: #fafafa;
+  --background: #ffffff;
   --foreground: #18181b;
-  --card: #ffffff;
+  --card: #f4f4f5;
   --card-foreground: #18181b;
   --popover: #ffffff;
   --popover-foreground: #18181b;
   --primary: #e11d48;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
+  --secondary: #e4e4e7;
   --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
+  --muted: #e4e4e7;
   --muted-foreground: #71717a;
   --accent: #e11d48;
   --accent-foreground: #ffffff;
   --destructive: #dc2626;
-  --border: #e4e4e7;
-  --input: #e4e4e7;
+  --border: #d4d4d8;
+  --input: #d4d4d8;
   --ring: #e11d48;
   --chart-1: #e11d48;
   --chart-2: #be123c;
@@ -135,8 +136,26 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #e4e4e7;
   --sidebar-accent-foreground: #18181b;
-  --sidebar-border: #e4e4e7;
+  --sidebar-border: #d4d4d8;
   --sidebar-ring: #e11d48;
+}
+
+.light footer {
+  --color-base: #09090b;
+  --color-surface: #18181b;
+  --color-surface-glass: color-mix(in srgb, #18181b 60%, transparent);
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-border-subtle: #27272a;
+  --color-accent-brand: #e11d48;
+  --color-background: #09090b;
+  --color-foreground: #ffffff;
+  --color-card: #18181b;
+  --color-card-foreground: #ffffff;
+  --color-border: #27272a;
+  --color-muted: #18181b;
+  --color-muted-foreground: #a1a1aa;
+  --shadow-poster: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
 }
 
 body {
