@@ -21,7 +21,7 @@ export function LanguageSwitcherInline() {
             className={`text-xs font-semibold uppercase tracking-wider transition-colors ${
               l === locale
                 ? "text-accent-brand cursor-default"
-                : "text-text-secondary hover:text-white"
+                : "text-text-secondary hover:text-text-primary"
             }`}
           >
             {localeNames[l]}

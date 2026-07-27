@@ -45,7 +45,7 @@ export function WatchProviders({ providers, detectedRegion }: WatchProvidersProp
     <section className="mx-auto max-w-7xl px-4 py-6">
       <div className="rounded-lg border border-border-subtle bg-surface p-4 md:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="font-display text-lg font-bold uppercase text-white md:text-xl">
+            <h2 className="font-display text-lg font-bold uppercase text-text-primary md:text-xl">
             {t("watchProviders.heading")}
           </h2>
           <select
@@ -88,7 +88,7 @@ export function WatchProviders({ providers, detectedRegion }: WatchProvidersProp
                           sizes="32px"
                         />
                       </div>
-                      <span className="text-xs text-text-secondary transition-colors group-hover:text-white md:text-sm">
+                      <span className="text-xs text-text-secondary transition-colors group-hover:text-text-primary md:text-sm">
                         {p.provider_name}
                       </span>
                     </a>

@@ -18,7 +18,7 @@ export async function ContentGrid({ items, title, href }: ContentGridProps) {
     <section>
       {title && (
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-white">
+          <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-text-primary">
             {title}
           </h2>
           {href && (

@@ -180,7 +180,7 @@ export function NotificationBell({ userId }: { userId: string }) {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="relative flex items-center rounded-md p-2 text-text-secondary transition-colors hover:text-white"
+        className="relative flex items-center rounded-md p-2 text-text-secondary transition-colors hover:text-text-primary"
         aria-label="Notifications"
       >
         <Bell className="h-4 w-4" />
@@ -194,7 +194,7 @@ export function NotificationBell({ userId }: { userId: string }) {
       {open && (
         <div className="absolute right-0 top-full z-20 mt-2 w-72 rounded-md border border-border-subtle bg-surface shadow-lg">
           <div className="flex items-center justify-between border-b border-border-subtle px-4 py-3">
-            <span className="text-sm font-semibold text-white">
+            <span className="text-sm font-semibold text-text-primary">
               {t("notifications.title")}
             </span>
             {unreadCount > 0 && (
@@ -220,7 +220,7 @@ export function NotificationBell({ userId }: { userId: string }) {
                       {iconMap[n.type] ?? "🔔"}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-white">
+                      <p className="text-sm font-semibold text-text-primary">
                         {n.actorName}
                       </p>
                       <p className="text-xs text-text-secondary">

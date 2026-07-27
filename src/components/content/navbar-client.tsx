@@ -20,7 +20,7 @@ export function NavbarClient({ user }: NavbarClientProps) {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="md:hidden rounded-md p-2 text-text-secondary hover:text-white transition-colors"
+        className="md:hidden rounded-md p-2 text-text-secondary hover:text-text-primary transition-colors"
         aria-label={open ? t("nav.closeMenu") : t("nav.openMenu")}
       >
         {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -42,14 +42,14 @@ export function NavbarClient({ user }: NavbarClientProps) {
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+            className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
           >
             {t("nav.home")}
           </Link>
           <Link
             href="/search"
             onClick={() => setOpen(false)}
-            className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+            className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
           >
             {t("nav.explore")}
           </Link>
@@ -58,35 +58,35 @@ export function NavbarClient({ user }: NavbarClientProps) {
               <Link
                 href="/games"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
               >
                 {t("nav.games")}
               </Link>
               <Link
                 href="/watchlist"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
               >
                 {t("nav.watchlist")}
               </Link>
               <Link
                 href="/coming-soon"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
               >
                 {t("nav.comingSoon")}
               </Link>
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
               >
                 {t("userDropdown.favorites")}
               </Link>
               <Link
                 href="/settings"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-white"
+                className="rounded-md px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
               >
                 {t("userDropdown.settings")}
               </Link>

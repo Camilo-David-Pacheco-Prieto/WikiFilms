@@ -32,25 +32,25 @@ export default async function Footer() {
             <div className="flex flex-col gap-1.5 text-xs md:text-sm">
               <Link
                 href="/"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-text-primary"
               >
                 {dict["footer.home"]}
               </Link>
               <Link
                 href="/search"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-text-primary"
               >
                 {dict["footer.explore"]}
               </Link>
               <Link
                 href="/search?type=movie"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-text-primary"
               >
                 {dict["footer.movies"]}
               </Link>
               <Link
                 href="/search?type=tv"
-                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-text-primary"
               >
                 {dict["footer.series"]}
               </Link>
@@ -65,7 +65,7 @@ export default async function Footer() {
               {session?.user && (
                 <Link
                   href="/games"
-                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-text-primary"
                 >
                   {dict["nav.games"]}
                 </Link>
@@ -73,14 +73,14 @@ export default async function Footer() {
               {session?.user ? (
                 <Link
                   href="/dashboard"
-                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-text-primary"
                 >
                   {dict["footer.favorites"]}
                 </Link>
               ) : (
                 <Link
                   href="/login"
-                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-white"
+                  className="text-text-secondary transition-all hover:translate-x-0.5 hover:text-text-primary"
                 >
                   {dict["footer.signIn"]}
                 </Link>
@@ -110,7 +110,7 @@ export default async function Footer() {
           />
           <p>
             {dict["footer.developedBy"]}
-            <span className="font-medium text-white">{dict["footer.developerName"]}</span>
+            <span className="font-medium text-text-primary">{dict["footer.developerName"]}</span>
           </p>
           <p className="mt-0.5">
             {dict["footer.dataProvidedBy"]}

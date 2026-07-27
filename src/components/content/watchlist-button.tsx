@@ -103,7 +103,7 @@ export function WatchlistButton({
             <button
               onClick={() => setStatus("WATCHED")}
               disabled={currentStatus === "WATCHED"}
-              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white active:bg-zinc-700"
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-text-primary disabled:cursor-default disabled:text-text-secondary active:bg-zinc-700"
             >
               {currentStatus === "WATCHED" ? (
                 <WatchedIcon className="h-4 w-4 text-green-400" />
@@ -116,7 +116,7 @@ export function WatchlistButton({
             <button
               onClick={() => setStatus("PLAN_TO_WATCH")}
               disabled={currentStatus === "PLAN_TO_WATCH"}
-              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-default disabled:text-white active:bg-zinc-700"
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-text-primary disabled:cursor-default disabled:text-text-secondary active:bg-zinc-700"
             >
               {currentStatus === "PLAN_TO_WATCH" ? (
                 <Clock className="h-4 w-4 text-yellow-400" />
@@ -131,7 +131,7 @@ export function WatchlistButton({
                 <hr className="border-border-subtle" />
                 <button
                   onClick={remove}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-white active:bg-zinc-700"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-zinc-800 hover:text-text-primary active:bg-zinc-700"
                 >
                   {t("watchlistButton.remove")}
                 </button>

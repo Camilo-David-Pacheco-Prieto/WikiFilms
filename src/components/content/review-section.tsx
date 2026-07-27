@@ -302,7 +302,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
       <div key={node.id} id={"comment-" + node.id} className={depthClass}>
         <div className="rounded bg-base/50 px-3 py-2">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-white">{node.user.name}</span>
+            <span className="text-xs font-medium text-text-primary">{node.user.name}</span>
             {node.parentUser && (
               <span className="text-xs text-text-secondary/60">
                 {t("reviews.repliedTo").replace("{name}", node.parentUser)}
@@ -317,7 +317,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
                 maxLength={2000}
-                className="w-full rounded-md border border-border-subtle bg-base px-3 py-1.5 text-xs text-white outline-none transition-colors focus:border-accent-brand"
+                className="w-full rounded-md border border-border-subtle bg-base px-3 py-1.5 text-xs text-text-primary outline-none transition-colors focus:border-accent-brand"
               />
               <div className="flex gap-2">
                 <button
@@ -329,7 +329,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
                 </button>
                 <button
                   onClick={cancelEdit}
-                  className="rounded border border-border-subtle px-2 py-0.5 text-[10px] text-text-secondary transition-colors hover:text-white"
+                  className="rounded border border-border-subtle px-2 py-0.5 text-[10px] text-text-secondary transition-colors hover:text-text-primary"
                 >
                   {t("reviews.cancel")}
                 </button>
@@ -352,7 +352,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
             <button
               onClick={() => toggleCommentReaction(node.id, "LIKE")}
               disabled={!session?.user}
-              className={`flex items-center gap-0.5 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed ${node.myReaction === "LIKE" ? "text-accent-brand" : ""}`}
+              className={`flex items-center gap-0.5 transition-colors hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed ${node.myReaction === "LIKE" ? "text-accent-brand" : ""}`}
             >
               <ThumbsUp className="h-3 w-3" />
               <span>{node.likes}</span>
@@ -360,7 +360,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
             <button
               onClick={() => toggleCommentReaction(node.id, "DISLIKE")}
               disabled={!session?.user}
-              className={`flex items-center gap-0.5 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed ${node.myReaction === "DISLIKE" ? "text-red-500" : ""}`}
+              className={`flex items-center gap-0.5 transition-colors hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed ${node.myReaction === "DISLIKE" ? "text-red-500" : ""}`}
             >
               <ThumbsDown className="h-3 w-3" />
               <span>{node.dislikes}</span>
@@ -368,7 +368,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
             {session?.user && (
               <button
                 onClick={() => startReply(node.id)}
-                className="transition-colors hover:text-white"
+                className="transition-colors hover:text-text-primary"
               >
                 {t("reviews.reply")}
               </button>
@@ -377,7 +377,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
               <>
                 <button
                   onClick={() => startEdit(node)}
-                  className="transition-colors hover:text-white"
+                  className="transition-colors hover:text-text-primary"
                 >
                   {t("reviews.edit")}
                 </button>
@@ -385,7 +385,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
                   <span className="flex items-center gap-1">
                     <span className="text-text-secondary/50">{t("reviews.deleteConfirm")}</span>
                     <button onClick={() => confirmDelete(node.id)} className="text-red-500 transition-colors hover:text-red-400">{t("reviews.deleteYes")}</button>
-                    <button onClick={() => setDeletingId(null)} className="transition-colors hover:text-white">{t("reviews.deleteNo")}</button>
+                    <button onClick={() => setDeletingId(null)} className="transition-colors hover:text-text-primary">{t("reviews.deleteNo")}</button>
                   </span>
                 ) : (
                   <button
@@ -409,7 +409,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
                 onChange={(e) => setText(e.target.value)}
                 maxLength={2000}
                 placeholder={t("reviews.commentPlaceholder")}
-                className="min-w-0 flex-1 rounded-md border border-border-subtle bg-base px-3 py-1.5 text-xs text-white outline-none transition-colors focus:border-accent-brand"
+                className="min-w-0 flex-1 rounded-md border border-border-subtle bg-base px-3 py-1.5 text-xs text-text-primary outline-none transition-colors focus:border-accent-brand"
               />
               <button
                 type="submit"
@@ -421,7 +421,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
               <button
                 type="button"
                 onClick={cancelReply}
-                className="shrink-0 rounded-md border border-border-subtle px-3 py-1.5 text-xs text-text-secondary transition-colors hover:text-white"
+                className="shrink-0 rounded-md border border-border-subtle px-3 py-1.5 text-xs text-text-secondary transition-colors hover:text-text-primary"
               >
                 {t("reviews.cancel")}
               </button>
@@ -444,7 +444,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
                 {node.depth >= 2 && (
                   <button
                     onClick={() => toggleReplies(node.id)}
-                    className="ml-6 mt-1 text-[10px] text-text-secondary transition-colors hover:text-white"
+                    className="ml-6 mt-1 text-[10px] text-text-secondary transition-colors hover:text-text-primary"
                   >
                     {t("reviews.hideReplies")}
                   </button>
@@ -473,7 +473,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
             <button
               key={tab.key}
               onClick={() => setSortBy(tab.key)}
-              className={`text-[11px] font-medium transition-colors hover:text-white active:scale-95 ${
+              className={`text-[11px] font-medium transition-colors hover:text-text-primary active:scale-95 ${
                 sortBy === tab.key ? "text-accent-brand" : "text-text-secondary/60"
               }`}
             >
@@ -499,7 +499,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
             onChange={(e) => setText(e.target.value)}
             maxLength={2000}
             placeholder={t("reviews.commentPlaceholder")}
-            className="min-w-0 flex-1 rounded-md border border-border-subtle bg-base px-3 py-1.5 text-xs text-white outline-none transition-colors focus:border-accent-brand"
+            className="min-w-0 flex-1 rounded-md border border-border-subtle bg-base px-3 py-1.5 text-xs text-text-primary outline-none transition-colors focus:border-accent-brand"
           />
           <button
             type="submit"
@@ -667,7 +667,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="rounded-lg border border-border-subtle bg-surface p-4 md:p-6">
-        <h2 className="font-display text-xl font-bold uppercase text-white md:text-2xl">
+        <h2 className="font-display text-xl font-bold uppercase text-text-primary md:text-2xl">
           {t("reviews.heading")}
         </h2>
 
@@ -702,7 +702,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
               maxLength={500}
               placeholder={t("reviews.placeholder")}
               rows={3}
-              className="w-full rounded-md border border-border-subtle bg-base px-4 py-2 text-sm text-white outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand placeholder:text-text-secondary/50"
+              className="w-full rounded-md border border-border-subtle bg-base px-4 py-2 text-sm text-text-primary outline-none transition-colors focus:border-accent-brand focus:ring-1 focus:ring-accent-brand placeholder:text-text-secondary/50"
             />
             <div className="flex items-center justify-between">
               <span className="text-xs text-text-secondary/50">
@@ -736,7 +736,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
                 className={"rounded-md bg-base p-4 md:p-5 transition-shadow " + (highlightId === review.id ? "ring-2 ring-accent-brand ring-offset-2 ring-offset-surface" : "")}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm font-medium text-text-primary">
                     {review.user.name}
                   </span>
                   <span className="text-sm text-yellow-400">
@@ -761,7 +761,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
                   <button
                     onClick={(e) => toggleReaction(review.id, "LIKE", e)}
                     disabled={!session?.user}
-                    className={`flex items-center gap-1 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed active:scale-90 ${
+                    className={`flex items-center gap-1 transition-colors hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed active:scale-90 ${
                       review.myReaction === "LIKE" ? "text-accent-brand" : ""
                     }`}
                   >
@@ -771,7 +771,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
                   <button
                     onClick={(e) => toggleReaction(review.id, "DISLIKE", e)}
                     disabled={!session?.user}
-                    className={`flex items-center gap-1 transition-colors hover:text-white disabled:opacity-30 disabled:cursor-not-allowed active:scale-90 ${
+                    className={`flex items-center gap-1 transition-colors hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed active:scale-90 ${
                       review.myReaction === "DISLIKE" ? "text-red-500" : ""
                     }`}
                   >
@@ -780,7 +780,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
                   </button>
                   <button
                     onClick={() => toggleComments(review.id)}
-                    className={`flex items-center gap-1 transition-colors hover:text-white ${
+                    className={`flex items-center gap-1 transition-colors hover:text-text-primary ${
                       expandedComments.has(review.id) ? "text-accent-brand" : ""
                     }`}
                   >
