@@ -5,6 +5,7 @@ import { NavbarClient } from "./navbar-client";
 import { UserDropdown } from "./user-dropdown";
 import { NotificationBell } from "./notification-bell";
 import { LanguageSwitcher } from "./language-switcher";
+import { ThemeToggle } from "./theme-toggle";
 import { SearchBar } from "./search-bar";
 import { NavLink } from "./nav-link";
 import { getServerLocale } from "@/i18n/get-locale";
@@ -68,6 +69,8 @@ export default async function Navbar() {
           )}
 
           <LanguageSwitcher />
+
+          <ThemeToggle />
 
           <NavbarClient user={user ? { name: user.name, role: user.role } : null} />
         </div>
