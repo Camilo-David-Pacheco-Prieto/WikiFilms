@@ -127,6 +127,7 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │   │   ├── game-detail-hero.tsx         # Hero juegos (backdrop + trailer fondo + poster + rating + lang=en)
 │   │   ├── hero-slider.tsx              # Slider hero con tendencias
 │   │   ├── navbar.tsx                   # Navbar con sesión
+│   │   ├── theme-toggle.tsx             # Toggle modo oscuro/claro (Sun/Moon)
 │   │   ├── review-section.tsx           # Reseñas con contentType (movie|tv|game)
 │   │   ├── favorite-button.tsx          # Star icon, type movie|tv|game
 │   │   ├── watchlist-button.tsx         # Labels condicionales: game→Jugado, movie/tv→Visto
@@ -278,6 +279,13 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 - next/image para pósters TMDB; `<img>` nativo para IGDB (evita 404 de Vercel)
 - Navbar con sesión usando `auth()` de NextAuth
 
+### Theme Toggle — Modo oscuro/claro
+- **Provider**: `next-themes` (0.4.6) con `attribute="class"`, `defaultTheme="dark"`, `enableSystem={false}`
+- **Toggle**: `theme-toggle.tsx` — botón `variant="ghost" size="icon"` en navbar junto a `LanguageSwitcher`
+- **CSS**: bloque `.light` en `globals.css` overridea todas las variables CSS (`--color-*` de `@theme inline` + `--background/foreground` de shadcn)
+- **Hydration**: componente monta con placeholder `size-9` para evitar flash, luego renderiza `Sun`/`Moon` de lucide-react
+- **Colores light**: fondo `#fafafa`, superficies `#ffffff`, texto `#18181b`, borders `#e4e4e7`, accent brand `#e11d48` se mantiene
+
 ---
 
 ## Comandos Esenciales
@@ -341,7 +349,7 @@ También se puede ejecutar en Vercel como build command:
 
 ### Fase 3 — Polishing & Features
 - [ ] PWA (manifest.json + service worker)
-- [ ] Modo oscuro/claro toggle
+- [x] Modo oscuro/claro toggle
 - [ ] Paginación en resultados de búsqueda
 - [ ] Filtro por género en home
 - [ ] Skeletons de carga para mejorar UX
