@@ -370,26 +370,37 @@ También se puede ejecutar en Vercel como build command:
 
 ---
 
-## Próximas Funcionalidades Planificadas
+## Roadmap — Prioridad de Trabajo
 
-### Fase 3 — Polishing & Features
-- [ ] PWA (manifest.json + service worker)
-- [x] Modo oscuro/claro toggle
-- [ ] Paginación en resultados de búsqueda
-- [ ] Filtro por género en home
-- [ ] Skeletons de carga para mejorar UX
-- [ ] Página 404 personalizada
-- [ ] Tests unitarios (Vitest) + E2E (Playwright)
-- [ ] Scroll suave entre secciones en detalle
-- [x] Avatar/subir foto de perfil
-- [ ] Ranking de usuarios por actividad
-
-### Fase 4 — Escalabilidad
+### 🏁 Completado
+- [x] Avatar / subir foto de perfil (Vercel Blob privado + proxy)
+- [x] Modo oscuro/claro toggle (next-themes, `.light` block en globals.css)
+- [x] Paleta light refinada (colores ajustados, footer oscuro en light mode)
+- [x] Text colors adaptables (text-white → text-text-primary en 10 componentes)
+- [x] Paginación en resultados de búsqueda (movies/series; IGDB no expone paginación)
+- [x] Filtro por género en home (GenreFilter + getByGenre)
+- [x] Página 404 personalizada (not-found.tsx)
+- [x] Skeletons de carga — home y games con Suspense (detail pages: server-side directo sin skeleton)
 - [x] Rate limiting server-side con Upstash Redis (3 tiers: strict/write/read)
-- [ ] Redis cache para popular/trending
-- [ ] Webhooks TMDB para contenido nuevo
-- [ ] Panel admin con analytics (graficos, metricas)
-- [ ] CI/CD con GitHub Actions
+
+### 🔴 P1 — Rendimiento + Costos
+- [ ] **Redis cache para popular/trending** — Cachear respuestas TMDB/IGDB en Redis en vez de depender solo de `revalidate: 3600`. Reduce costo de Vercel functions y protege cuotas de APIs externas.
+
+### 🟠 P2 — Estabilidad
+- [ ] **Tests unitarios (Vitest) + E2E (Playwright)** — Sin tests, cada cambio nuevo puede romper funcionalidad existente. Priorizar tests de auth flow, favorites, watchlist, reviews.
+
+### 🟡 P3 — UX
+- [ ] **Página de género dedicada `/genre/[slug]`** — Click en género → ver todo el catálogo filtrado con paginación, independiente de la home.
+- [ ] **Scroll suave entre secciones** — `scroll-behavior: smooth` + enlaces de anclaje en detail-hero (reparto, reseñas, trailers, recomendaciones).
+
+### 🟢 P4 — Automatización
+- [ ] **CI/CD (GitHub Actions)** — Automatizar lint + test + build en cada PR y push a main.
+
+### 🔵 P5 — Features adicionales
+- [ ] **PWA (manifest.json + service worker)** — Instalación como app nativa en mobile/desktop.
+- [ ] **Ranking de usuarios / Leaderboard** — Puntuación por actividad (reseñas, comentarios, contribuciones).
+- [ ] **Panel admin con analytics** — Gráficas de usuarios activos, contenido popular, métricas de engagement.
+- [ ] **Webhooks TMDB** — Actualizaciones automáticas de contenido evitando polling.
 
 ---
 
