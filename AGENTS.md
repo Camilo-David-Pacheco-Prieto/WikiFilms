@@ -12,16 +12,16 @@ WikiFilms es una enciclopedia de entretenimiento web. Consume la API de **TMDB (
 
 | Componente | Tecnología | Versión |
 |-----------|------------|---------|
-| Framework | Next.js (App Router) | 16.2.10 |
+| Framework | Next.js (App Router) | 16.2.12 |
 | Lenguaje | TypeScript | 5.x strict |
-| Estilos | Tailwind CSS | 4.3.2 |
-| UI Kit | shadcn/ui (Base Nova) | latest |
-| ORM | Prisma | 7.8.0 |
+| Estilos | Tailwind CSS | 4.3.3 |
+| UI Kit | shadcn/ui (Base Nova) | 4.15.0 |
+| ORM | Prisma | 7.9.0 |
 | DB | Vercel Postgres (Neon) | via @prisma/adapter-neon |
-| Auth | NextAuth | 5.0.0-beta.31 |
+| Auth | NextAuth | 5.0.0-beta.32 |
 | Paquetería | pnpm | 11.8.0 |
 | Fuentes | Oswald (display) + Inter (body) | Google Fonts |
-| Iconos | lucide-react | - |
+| Iconos | lucide-react | 1.27.0 |
 | IGDB / Twitch | API de videojuegos | v4 |
 
 ---
