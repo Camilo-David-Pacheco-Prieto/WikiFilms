@@ -1,5 +1,6 @@
 import type { IGDBGameDetail, IGDBGameResult, GameResult } from "@/types/igdb";
 import { IGDB_IMAGE_BASE, IGDB_COVER_SIZE, IGDB_SCREENSHOT_SIZE } from "@/types/igdb";
+import { cachedFetch } from "@/lib/cache";
 
 if (!process.env.TWITCH_CLIENT_ID) throw new Error("Missing TWITCH_CLIENT_ID");
 if (!process.env.TWITCH_CLIENT_SECRET) throw new Error("Missing TWITCH_CLIENT_SECRET");
@@ -31,25 +32,29 @@ async function fetchFromIGDB<T>(
   endpoint: string,
   body: string,
 ): Promise<T[]> {
-  const token = await getAccessToken();
+  const cacheKey = `cache:igdb:${endpoint}:${body}`;
 
-  const res = await fetch(`${IGDB_API}/${endpoint}`, {
-    method: "POST",
-    headers: {
-      "Client-ID": TWITCH_CLIENT_ID,
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "text/plain",
-    },
-    body,
-    next: { revalidate: 3600 },
+  return cachedFetch<T[]>(cacheKey, async () => {
+    const token = await getAccessToken();
+
+    const res = await fetch(`${IGDB_API}/${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Client-ID": TWITCH_CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "text/plain",
+      },
+      body,
+      next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`IGDB API error ${res.status}: ${text}`);
+    }
+
+    return res.json() as Promise<T[]>;
   });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`IGDB API error ${res.status}: ${text}`);
-  }
-
-  return res.json() as Promise<T[]>;
 }
 
 function igdbCoverUrl(imageId: string | undefined): string | null {

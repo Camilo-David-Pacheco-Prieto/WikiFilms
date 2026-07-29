@@ -143,10 +143,11 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │       └── card.tsx (shadcn)
 ├── lib/
 │   ├── auth.ts              # NextAuth config + handlers
-│   ├── igdb.ts              # Servicio IGDB con auth Twitch OAuth2 + token cache + endpoints
+│   ├── cache.ts             # Redis cache genérico (cachedFetch con TTL, fallback silencioso)
+│   ├── igdb.ts              # Servicio IGDB con auth Twitch OAuth2 + Redis cache + endpoints
 │   ├── prisma.ts            # Cliente Prisma singleton con adapter Neon
 │   ├── rate-limit.ts        # 3 tiers de rate limiting con Upstash Redis (strict/write/read)
-│   ├── tmdb.ts              # Servicio TMDB con caching + localeToTMDBlang("es")="es-MX" + region CO
+│   ├── tmdb.ts              # Servicio TMDB con Redis cache + localeToTMDBlang("es")="es-MX" + region CO
 │   └── utils.ts             # Utilidades (shadcn)
 ├── types/
 │   ├── igdb.ts              # Tipos IGDBGameResult, IGDBGameDetail, GameResult, constantes de imagen
@@ -280,8 +281,8 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 - **Env var requerida**: `BLOB_READ_WRITE_TOKEN` en Vercel Dashboard → Environment Variables
 
 ### Performance
-- TMDB cacheado 1 hora (`next: { revalidate: 3600 }`)
-- IGDB cacheado 1 hora (`next: { revalidate: 3600 }`)
+- **Redis cache** (`src/lib/cache.ts`): respuestas TMDB/IGDB cacheadas 1 hora en Upstash Redis, con `cachedFetch<T>()`
+- **Doble capa**: Redis cache + `next: { revalidate: 3600 }` en fetch — Redis es el hit primario, Next.js data cache es fallback
 - next/image para pósters TMDB; `<img>` nativo para IGDB (evita 404 de Vercel)
 - Navbar con sesión usando `auth()` de NextAuth
 
@@ -293,6 +294,16 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 - **Colores light**: fondo `#fafafa`, superficies `#ffffff`, texto `#18181b`, borders `#e4e4e7`, accent brand `#e11d48` se mantiene
 
 ---
+
+### Redis Cache — TMDB + IGDB
+
+- **Propósito**: Cachear respuestas de TMDB e IGDB en Redis para reducir llamadas a APIs externas, mejorar velocidad y disminuir costos en Vercel
+- **Archivo**: `src/lib/cache.ts` — función genérica `cachedFetch<T>(key, fetcher, ttl?)`
+- **Flujo**: check Redis → si hit, devuelve; si miss, ejecuta fetcher → almacena en Redis → devuelve
+- **TTL**: 3600s (1 hora) — igual que el `revalidate` anterior
+- **Fallback silencioso**: si Redis no está disponible, continúa con fetch directo sin lanzar error
+- **Keys**: `cache:tmdb:<url>` para TMDB, `cache:igdb:<endpoint>:<body>` para IGDB
+- **Integración**: `src/lib/tmdb.ts` y `src/lib/igdb.ts` envuelven su fetch interno con `cachedFetch`
 
 ### Rate Limiting — Upstash Redis
 
@@ -384,7 +395,7 @@ También se puede ejecutar en Vercel como build command:
 - [x] Rate limiting server-side con Upstash Redis (3 tiers: strict/write/read)
 
 ### 🔴 P1 — Rendimiento + Costos
-- [ ] **Redis cache para popular/trending** — Cachear respuestas TMDB/IGDB en Redis en vez de depender solo de `revalidate: 3600`. Reduce costo de Vercel functions y protege cuotas de APIs externas.
+- [x] **Redis cache para popular/trending** — `src/lib/cache.ts` + integración en TMDB/IGDB. Reduce costo de Vercel functions y protege cuotas de APIs externas.
 
 ### 🟠 P2 — Estabilidad
 - [ ] **Tests unitarios (Vitest) + E2E (Playwright)** — Sin tests, cada cambio nuevo puede romper funcionalidad existente. Priorizar tests de auth flow, favorites, watchlist, reviews.

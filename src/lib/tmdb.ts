@@ -9,6 +9,7 @@ import type {
   TMDBWatchProvidersResponse,
   TMDBVideoResponse,
 } from "@/types/tmdb";
+import { cachedFetch } from "@/lib/cache";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -41,15 +42,19 @@ async function fetchFromTMDB<T>(
     );
   }
 
-  const res = await fetch(url.toString(), {
-    next: { revalidate: 3600 },
+  const cacheKey = `cache:tmdb:${url.toString()}`;
+
+  return cachedFetch<T>(cacheKey, async () => {
+    const res = await fetch(url.toString(), {
+      next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) {
+      throw new Error(`TMDB API error: ${res.status} ${res.statusText}`);
+    }
+
+    return res.json() as Promise<T>;
   });
-
-  if (!res.ok) {
-    throw new Error(`TMDB API error: ${res.status} ${res.statusText}`);
-  }
-
-  return res.json() as Promise<T>;
 }
 
 const GENRE_ID_TO_NAME_ES: Record<number, string> = {
