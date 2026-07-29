@@ -158,6 +158,10 @@
   --shadow-poster: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--color-base);
   color: var(--color-text-primary);

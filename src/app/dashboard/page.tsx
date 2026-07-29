@@ -148,10 +148,10 @@ async function FavoritesList({ tab }: { tab: string }) {
 function FavoritesSkeleton() {
   return (
     <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
-      <div className="h-7 w-48 animate-pulse rounded bg-zinc-800" />
+      <div className="h-7 w-48 animate-pulse rounded bg-muted" />
       <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-zinc-800" />
+          <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-muted" />
         ))}
       </div>
     </div>

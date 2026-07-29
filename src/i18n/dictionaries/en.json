@@ -245,6 +245,10 @@
   "comingSoon.announcementsDesc": "News, updates, and announcements about WikiFilms.",
 
   "api.nameTooShort": "Name too short",
+  "genre.movies": "Movies",
+  "genre.series": "Series",
+  "genre.noContent": "No content available for this genre.",
+  "genre.browseAll": "Browse all genres",
   "api.invalidEmail": "Invalid email",
   "api.usernameTooShort": "Username must be at least 3 characters",
   "api.passwordTooShort": "Password must be at least 6 characters",

@@ -356,3 +356,28 @@ export const GENRE_ORDER_EN = [
   "Horror", "Music", "Mystery", "Romance", "Science Fiction",
   "TV Movie", "Thriller", "War", "Western",
 ];
+
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+const SLUG_TO_NAME = [...GENRE_ORDER_ES, ...GENRE_ORDER_EN].reduce<Record<string, string>>(
+  (acc, name) => {
+    acc[slugify(name)] = name;
+    return acc;
+  },
+  {},
+);
+
+export function genreSlugToName(slug: string): string | undefined {
+  return SLUG_TO_NAME[slug];
+}
+
+export function genreNameToSlug(name: string): string {
+  return slugify(name);
+}

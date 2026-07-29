@@ -113,6 +113,7 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │   ├── watchlist/page.tsx               # Watchlist personal con tabs Movies/Series | Games
 │   ├── notifications/page.tsx           # Historial de notificaciones
 │   ├── coming-soon/page.tsx             # Próximas funcionalidades
+│   ├── genre/[slug]/page.tsx            # Página de género dedicada con tabs Movies/Series + paginación
 │   ├── globals.css                      # Variables CSS + estilos base
 │   ├── layout.tsx                       # Layout raíz + fuentes + Navbar
 │   └── page.tsx                         # Home (populares, sin shuffle)
@@ -397,12 +398,16 @@ También se puede ejecutar en Vercel como build command:
 ### 🔴 P1 — Rendimiento + Costos
 - [x] **Redis cache para popular/trending** — `src/lib/cache.ts` + integración en TMDB/IGDB. Reduce costo de Vercel functions y protege cuotas de APIs externas.
 
-### 🟠 P2 — Estabilidad
-- [ ] **Tests unitarios (Vitest) + E2E (Playwright)** — Sin tests, cada cambio nuevo puede romper funcionalidad existente. Priorizar tests de auth flow, favorites, watchlist, reviews.
+### 🟠 P2 — Estabilidad (pendiente — al final)
+- [ ] **Tests unitarios (Vitest) + E2E (Playwright)** — Sin tests, cada cambio nuevo puede romper funcionalidad existente.
+  - Plan: F2.1 Setup tooling → F2.2 Unit tests lib/ → F2.3 Integration API → F2.4 Component tests → F2.5 E2E Playwright → F2.6 CI workflow
+  - Mock Prisma para unit, componentes críticos solamente (FavoriteButton, WatchlistButton, ReviewSection, auth forms)
+  - ~10h total estimado
 
 ### 🟡 P3 — UX
-- [ ] **Página de género dedicada `/genre/[slug]`** — Click en género → ver todo el catálogo filtrado con paginación, independiente de la home.
-- [ ] **Scroll suave entre secciones** — `scroll-behavior: smooth` + enlaces de anclaje en detail-hero (reparto, reseñas, trailers, recomendaciones).
+- [x] **Página de género dedicada `/genre/[slug]`** — Server component con tabs Movies/Series, pagination, i18n. GenreFilter links ahora apuntan a `/genre/{slug}`.
+- [x] **Scroll suave entre secciones** — `scroll-behavior: smooth` en `globals.css`.
+- [x] **Contraste modo claro** — 21 instancias de `bg-zinc-800`/`bg-zinc-700` reemplazadas por `bg-muted`/`bg-muted/80` en skeletons, dropdowns, paginación.
 
 ### 🟢 P4 — Automatización
 - [ ] **CI/CD (GitHub Actions)** — Automatizar lint + test + build en cada PR y push a main.

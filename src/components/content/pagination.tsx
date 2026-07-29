@@ -43,7 +43,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
               key={page}
               onClick={() => goToPage(page)}
               data-active={page === currentPage}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-sm transition-colors data-[active=true]:bg-accent-brand data-[active=true]:text-white text-text-secondary hover:bg-zinc-800 active:scale-95 active:bg-zinc-700"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-sm transition-colors data-[active=true]:bg-accent-brand data-[active=true]:text-white text-text-secondary hover:bg-muted active:scale-95 active:bg-muted/80"
             >
               {page}
             </button>

@@ -137,21 +137,21 @@ async function WatchlistContent({ tab }: { tab: string }) {
 function WatchlistSkeleton() {
   return (
     <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
-      <div className="h-7 w-36 animate-pulse rounded bg-zinc-800" />
+      <div className="h-7 w-36 animate-pulse rounded bg-muted" />
       <div className="mt-8 space-y-6">
         <div>
-          <div className="mb-2 h-4 w-40 animate-pulse rounded bg-zinc-800" />
+          <div className="mb-2 h-4 w-40 animate-pulse rounded bg-muted" />
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-zinc-800" />
+              <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
         </div>
         <div>
-          <div className="mb-2 h-4 w-40 animate-pulse rounded bg-zinc-800" />
+          <div className="mb-2 h-4 w-40 animate-pulse rounded bg-muted" />
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-zinc-800" />
+              <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
         </div>
