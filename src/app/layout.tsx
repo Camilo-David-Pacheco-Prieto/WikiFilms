@@ -3,6 +3,7 @@ import { Inter, Oswald } from "next/font/google";
 import Navbar from "@/components/content/navbar";
 import Footer from "@/components/content/footer";
 import { Providers } from "@/components/providers";
+import { ServiceWorkerRegister } from "@/components/content/sw-register";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 import "./globals.css";
@@ -24,6 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: dict["home.title"],
     description: dict["home.subtitle"],
     icons: { icon: "/favicon.ico" },
+    manifest: "/manifest.json",
   };
 }
 
@@ -45,6 +47,7 @@ export default async function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <ServiceWorkerRegister />
         </Providers>
       </body>
     </html>

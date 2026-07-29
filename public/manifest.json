@@ -1,0 +1,26 @@
+{
+  "name": "WikiFilms — Enciclopedia de Cine y Series",
+  "short_name": "WikiFilms",
+  "description": "Tu enciclopedia cinematográfica personal. Explora películas, series y videojuegos.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "orientation": "portrait-primary",
+  "categories": ["entertainment", "movies", "games"],
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "screenshots": []
+}
