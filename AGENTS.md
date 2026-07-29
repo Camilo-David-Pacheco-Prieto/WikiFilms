@@ -103,7 +103,9 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │   │   │   └── upcoming/route.ts        # API próximos lanzamientos
 │   │   ├── blob/route.ts                # Proxy blobs privados (get + auth)
 │   │   ├── upload-avatar/route.ts       # Upload avatar a Vercel Blob (private)
-│   │   └── watchlist/route.ts           # CRUD watchlist (userId_contentId_type)
+│   │   ├── watchlist/route.ts           # CRUD watchlist (userId_contentId_type)
+│   │   └── webhook/
+│   │       └── tmdb/route.ts            # Webhook placeholder (POST + GET)
 │   ├── dashboard/page.tsx               # Perfil + favoritos con tabs Movies/Series | Games
 │   ├── game/[id]/page.tsx               # Detalle juego (hero trailer + summary + storyline + screenshots + artworks + videos + fav + watchlist + reviews)
 │   ├── games/page.tsx                   # Home juegos (hero slider + populares + próximos)
@@ -350,6 +352,24 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 - **Paquete**: `recharts` (10.3.1, ~55KB gzipped) — solo se carga lazy en `/admin`
 - **No requiere migración Prisma** — todo usa modelos existentes
 
+### PWA — Progressive Web App
+
+- **Manifest**: `public/manifest.json` — `display: standalone`, theme/background color `#09090b`, ícono SVG maskable
+- **Service Worker**: `public/sw.js` — cache-first para scripts/styles/fonts/images, network-first para navegación con fallback a `/`, skipWaiting + clients.claim para activación inmediata
+- **Registro**: `src/components/content/sw-register.tsx` — client component con `useEffect` que llama `navigator.serviceWorker.register("/sw.js")`
+- **Íconos**: `public/icons/icon.svg` — SVG vectorial con "W" rojo sobre fondo dark, escalable a cualquier resolución
+- **Notas**: Solo funcional en producción (HTTPS requerido). Service worker ignora rutas `/api/*`. Sin paquetes externos
+
+### Webhooks TMDB — Placeholder
+
+- **Propósito**: Endpoint receptor de webhooks en `/api/webhook/tmdb` para actualización automática de contenido
+- **Realidad**: TMDB **no ofrece webhooks nativos** — solo endpoint `changes` para polling. Este endpoint es un placeholder estructural
+- **POST handler**: Valida `x-webhook-secret` header contra `WEBHOOK_SECRET` env var. Recibe `{ contentId, cacheKey?, action? }`. Invalida cache Redis por contentId o cacheKey específico
+- **GET handler**: Devuelve documentación del endpoint para discovery
+- **Proxy**: Exento de rate limiting (bypass en `proxy.ts` línea 28)
+- **Uso futuro**: Integrable con servicios externos como Watcher, webhook.site, o proxies TMDB. También utilizable con Vercel Cron Jobs para polling programado
+- **No requiere migración Prisma** — no almacena eventos en DB
+
 ### Leaderboard / Ranking
 
 - **Propósito**: Página `/leaderboard` con top 50 usuarios más activos de la comunidad, visible para usuarios logueados
@@ -490,7 +510,7 @@ jobs:
 ### 🟢 P4 — Automatización
 - [x] **CI/CD (GitHub Actions)** — `.github/workflows/ci.yml`: `install → lint → prisma generate → next build`. Node 20 LTS + pnpm 11. Sin secrets requeridos.
 
-### 🔵 P5 — Features adicionales (~10-12h total)
+### 🔵 P5 — Features adicionales ✅
 
 **Orden sugerido de implementación:**
 
@@ -506,14 +526,18 @@ jobs:
   - Link en navbar para usuarios logueados
   - i18n keys (es/en)
 
-- [ ] **PWA** (~4h) — `public/manifest.json` con metadata PWA. `public/sw.js` cache-first para assets estáticos. Registro via client component. Sin paquetes externos.
-  - Archivos: `public/manifest.json`, `public/sw.js`, `src/components/content/sw-register.tsx`
-  - Solo funcional en producción (HTTPS requerido para service worker)
+- [x] **PWA** (~4h) — `public/manifest.json` con metadata PWA (name, icons SVG, theme_color). `public/sw.js` cache-first para assets estáticos. Registro via `ServiceWorkerRegister` client component en layout raíz.
+  - `public/manifest.json` — standalone display, theme/background #09090b
+  - `public/icons/icon.svg` — ícono SVG maskable
+  - `public/sw.js` — cache-first (scripts/styles/fonts/images) + network-first navigate con fallback a /
+  - `src/components/content/sw-register.tsx` — useEffect register en client
+  - `src/app/layout.tsx` — metadata manifest link + <ServiceWorkerRegister />
 
-- [ ] **Webhooks TMDB** (~2h) — Ruta `/api/webhook/tmdb` como placeholder estructural. TMDB no ofrece webhooks nativos (solo endpoint `changes` para polling). La ruta valida token secreto e invalida cache Redis.
-  - `src/app/api/webhook/tmdb/route.ts` — POST handler
+- [x] **Webhooks TMDB** (~2h) — Ruta `/api/webhook/tmdb` como placeholder. TMDB no ofrece webhooks nativos (solo endpoint `changes` para polling). La ruta valida token secreto e invalida cache Redis. Bypass rate limiting en proxy.
+  - `src/app/api/webhook/tmdb/route.ts` — POST handler con validación x-webhook-secret + invalidación Redis
   - `WEBHOOK_SECRET` en `.env.example`
-  - Documentación de que es placeholder para integración futura
+  - Proxy bypass en `src/proxy.ts` (línea 28)
+  - GET reveal endpoint con documentación del placeholder
 
 ---
 

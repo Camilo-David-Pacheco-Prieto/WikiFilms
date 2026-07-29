@@ -19,12 +19,13 @@ export async function proxy(request: NextRequest) {
 
   // ── Rate limiting ──────────────────────────────────────
   if (pathname.startsWith("/api/")) {
-    // Bypass: rutas internas de NextAuth y SSE
+    // Bypass: rutas internas de NextAuth, SSE y webhooks externos
     if (
       pathname === "/api/auth/session" ||
       pathname === "/api/auth/csrf" ||
       pathname.startsWith("/api/auth/callback") ||
-      pathname === "/api/notifications/stream"
+      pathname === "/api/notifications/stream" ||
+      pathname.startsWith("/api/webhook")
     ) {
       return NextResponse.next();
     }
