@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { getUserProfile } from "./actions";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { SafeAvatar } from "@/components/ui/safe-avatar";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -41,14 +41,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
     <main className="mx-auto max-w-3xl px-4 py-8">
       <div className="rounded-lg border border-border-subtle bg-surface p-6 md:p-8">
         <div className="flex items-center gap-5">
-          <Avatar className="size-16">
-            {profile.avatarUrl ? (
-              <AvatarImage src={profile.avatarUrl} alt={profile.name} />
-            ) : null}
-            <AvatarFallback className="text-lg">
-              {profile.name.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <SafeAvatar src={profile.avatarUrl} name={profile.name} className="size-16" />
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-3">

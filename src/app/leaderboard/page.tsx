@@ -2,7 +2,7 @@ import { getLeaderboard } from "./actions";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 import Link from "next/link";
-import { AvatarRanking } from "./avatar-ranking";
+import { SafeAvatar } from "@/components/ui/safe-avatar";
 
 export async function generateMetadata() {
   const locale = await getServerLocale();
@@ -40,7 +40,7 @@ export default async function LeaderboardPage() {
             </span>
 
             <Link href={`/user/${entry.id}`} className="flex items-center gap-3 min-w-0 flex-1">
-              <AvatarRanking src={entry.avatarUrl} name={entry.name} />
+              <SafeAvatar src={entry.avatarUrl} name={entry.name} />
 
               <div className="min-w-0">
                 <p className="truncate font-medium text-white transition-colors hover:text-accent-brand">

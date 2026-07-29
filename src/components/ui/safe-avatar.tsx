@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 
-export function AvatarRanking({ src, name }: { src: string | null; name: string }) {
+export function SafeAvatar({ src, name, className }: { src: string | null; name: string; className?: string }) {
   const [error, setError] = useState(false);
   const initial = name.charAt(0).toUpperCase();
 
   return (
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted">
+    <div className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted ${className ?? "h-9 w-9"}`}>
       {src && !error ? (
         <img
           src={src}
