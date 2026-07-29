@@ -452,11 +452,28 @@ jobs:
 ### 🟢 P4 — Automatización
 - [x] **CI/CD (GitHub Actions)** — `.github/workflows/ci.yml`: `install → lint → prisma generate → next build`. Node 20 LTS + pnpm 11. Sin secrets requeridos.
 
-### 🔵 P5 — Features adicionales
-- [ ] **PWA (manifest.json + service worker)** — Instalación como app nativa en mobile/desktop.
-- [ ] **Ranking de usuarios / Leaderboard** — Puntuación por actividad (reseñas, comentarios, contribuciones).
-- [ ] **Panel admin con analytics** — Gráficas de usuarios activos, contenido popular, métricas de engagement.
-- [ ] **Webhooks TMDB** — Actualizaciones automáticas de contenido evitando polling.
+### 🔵 P5 — Features adicionales (~10-12h total)
+
+**Orden sugerido de implementación:**
+
+- [ ] **Admin analytics** (~2h) — Dashboard en `/admin` con cards de métricas (usuarios, reviews, favoritos, contenido popular). Cache en Redis TTL 5min. Sin gráficos (solo números + tablas). Mantener `/admin/users` como subpágina con navegación por tabs.
+  - `src/app/admin/page.tsx` — dashboard con stats
+  - `src/app/admin/layout.tsx` — navegación Admin/Users
+  - `src/app/api/admin/stats/route.ts` — endpoint de métricas agregadas
+
+- [ ] **Leaderboard / Ranking** (~4h) — Página `/leaderboard` con top 50 usuarios por actividad. Sin migración Prisma (usa `groupBy` y agregaciones sobre datos existentes: reviews, favoritos, reacciones). Cache en Redis TTL 5min.
+  - `src/app/api/leaderboard/route.ts` — agregación + cache
+  - `src/app/leaderboard/page.tsx` — tabla con avatar, username, score, stats
+  - i18n keys nuevas
+
+- [ ] **PWA** (~4h) — `public/manifest.json` con metadata PWA. `public/sw.js` cache-first para assets estáticos. Registro via client component. Sin paquetes externos.
+  - Archivos: `public/manifest.json`, `public/sw.js`, `src/components/content/sw-register.tsx`
+  - Solo funcional en producción (HTTPS requerido para service worker)
+
+- [ ] **Webhooks TMDB** (~2h) — Ruta `/api/webhook/tmdb` como placeholder estructural. TMDB no ofrece webhooks nativos (solo endpoint `changes` para polling). La ruta valida token secreto e invalida cache Redis.
+  - `src/app/api/webhook/tmdb/route.ts` — POST handler
+  - `WEBHOOK_SECRET` en `.env.example`
+  - Documentación de que es placeholder para integración futura
 
 ---
 
