@@ -2,6 +2,7 @@ import { getLeaderboard } from "./actions";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import Link from "next/link";
 
 export async function generateMetadata() {
   const locale = await getServerLocale();
@@ -38,21 +39,23 @@ export default async function LeaderboardPage() {
               {i + 1}
             </span>
 
-            <Avatar className="h-8 w-8 shrink-0">
-              {entry.avatarUrl ? (
-                <AvatarImage src={entry.avatarUrl} alt={entry.name} />
-              ) : null}
-              <AvatarFallback className="text-xs">
-                {entry.name.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/user/${entry.id}`} className="flex items-center gap-4 min-w-0 flex-1">
+              <Avatar>
+                {entry.avatarUrl ? (
+                  <AvatarImage src={entry.avatarUrl} alt={entry.name} />
+                ) : null}
+                <AvatarFallback>{entry.name.charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
 
-            <div className="min-w-0 flex-1">
-              <p className="truncate font-medium text-white">{entry.name}</p>
-              <p className="truncate text-xs text-text-secondary">
-                @{entry.username}
-              </p>
-            </div>
+              <div className="min-w-0">
+                <p className="truncate font-medium text-white transition-colors hover:text-accent-brand">
+                  {entry.name}
+                </p>
+                <p className="truncate text-xs text-text-secondary">
+                  @{entry.username}
+                </p>
+              </div>
+            </Link>
 
             <div className="hidden items-center gap-4 text-xs text-text-secondary sm:flex">
               <span title={dict["leaderboard.reviews"]}>

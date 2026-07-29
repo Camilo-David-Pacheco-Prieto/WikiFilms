@@ -253,6 +253,19 @@
 
   "nav.leaderboard": "Ranking",
 
+  "user.notFound": "Usuario no encontrado",
+  "user.memberSince": "Miembro desde",
+  "user.settings": "Configuracion",
+  "user.recentReviews": "Resenas recientes",
+  "user.noReviews": "Este usuario no ha escrito resenas aun.",
+
+  "settings.deleteAccount": "Eliminar cuenta",
+  "settings.deleteWarning": "Esta accion es permanente. Se eliminaran todos tus datos: resenas, favoritos, comentarios y lista de seguimiento.",
+  "settings.deleteButton": "Eliminar mi cuenta",
+  "settings.confirmDeleteLabel": "Escribe ELIMINAR para confirmar",
+  "settings.confirmDelete": "Eliminar cuenta permanentemente",
+  "settings.deleting": "Eliminando...",
+
   "notFound.title": "Pagina no encontrada",
   "notFound.heading": "Pagina no encontrada",
   "notFound.description": "La pagina que buscas no existe o fue movida.",

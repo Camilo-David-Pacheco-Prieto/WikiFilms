@@ -253,6 +253,19 @@
 
   "nav.leaderboard": "Ranking",
 
+  "user.notFound": "User not found",
+  "user.memberSince": "Member since",
+  "user.settings": "Settings",
+  "user.recentReviews": "Recent reviews",
+  "user.noReviews": "This user hasn't written any reviews yet.",
+
+  "settings.deleteAccount": "Delete account",
+  "settings.deleteWarning": "This action is permanent. All your data will be deleted: reviews, favorites, comments, and watchlist.",
+  "settings.deleteButton": "Delete my account",
+  "settings.confirmDeleteLabel": "Type DELETE to confirm",
+  "settings.confirmDelete": "Permanently delete account",
+  "settings.deleting": "Deleting...",
+
   "notFound.title": "Page not found",
   "notFound.heading": "Page not found",
   "notFound.description": "The page you are looking for does not exist or has been moved.",

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { SettingsForm } from "@/components/auth/settings-form";
+import { DeleteAccountSection } from "@/components/auth/delete-account-section";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 
@@ -27,6 +28,7 @@ export default async function SettingsPage() {
           {dict["auth.settingsHeading"]}
         </h1>
         <SettingsForm user={{ id: session.user.id, name: session.user.name, email: session.user.email, username: (session.user as any).username, avatarUrl: (session.user as any).avatarUrl }} />
+        <DeleteAccountSection />
       </div>
     </main>
   );

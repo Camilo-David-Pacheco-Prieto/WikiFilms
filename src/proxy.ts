@@ -66,9 +66,17 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // ── Auth guard: leaderboard + user profiles ────────────
+  if (pathname === "/leaderboard" || pathname.startsWith("/leaderboard") || pathname.startsWith("/user")) {
+    const token = await getToken({ req: request, secret: process.env.AUTH_SECRET, secureCookie: isSecure });
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/:path*", "/games/:path*", "/game/:path*"],
+  matcher: ["/admin/:path*", "/api/:path*", "/games/:path*", "/game/:path*", "/leaderboard", "/user/:path*"],
 };
