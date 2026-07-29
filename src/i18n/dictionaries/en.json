@@ -243,6 +243,16 @@
   "admin.chartContentType": "Content by type",
   "admin.contentCount": "items",
 
+  "leaderboard.title": "Leaderboard \u2014 WikiFilms",
+  "leaderboard.heading": "User Leaderboard",
+  "leaderboard.description": "The top 50 most active community members. Score based on reviews, favorites, comments, and reactions received.",
+  "leaderboard.noData": "No data yet. Be the first to participate.",
+  "leaderboard.reviews": "Reviews",
+  "leaderboard.favorites": "Favorites",
+  "leaderboard.comments": "Comments",
+
+  "nav.leaderboard": "Ranking",
+
   "notFound.title": "Page not found",
   "notFound.heading": "Page not found",
   "notFound.description": "The page you are looking for does not exist or has been moved.",

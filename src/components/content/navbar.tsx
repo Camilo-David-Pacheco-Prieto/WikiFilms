@@ -37,6 +37,7 @@ export default async function Navbar() {
                 <NavLink href="/games">{dict["nav.games"]}</NavLink>
                 <NavLink href="/watchlist">{dict["nav.watchlist"]}</NavLink>
                 <NavLink href="/coming-soon">{dict["nav.comingSoon"]}</NavLink>
+                <NavLink href="/leaderboard">{dict["nav.leaderboard"]}</NavLink>
                 {(user as any).role === "ADMIN" && (
                   <NavLink href="/admin">{dict["nav.admin"]}</NavLink>
                 )}

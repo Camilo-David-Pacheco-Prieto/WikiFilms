@@ -117,6 +117,9 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │   ├── notifications/page.tsx           # Historial de notificaciones
 │   ├── coming-soon/page.tsx             # Próximas funcionalidades
 │   ├── genre/[slug]/page.tsx            # Página de género dedicada con tabs Movies/Series + paginación
+│   ├── leaderboard/
+│   │   ├── actions.ts                   # getLeaderboard() con Redis cache
+│   │   └── page.tsx                     # Ranking top 50 usuarios
 │   ├── globals.css                      # Variables CSS + estilos base
 │   ├── layout.tsx                       # Layout raíz + fuentes + Navbar
 │   └── page.tsx                         # Home (populares, sin shuffle)
@@ -349,12 +352,12 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 
 ```bash
 pnpm dev           # Iniciar servidor desarrollo (localhost:3000)
-pnpm build         # Compilar producción
+pnpm build         # Compilar producción (prisma generate + next build)
 pnpm start         # Iniciar servidor producción
 pnpm lint          # ESLint
+pnpm db:deploy     # Ejecutar migraciones pendientes en DB
 pnpm prisma generate   # Generar cliente Prisma
 pnpm prisma migrate dev  # Migrar DB local
-pnpm prisma migrate deploy # Migrar DB producción (Vercel)
 ```
 
 ---

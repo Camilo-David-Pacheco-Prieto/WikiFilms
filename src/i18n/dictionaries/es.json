@@ -243,6 +243,16 @@
   "admin.chartContentType": "Contenido por tipo",
   "admin.contentCount": "contenidos",
 
+  "leaderboard.title": "Ranking \u2014 WikiFilms",
+  "leaderboard.heading": "Ranking de usuarios",
+  "leaderboard.description": "Los 50 usuarios mas activos de la comunidad. Puntua por resenas, favoritos, comentarios y reacciones recibidas.",
+  "leaderboard.noData": "Aun no hay datos. Se el primero en participar.",
+  "leaderboard.reviews": "Resenas",
+  "leaderboard.favorites": "Favoritos",
+  "leaderboard.comments": "Comentarios",
+
+  "nav.leaderboard": "Ranking",
+
   "notFound.title": "Pagina no encontrada",
   "notFound.heading": "Pagina no encontrada",
   "notFound.description": "La pagina que buscas no existe o fue movida.",
