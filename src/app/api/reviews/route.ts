@@ -53,6 +53,8 @@ export async function GET(req: Request) {
       id: r.id,
       userId: r.userId,
       contentId: r.contentId,
+      title: r.title,
+      posterUrl: r.posterUrl,
       rating: r.rating,
       comment: r.comment,
       createdAt: r.createdAt,
@@ -78,9 +80,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { contentId, contentType, rating, comment } = await req.json();
+    const { contentId, contentType, title, posterUrl, rating, comment } = await req.json();
 
-    if (!contentId || typeof contentId !== "number" || !contentType || !rating || rating < 1 || rating > 10) {
+    if (!contentId || typeof contentId !== "number" || !contentType || !title || !rating || rating < 1 || rating > 10) {
       return NextResponse.json({ error: "Invalid data" }, { status: 400 });
     }
 
@@ -92,8 +94,8 @@ export async function POST(req: Request) {
       where: {
         userId_contentId_contentType: { userId: session.user.id, contentId, contentType },
       },
-      update: { rating, comment },
-      create: { userId: session.user.id, contentId, contentType, rating, comment },
+      update: { rating, comment, title, posterUrl },
+      create: { userId: session.user.id, contentId, contentType, title, posterUrl, rating, comment },
     });
 
     return NextResponse.json(review);

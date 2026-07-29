@@ -42,6 +42,8 @@ export default async function GameDetailPage({ params }: Props) {
     return `${IGDB_IMAGE_BASE}/t_${size}/${imageId}.jpg`;
   }
 
+  const gamePosterUrl = game.cover?.image_id ? igdbUrl(IGDB_COVER_SIZE, game.cover.image_id) : null;
+
   return (
     <main>
       <GameDetailHero game={game} />
@@ -51,19 +53,19 @@ export default async function GameDetailPage({ params }: Props) {
           <FavoriteButton
             contentId={game.id}
             title={game.name}
-            posterUrl={game.cover?.image_id ? `${IGDB_IMAGE_BASE}/t_${IGDB_COVER_SIZE}/${game.cover.image_id}.jpg` : null}
+            posterUrl={gamePosterUrl}
             type="game"
           />
           <WatchlistButton
             contentId={game.id}
             title={game.name}
-            posterUrl={game.cover?.image_id ? `${IGDB_IMAGE_BASE}/t_${IGDB_COVER_SIZE}/${game.cover.image_id}.jpg` : null}
+            posterUrl={gamePosterUrl}
             type="game"
           />
         </div>
       </section>
 
-      <ReviewSection contentId={game.id} contentType="game" contentTitle={game.name} />
+      <ReviewSection contentId={game.id} contentType="game" contentTitle={game.name} posterUrl={gamePosterUrl} />
 
       <div className="mx-auto max-w-7xl space-y-12 px-4 py-12 lg:px-12">
         {game.summary && (

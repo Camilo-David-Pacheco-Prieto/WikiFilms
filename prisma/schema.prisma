@@ -73,6 +73,8 @@ model Review {
   userId       String
   contentId    Int
   contentType  String           @default("movie")
+  title      String   @default("")
+  posterUrl  String?
   rating       Int
   comment      String?
   createdAt    DateTime         @default(now())

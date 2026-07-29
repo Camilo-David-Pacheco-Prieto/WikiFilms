@@ -1,8 +1,8 @@
 import { getLeaderboard } from "./actions";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
+import { AvatarRanking } from "./avatar-ranking";
 
 export async function generateMetadata() {
   const locale = await getServerLocale();
@@ -39,13 +39,8 @@ export default async function LeaderboardPage() {
               {i + 1}
             </span>
 
-            <Link href={`/user/${entry.id}`} className="flex items-center gap-4 min-w-0 flex-1">
-              <Avatar>
-                {entry.avatarUrl ? (
-                  <AvatarImage src={entry.avatarUrl} alt={entry.name} />
-                ) : null}
-                <AvatarFallback>{entry.name.charAt(0).toUpperCase()}</AvatarFallback>
-              </Avatar>
+            <Link href={`/user/${entry.id}`} className="flex items-center gap-3 min-w-0 flex-1">
+              <AvatarRanking src={entry.avatarUrl} name={entry.name} />
 
               <div className="min-w-0">
                 <p className="truncate font-medium text-white transition-colors hover:text-accent-brand">

@@ -16,6 +16,8 @@ export interface UserProfile {
     id: string;
     contentId: number;
     contentType: string;
+    title: string;
+    posterUrl: string | null;
     rating: number;
     comment: string | null;
     createdAt: Date;
@@ -51,6 +53,8 @@ export async function getUserProfile(id: string): Promise<UserProfile | null> {
             id: true,
             contentId: true,
             contentType: true,
+            title: true,
+            posterUrl: true,
             rating: true,
             comment: true,
             createdAt: true,

@@ -9,12 +9,12 @@ import { getDictionary } from "@/i18n/dictionary";
 import "./globals.css";
 
 const inter = Inter({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-body",
 });
 
 const oswald = Oswald({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-display",
 });
 

@@ -104,28 +104,45 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
               key={review.id}
               className="rounded-lg border border-border-subtle bg-surface px-5 py-4"
             >
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-text-secondary">
-                  {contentTypeLabel(review.contentType)}
-                </p>
-                <div className="flex items-center gap-1">
-                  <span className="text-sm font-bold text-yellow-400">
-                    {review.rating}
-                  </span>
-                  <span className="text-xs text-yellow-400/60">/10</span>
+              <div className="flex items-start gap-3">
+                {review.posterUrl && (
+                  <div className="shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={review.posterUrl}
+                      alt={review.title}
+                      className="h-16 w-11 rounded object-cover"
+                    />
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="truncate text-sm font-medium text-white">
+                      {review.title}
+                    </p>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <span className="text-sm font-bold text-yellow-400">
+                        {review.rating}
+                      </span>
+                      <span className="text-xs text-yellow-400/60">/10</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-text-secondary">
+                    {contentTypeLabel(review.contentType)}
+                  </p>
+                  {review.comment && (
+                    <p className="mt-2 text-sm leading-relaxed text-text-primary line-clamp-3">
+                      {review.comment}
+                    </p>
+                  )}
+                  <p className="mt-2 text-xs text-text-secondary">
+                    {new Date(review.createdAt).toLocaleDateString(
+                      locale === "en" ? "en-US" : "es-ES",
+                      { year: "numeric", month: "short", day: "numeric" },
+                    )}
+                  </p>
                 </div>
               </div>
-              {review.comment && (
-                <p className="mt-2 text-sm leading-relaxed text-text-primary line-clamp-3">
-                  {review.comment}
-                </p>
-              )}
-              <p className="mt-2 text-xs text-text-secondary">
-                {new Date(review.createdAt).toLocaleDateString(
-                  locale === "en" ? "en-US" : "es-ES",
-                  { year: "numeric", month: "short", day: "numeric" },
-                )}
-              </p>
             </div>
           ))}
         </div>

@@ -8,6 +8,8 @@ import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
 interface Review {
   id: string;
   userId: string;
+  title: string;
+  posterUrl: string | null;
   rating: number;
   comment: string | null;
   createdAt: string;
@@ -41,6 +43,7 @@ interface ReviewSectionProps {
   contentId: number;
   contentType: "movie" | "tv" | "game";
   contentTitle?: string;
+  posterUrl?: string | null;
 }
 
 type SortBy = "new" | "old" | "top";
@@ -514,7 +517,7 @@ function CommentSection({ reviewId, contentType, contentTitle }: { reviewId: str
   );
 }
 
-export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSectionProps) {
+export function ReviewSection({ contentId, contentType, contentTitle, posterUrl }: ReviewSectionProps) {
   const { data: session } = useSession();
   const t = useTranslate();
   const { locale } = useLanguage();
@@ -580,7 +583,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contentId, contentType, rating, comment: comment || null }),
+        body: JSON.stringify({ contentId, contentType, title: contentTitle, posterUrl, rating, comment: comment || null }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -590,7 +593,7 @@ export function ReviewSection({ contentId, contentType, contentTitle }: ReviewSe
             (r) => r.user.name !== session?.user?.name,
           );
           return [
-            { ...data, user: { id: session?.user?.id ?? "", name: session?.user?.name ?? "" }, likes: 0, dislikes: 0, commentCount: 0, myReaction: null },
+            { ...data, title: contentTitle ?? "", posterUrl: posterUrl ?? null, user: { id: session?.user?.id ?? "", name: session?.user?.name ?? "" }, likes: 0, dislikes: 0, commentCount: 0, myReaction: null },
             ...filtered,
           ];
         });
