@@ -7,7 +7,7 @@ import { getDictionary } from "@/i18n/dictionary";
 export async function generateMetadata() {
   const locale = await getServerLocale();
   const dict = await getDictionary(locale);
-  return { title: dict["admin.title"] };
+  return { title: dict["admin.usersTitle"] };
 }
 
 export default async function AdminUsersPage() {
