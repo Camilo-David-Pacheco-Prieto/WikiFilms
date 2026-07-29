@@ -71,6 +71,9 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │   │   ├── login/page.tsx               # Login page
 │   │   └── register/page.tsx            # Register page
 │   ├── admin/
+│   │   ├── actions.ts                   # getAdminStats() con Redis cache
+│   │   ├── layout.tsx                   # Tabs navegación Statistics | Users
+│   │   ├── page.tsx                     # Dashboard analytics (solo ADMIN)
 │   │   └── users/
 │   │       ├── actions.ts               # Server Actions CRUD
 │   │       └── page.tsx                 # Panel admin (solo ADMIN)
@@ -118,6 +121,8 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 │   ├── layout.tsx                       # Layout raíz + fuentes + Navbar
 │   └── page.tsx                         # Home (populares, sin shuffle)
 ├── components/
+│   ├── admin/
+│   │   └── stats-chart.tsx              # Graficos recharts (BarChart + PieChart)
 │   ├── auth/
 │   │   ├── login-form.tsx               # Form login
 │   │   ├── register-form.tsx            # Form register
@@ -328,6 +333,20 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 - **Analytics**: Habilitados (`analytics: true`) — visibles en dashboard de Upstash
 - **Env vars requeridas en Vercel**: Production + Preview (Development usa `.env.local`)\
 
+### Admin Dashboard — Analytics
+
+- **Propósito**: Panel de administración con métricas del sitio en `/admin` (accesible solo para usuarios ADMIN)
+- **Layout**: `src/app/admin/layout.tsx` — sticky tabs `Statistics | Users` debajo del navbar principal
+- **Dashboard**: `src/app/admin/page.tsx` — cards numéricas (total usuarios, nuevos 30d, reseñas, favoritos) + tablas de contenido popular y usuarios activos
+- **Gráficos**: `src/components/admin/stats-chart.tsx` — client component con recharts:
+  - BarChart: reseñas por mes (últimos 12 meses)
+  - PieChart: distribución de contenido por tipo (movie/tv/game)
+- **Caché**: `admin:stats` en Redis con TTL 5 min via `cachedFetch`
+- **Queries**: 8 queries Prisma en paralelo (`Promise.all`): counts, `groupBy` (favoritos, reviews, contentType), `aggregate` (avg rating). El server component llama `getAdminStats()` directamente sin API route intermedia
+- **Navbar**: link "Admin" visible solo para role ADMIN, junto a los otros links de navegación
+- **Paquete**: `recharts` (10.3.1, ~55KB gzipped) — solo se carga lazy en `/admin`
+- **No requiere migración Prisma** — todo usa modelos existentes
+
 ```bash
 pnpm dev           # Iniciar servidor desarrollo (localhost:3000)
 pnpm build         # Compilar producción
@@ -456,10 +475,11 @@ jobs:
 
 **Orden sugerido de implementación:**
 
-- [ ] **Admin analytics** (~2h) — Dashboard en `/admin` con cards de métricas (usuarios, reviews, favoritos, contenido popular). Cache en Redis TTL 5min. Sin gráficos (solo números + tablas). Mantener `/admin/users` como subpágina con navegación por tabs.
-  - `src/app/admin/page.tsx` — dashboard con stats
-  - `src/app/admin/layout.tsx` — navegación Admin/Users
-  - `src/app/api/admin/stats/route.ts` — endpoint de métricas agregadas
+- [x] **Admin analytics** (~2h) — Dashboard en `/admin` con 4 cards métricas, 2 gráficos recharts (reseñas/mes + distribución por tipo), top contenido y usuarios activos. Cache Redis TTL 5min. Link Admin en navbar para ADMIN role.
+  - `src/app/admin/actions.ts` — `getAdminStats()` con Redis cache
+  - `src/app/admin/layout.tsx` — tabs navegación Statistics | Users
+  - `src/app/admin/page.tsx` — dashboard con stats + gráficos + tablas
+  - `src/components/admin/stats-chart.tsx` — BarChart + PieChart client
 
 - [ ] **Leaderboard / Ranking** (~4h) — Página `/leaderboard` con top 50 usuarios por actividad. Sin migración Prisma (usa `groupBy` y agregaciones sobre datos existentes: reviews, favoritos, reacciones). Cache en Redis TTL 5min.
   - `src/app/api/leaderboard/route.ts` — agregación + cache
