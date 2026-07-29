@@ -88,10 +88,10 @@ export default async function LeaderboardPage() {
       </div>
 
       <h2 className="mb-4 mt-12 font-display text-2xl font-bold uppercase text-white">
-        {dict["leaderboard.contentHeading"] ?? "Contenido más popular"}
+        {dict["leaderboard.contentHeading"]}
       </h2>
       <p className="mb-6 text-sm text-text-secondary">
-        {dict["leaderboard.contentDescription"] ?? "Los títulos más favoritados por la comunidad"}
+        {dict["leaderboard.contentDescription"]}
       </p>
 
       <div className="space-y-2">
