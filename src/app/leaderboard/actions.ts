@@ -84,7 +84,7 @@ export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
           id,
           name: u?.name ?? "Unknown",
           username: u?.username ?? "unknown",
-          avatarUrl: u?.avatarUrl ?? null,
+          avatarUrl: u?.avatarUrl ? `/api/blob?pathname=${encodeURIComponent(u.avatarUrl)}` : null,
           score,
           reviewCount,
           favoriteCount,
