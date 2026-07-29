@@ -153,7 +153,10 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 ├── types/
 │   ├── igdb.ts              # Tipos IGDBGameResult, IGDBGameDetail, GameResult, constantes de imagen
 │   └── tmdb.ts              # Tipos TMDB (incluye iso_639_1 en TMDBVideoResponse, MediaType="game")
-└── proxy.ts                 # Reemplaza middleware.ts: rate limit + auth rutas admin/games + jwtDecrypt via getToken()
+├── proxy.ts                 # Reemplaza middleware.ts: rate limit + auth rutas admin/games + jwtDecrypt via getToken()
+└── .github/
+    └── workflows/
+        └── ci.yml           # GitHub Actions: lint → prisma generate → next build (Node 20 LTS, pnpm 11)
 ```
 
 ---
@@ -382,6 +385,43 @@ También se puede ejecutar en Vercel como build command:
 
 ---
 
+## CI/CD — GitHub Actions
+
+**Workflow:** `.github/workflows/ci.yml` — automatiza lint, typecheck y build en cada push/PR a `main`.
+
+```yaml
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm lint
+      - run: pnpm prisma generate
+      - run: pnpm next build
+```
+
+**Pipeline:** `install → lint → prisma generate → next build` (~2-3 min).
+
+**Particularidades:**
+- `prisma generate` no necesita DATABASE_URL (solo genera tipos del schema)
+- `next build` compila todas las rutas como dinámicas (`ƒ`), sin renderizado estático — no requiere env vars
+- Los env checks de `src/lib/igdb.ts` (TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET) se movieron a runtime dentro de `getAccessToken()` para no fallar en CI
+- Deploy automático a Vercel sigue manejándose por la integración GitHub de Vercel (no parte de este workflow)
+
+---
+
 ## Roadmap — Prioridad de Trabajo
 
 ### 🏁 Completado
@@ -410,7 +450,7 @@ También se puede ejecutar en Vercel como build command:
 - [x] **Contraste modo claro** — 21 instancias de `bg-zinc-800`/`bg-zinc-700` reemplazadas por `bg-muted`/`bg-muted/80` en skeletons, dropdowns, paginación.
 
 ### 🟢 P4 — Automatización
-- [ ] **CI/CD (GitHub Actions)** — Automatizar lint + test + build en cada PR y push a main.
+- [x] **CI/CD (GitHub Actions)** — `.github/workflows/ci.yml`: `install → lint → prisma generate → next build`. Node 20 LTS + pnpm 11. Sin secrets requeridos.
 
 ### 🔵 P5 — Features adicionales
 - [ ] **PWA (manifest.json + service worker)** — Instalación como app nativa en mobile/desktop.

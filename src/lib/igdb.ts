@@ -2,10 +2,7 @@ import type { IGDBGameDetail, IGDBGameResult, GameResult } from "@/types/igdb";
 import { IGDB_IMAGE_BASE, IGDB_COVER_SIZE, IGDB_SCREENSHOT_SIZE } from "@/types/igdb";
 import { cachedFetch } from "@/lib/cache";
 
-if (!process.env.TWITCH_CLIENT_ID) throw new Error("Missing TWITCH_CLIENT_ID");
-if (!process.env.TWITCH_CLIENT_SECRET) throw new Error("Missing TWITCH_CLIENT_SECRET");
-const TWITCH_CLIENT_ID: string = process.env.TWITCH_CLIENT_ID;
-const TWITCH_CLIENT_SECRET: string = process.env.TWITCH_CLIENT_SECRET;
+const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID ?? "";
 const IGDB_API = "https://api.igdb.com/v4";
 const TWITCH_TOKEN_URL = "https://id.twitch.tv/oauth2/token";
 
@@ -14,6 +11,12 @@ let tokenExpiresAt = 0;
 
 async function getAccessToken(): Promise<string> {
   if (cachedToken && Date.now() < tokenExpiresAt) return cachedToken;
+
+  const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
+
+  if (!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET) {
+    throw new Error("Missing TWITCH_CLIENT_ID or TWITCH_CLIENT_SECRET");
+  }
 
   const res = await fetch(
     `${TWITCH_TOKEN_URL}?client_id=${TWITCH_CLIENT_ID}&client_secret=${TWITCH_CLIENT_SECRET}&grant_type=client_credentials`,
