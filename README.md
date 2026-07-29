@@ -1,6 +1,6 @@
 ﻿# WikiFilms
 
-**Tu enciclopedia cinematografica personal.** Explora peliculas y series con informacion detallada de TMDB, resenas de la comunidad, sistema de notificaciones y mas. Diseno oscuro cinematografico inspirado en Marvel Comics.
+Enciclopedia de entretenimiento web. Catalogo unificado de **peliculas, series y videojuegos** con resenas de la comunidad, watchlist, favoritos, notificaciones en tiempo real, ranking de usuarios y panel admin. Diseno cinematografico oscuro con modo claro.
 
 ## Stack
 
@@ -9,86 +9,104 @@
 | Framework | Next.js 16 (App Router) |
 | Lenguaje | TypeScript 5 strict |
 | Estilos | Tailwind CSS v4 + shadcn/ui (Nova) |
-| BASE DE DATOS | Vercel Postgres (Neon) via Prisma 7 |
+| Base de datos | Vercel Postgres (Neon) via Prisma 7 |
+| Cache + Rate Limiting | Upstash Redis |
 | Autenticacion | NextAuth v5 (Credentials + bcrypt) |
-| Fuentes | Oswald (display) + Inter (body) |
+| Almacenamiento | Vercel Blob (avatares privados) |
+| APIs externas | TMDB (peliculas/series) + IGDB/Twitch (videojuegos) |
+| Graficos | recharts (panel admin) |
 | Iconos | lucide-react |
+| Fuentes | Oswald (display) + Inter (body) |
+| Paqueteria | pnpm |
+| CI/CD | GitHub Actions |
 | Despliegue | Vercel |
 
 ## Empezar
 
-`ash
+```bash
 pnpm install
 pnpm dev
-`
+```
 
 Abrir [http://localhost:3000](http://localhost:3000)
 
 ## Variables de Entorno
 
-Crear .env.local:
+Crear `.env.local`:
 
-`env
+```env
 TMDB_API_KEY=tu_api_key
 DATABASE_URL=postgresql://...
 AUTH_SECRET=openssl rand -base64 32
 NEXTAUTH_URL=http://localhost:3000
-`
+TWITCH_CLIENT_ID=tu_client_id
+TWITCH_CLIENT_SECRET=tu_client_secret
+BLOB_READ_WRITE_TOKEN=tu_blob_token
+UPSTASH_REDIS_REST_URL=tu_upstash_url
+UPSTASH_REDIS_REST_TOKEN=tu_upstash_token
+WEBHOOK_SECRET=opcional_placeholder
+```
 
 ## Comandos
 
 | Comando | Descripcion |
 |---------|------------|
-| pnpm dev | Servidor desarrollo |
-| pnpm build | Compilar produccion |
-| pnpm start | Servidor produccion |
-| pnpm lint | ESLint |
-| pnpm prisma generate | Generar cliente Prisma |
-| pnpm prisma migrate dev | Migrar DB local |
-| pnpm prisma migrate deploy | Migrar DB produccion |
+| `pnpm dev` | Servidor desarrollo |
+| `pnpm build` | Compilar produccion (prisma generate + next build) |
+| `pnpm start` | Servidor produccion |
+| `pnpm lint` | ESLint |
+| `pnpm db:deploy` | Ejecutar migraciones pendientes en DB |
+| `pnpm prisma generate` | Generar cliente Prisma |
+| `pnpm prisma migrate dev` | Migrar DB local |
 
 ## Rutas
 
 | Ruta | Descripcion | Auth |
 |------|-------------|------|
-| / | Home con populares | Publica |
-| /movie/[id] | Detalle pelicula + resenas | Publica |
-| /tv/[id] | Detalle serie + resenas | Publica |
-| /search | Busqueda | Publica |
-| /login | Iniciar sesion | Publica |
-| /register | Registrarse | Publica |
-| /dashboard | Mi perfil | Requiere sesion |
-| /settings | Configuracion | Requiere sesion |
-| /watchlist | Mi lista | Requiere sesion |
-| /notifications | Historial de notificaciones | Requiere sesion |
-| /admin/users | CRUD usuarios | Requiere ADMIN |
-| /api/reviews/[id]/comments/[commentId] | Editar/eliminar comentario | Requiere sesion + dueno |
-| /api/reviews/[id]/comments/[commentId]/reactions | Like/dislike comentario | Requiere sesion |
-| /api/notifications/stream | SSE notificaciones tiempo real | Requiere sesion |
-| /coming-soon | Proximas funcionalidades | Publica |
+| `/` | Home con populares | Publica |
+| `/movie/[id]` | Detalle pelicula + resenas | Publica |
+| `/tv/[id]` | Detalle serie + resenas | Publica |
+| `/game/[id]` | Detalle videojuego + trailer + resenas | Requiere sesion |
+| `/games` | Home juegos (populares + proximos) | Requiere sesion |
+| `/search` | Busqueda peliculas/series/juegos | Publica |
+| `/genre/[slug]` | Contenido por genero con tabs | Publica |
+| `/login` | Iniciar sesion | Publica |
+| `/register` | Registrarse | Publica |
+| `/dashboard` | Mi perfil + favoritos | Requiere sesion |
+| `/settings` | Configuracion + avatar + eliminar cuenta | Requiere sesion |
+| `/watchlist` | Mi lista (vistos/jugados + pendientes) | Requiere sesion |
+| `/leaderboard` | Ranking top 50 usuarios | Requiere sesion |
+| `/user/[id]` | Perfil publico de usuario | Requiere sesion |
+| `/notifications` | Historial de notificaciones | Requiere sesion |
+| `/admin` | Dashboard analytics | Requiere ADMIN |
+| `/admin/users` | CRUD usuarios | Requiere ADMIN |
+| `/coming-soon` | Proximas funcionalidades | Publica |
 
 ## Funcionalidades
 
-- **Hero Slider Premium** — Slider de tendencias con auto-rotacion, overlay multi-stop, diseno responsive mobile/desktop, flechas glass y dots indicadores
-- **Content Cards con tap reveal** — Posters en grid, titulo oculto por defecto, aparece al hover/tap
-- **TMDB API** — Catalogo completo de peliculas y series con posters, sinopsis, elenco y proveedores de streaming
+- **Peliculas y Series** — Catalogo completo TMDB con posters, sinopsis, elenco, trailers, proveedores streaming (Colombia, Mexico, Argentina, etc.)
+- **Videojuegos** — Catalogo IGDB con trailers YouTube, capturas, artworks, plataformas, companias. Contenido en ingles con traduccion automatica del navegador
+- **Hero Slider** — Tendencias con auto-rotacion, overlay multi-stop, responsive mobile/desktop
+- **Content Cards** — Posters en grid con overlay, rating y titulo al hover
 - **Autenticacion** — Registro/login con username/password, bcrypt, sesiones via NextAuth
-- **Resenas** — Calificacion 1-10, comentario opcional, CRUD completo
-- **Reacciones** — Like/dislike con toggle on/off
-- **Comentarios anidados** — Respuestas con hilos, profundidad ilimitada, colapso tras 3 niveles, edicion y eliminacion, reacciones 👍👎, sort (nuevos/antiguos/populares)
-- **Notificaciones** — Campana con badge, SSE en tiempo real, pendingReads evita race conditions, historial en /notifications
-- **Watchlist** — Marcar peliculas como vistas o por ver
-- **Favoritos** — Agregar/quitar favoritos
-- **Panel Admin** — CRUD de usuarios (solo ADMIN)
-- **Proveedores de streaming** — Por region (Colombia, Mexico, Argentina, etc.)
-- **TMDB LATAM** — Contenido en espanol latino (es-MX) con region Colombia (CO), trailers priorizan espanol
-
-## Documentacion
-
-Ver archivos en /docs/:
-
-- docs/FEATURES.md — Funcionalidades detalladas con modelos, API endpoints y UI
-- docs/ARCHITECTURE.md — Estructura del proyecto, patrones y convenciones
+- **Resenas** — Calificacion 1-10, comentario, CRUD completo con sort (nuevos/antiguos/populares)
+- **Reacciones** — Like/dislike con toggle en resenas y comentarios
+- **Comentarios anidados** — Respuestas con hilos, colapso tras 3 niveles, edicion, eliminacion, reacciones
+- **Notificaciones** — Campana con badge, SSE en tiempo real, historial en /notifications
+- **Watchlist** — Marcar vistas/por ver (peliculas/series) y jugados/por jugar (juegos)
+- **Favoritos** — Agregar/quitar favoritos con estrella
+- **Ranking de usuarios** — Top 50 por actividad (resenas, favoritos, comentarios, reacciones recibidas)
+- **Perfiles de usuario** — Avatar, stats, ultimas resenas, link a configuracion si es propio
+- **Avatar** — Subida de foto via Vercel Blob privado con proxy autenticado
+- **Modo oscuro/claro** — Toggle con next-themes, paleta CSS adaptada
+- **Panel Admin** — Dashboard con metricas (usuarios, resenas, favoritos), graficos recharts, CRUD de usuarios
+- **PWA** — Manifest + service worker cache-first para instalacion como app
+- **Rate Limiting** — Upstash Redis (3 tiers: strict/write/read) via middleware
+- **Cache** — Redis cache para TMDB e IGDB con TTL 1h, fallback silencioso
+- **Paginacion** — Resultados de busqueda y contenido por genero
+- **i18n** — Espanol e ingles con LanguageProvider + detectServerLocale
+- **Eliminar cuenta** — Confirmacion con password, cascade delete de todos los datos
+- **CI/CD** — GitHub Actions: lint → prisma generate → next build en push/PR a main
 
 ## Licencia
 
