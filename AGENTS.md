@@ -350,6 +350,21 @@ Editar `--color-accent-brand` en `src/app/globals.css`. Eso actualiza todos los 
 - **Paquete**: `recharts` (10.3.1, ~55KB gzipped) — solo se carga lazy en `/admin`
 - **No requiere migración Prisma** — todo usa modelos existentes
 
+### Leaderboard / Ranking
+
+- **Propósito**: Página `/leaderboard` con top 50 usuarios más activos de la comunidad, visible para usuarios logueados
+- **Scoring** (ponderado):
+  - Reseña escrita: 10 pts
+  - Favorito agregado: 5 pts
+  - Comentario en reseña: 3 pts
+  - Reacción recibida en reseña (like): 2 pts
+  - Reacción recibida en comentario: 1 pt
+- **Cache**: `leaderboard` en Redis con TTL 5 min via `cachedFetch`
+- **Queries**: 5 queries Prisma en paralelo — `groupBy` en Review/Favorite/ReviewComment + `findMany` completo en ReviewReaction/CommentReaction (mapeo en JS para calcular reacciones recibidas por usuario)
+- **UI**: Ranking numerado (#1-#50), avatar, nombre, username, stats abreviadas (r/f/c), score en pts, hover highlight
+- **Navbar**: link "Ranking" visible para usuarios logueados, junto a Coming Soon y Admin
+- **No requiere migración Prisma** — todo usa modelos existentes
+
 ```bash
 pnpm dev           # Iniciar servidor desarrollo (localhost:3000)
 pnpm build         # Compilar producción (prisma generate + next build)
@@ -439,6 +454,7 @@ jobs:
 **Particularidades:**
 - `prisma generate` no necesita DATABASE_URL (solo genera tipos del schema)
 - `next build` compila todas las rutas como dinámicas (`ƒ`), sin renderizado estático — no requiere env vars
+- `prisma migrate deploy` se ejecuta por separado (`pnpm db:deploy`) — no incluido en `pnpm build` para evitar timeouts de advisory lock en Neon
 - Los env checks de `src/lib/igdb.ts` (TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET) se movieron a runtime dentro de `getAccessToken()` para no fallar en CI
 - Deploy automático a Vercel sigue manejándose por la integración GitHub de Vercel (no parte de este workflow)
 
@@ -484,10 +500,11 @@ jobs:
   - `src/app/admin/page.tsx` — dashboard con stats + gráficos + tablas
   - `src/components/admin/stats-chart.tsx` — BarChart + PieChart client
 
-- [ ] **Leaderboard / Ranking** (~4h) — Página `/leaderboard` con top 50 usuarios por actividad. Sin migración Prisma (usa `groupBy` y agregaciones sobre datos existentes: reviews, favoritos, reacciones). Cache en Redis TTL 5min.
-  - `src/app/api/leaderboard/route.ts` — agregación + cache
-  - `src/app/leaderboard/page.tsx` — tabla con avatar, username, score, stats
-  - i18n keys nuevas
+- [x] **Leaderboard / Ranking** (~4h) — Página `/leaderboard` con top 50 usuarios por actividad. Scoring: reviews×10 + favoritos×5 + comentarios×3 + reacciones reseña×2 + reacciones comentario×1. Cache Redis TTL 5min.
+  - `src/app/leaderboard/actions.ts` — `getLeaderboard()` agregaciones + cache
+  - `src/app/leaderboard/page.tsx` — tabla con rank, avatar, stats, score
+  - Link en navbar para usuarios logueados
+  - i18n keys (es/en)
 
 - [ ] **PWA** (~4h) — `public/manifest.json` con metadata PWA. `public/sw.js` cache-first para assets estáticos. Registro via client component. Sin paquetes externos.
   - Archivos: `public/manifest.json`, `public/sw.js`, `src/components/content/sw-register.tsx`
