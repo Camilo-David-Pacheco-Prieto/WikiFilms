@@ -7,7 +7,7 @@ export interface AdminStats {
   totalReviews: number;
   totalFavorites: number;
   avgRating: number | null;
-  topContent: { contentId: number; title: string; type: string; count: number }[];
+  topContent: { contentId: number; title: string; type: string; posterUrl: string | null; count: number }[];
   activeUsers: { id: string; name: string; username: string; avatarUrl: string | null; reviewCount: number }[];
   reviewsByMonth: { month: string; count: number }[];
   contentTypeDist: { type: string; count: number }[];
@@ -36,7 +36,7 @@ export async function getAdminStats(): Promise<AdminStats> {
       prisma.favorite.count(),
       prisma.review.aggregate({ _avg: { rating: true } }),
       prisma.favorite.groupBy({
-        by: ["contentId", "title", "type"],
+        by: ["contentId", "title", "type", "posterUrl"],
         _count: { id: true },
         orderBy: { _count: { id: "desc" } },
         take: 10,
@@ -66,15 +66,16 @@ export async function getAdminStats(): Promise<AdminStats> {
       : [];
 
     const userMap = new Map(users.map((u) => [u.id, u]));
-    const activeUsers = reviewGroup.map((r) => ({
-      ...(userMap.get(r.userId) ?? {
+    const activeUsers = reviewGroup.map((r) => {
+      const u = userMap.get(r.userId);
+      return {
         id: r.userId,
-        name: "Unknown",
-        username: "unknown",
-        avatarUrl: null as string | null,
-      }),
-      reviewCount: r._count.id,
-    }));
+        name: u?.name ?? "Unknown",
+        username: u?.username ?? "unknown",
+        avatarUrl: u?.avatarUrl ? `/api/blob?pathname=${encodeURIComponent(u.avatarUrl)}` : null,
+        reviewCount: r._count.id,
+      };
+    });
 
     const monthCounts: Record<string, number> = {};
     for (const review of recentReviews) {
@@ -95,6 +96,7 @@ export async function getAdminStats(): Promise<AdminStats> {
         contentId: t.contentId,
         title: t.title,
         type: t.type,
+        posterUrl: t.posterUrl,
         count: t._count.id,
       })),
       activeUsers,

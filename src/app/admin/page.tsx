@@ -4,6 +4,7 @@ import { getAdminStats } from "./actions";
 import { getServerLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionary";
 import { StatsChart } from "@/components/admin/stats-chart";
+import { SafeAvatar } from "@/components/ui/safe-avatar";
 
 export async function generateMetadata() {
   const locale = await getServerLocale();
@@ -65,6 +66,16 @@ export default async function AdminPage() {
                   <span className="shrink-0 text-sm font-bold text-text-secondary">
                     #{i + 1}
                   </span>
+                  {item.posterUrl && (
+                    <div className="shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.posterUrl}
+                        alt={item.title}
+                        className="h-10 w-7 rounded object-cover"
+                      />
+                    </div>
+                  )}
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-white">
                       {item.title}
@@ -99,6 +110,7 @@ export default async function AdminPage() {
                   <span className="shrink-0 text-sm font-bold text-text-secondary">
                     #{i + 1}
                   </span>
+                  <SafeAvatar src={user.avatarUrl} name={user.name} className="size-8" />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-white">
                       {user.name}

@@ -14,6 +14,14 @@ export interface LeaderboardEntry {
   commentReactionsReceived: number;
 }
 
+export interface ContentEntry {
+  contentId: number;
+  title: string;
+  type: string;
+  posterUrl: string | null;
+  count: number;
+}
+
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   return cachedFetch("leaderboard", async () => {
     const [
@@ -97,5 +105,24 @@ export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
       .slice(0, 50);
 
     return entries;
+  }, 300);
+}
+
+export async function getContentLeaderboard(): Promise<ContentEntry[]> {
+  return cachedFetch("leaderboard:content", async () => {
+    const data = await prisma.favorite.groupBy({
+      by: ["contentId", "title", "type", "posterUrl"],
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+      take: 30,
+    });
+
+    return data.map((d) => ({
+      contentId: d.contentId,
+      title: d.title,
+      type: d.type,
+      posterUrl: d.posterUrl,
+      count: d._count.id,
+    }));
   }, 300);
 }
